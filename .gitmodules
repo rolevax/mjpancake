@@ -1,0 +1,3 @@
+[submodule "libsaki"]
+	path = libsaki
+	url = https://bitbucket.org/rolevax/libsaki.git
