@@ -112,7 +112,8 @@ HEADERS += \
     libsaki/test.h \
     libsaki/util.h \
     libsaki/girls_util_toki.h \
-    libsaki/ticketfolder.h
+    libsaki/ticketfolder.h \
+    libsaki/debug_cheat.h
 
 DISTFILES += \
     android/AndroidManifest.xml \
