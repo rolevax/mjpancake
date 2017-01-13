@@ -1,6 +1,6 @@
 TEMPLATE = app
 
-QT += qml quick widgets
+QT += qml quick widgets network
 
 android: QT += androidextras
 
@@ -49,7 +49,8 @@ SOURCES += main.cpp \
     libsaki/tableview.cpp \
     libsaki/test.cpp \
     libsaki/girls_util_toki.cpp \
-    libsaki/ticketfolder.cpp
+    libsaki/ticketfolder.cpp \
+    gui/pclient.cpp
 
 RESOURCES += qml.qrc \
     pic.qrc \
@@ -113,7 +114,8 @@ HEADERS += \
     libsaki/util.h \
     libsaki/girls_util_toki.h \
     libsaki/ticketfolder.h \
-    libsaki/debug_cheat.h
+    libsaki/debug_cheat.h \
+    gui/pclient.h
 
 DISTFILES += \
     android/AndroidManifest.xml \
@@ -137,6 +139,7 @@ OTHER_FILES += \
     qml/RoomGameFree.qml \
     qml/RoomGen.qml \
     qml/RoomSettings.qml \
+    qml/RoomClient.qml \
     qml/RuleConfig.qml \
     qml/Table.qml \
     qml/Game.qml \
@@ -164,6 +167,7 @@ OTHER_FILES += \
     qml/ActionButton.qml \
     qml/ActionButtonBar.qml \
     qml/Texd.qml \
+    qml/TexdInput.qml \
     qml/AnimadionBuffer.qml \
     qml/spell.js \
     qml/girlnames.js \

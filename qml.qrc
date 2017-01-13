@@ -47,5 +47,7 @@
         <file>qml/IrsCheckBox.qml</file>
         <file>qml/AnimadionBuffer.qml</file>
         <file>qml/RoomReplay.qml</file>
+        <file>qml/RoomClient.qml</file>
+        <file>qml/TexdInput.qml</file>
     </qresource>
 </RCC>

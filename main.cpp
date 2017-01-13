@@ -9,6 +9,7 @@
 #include "gui/pimageprovider.h"
 #include "gui/psettings.h"
 #include "gui/pglobal.h"
+#include "gui/pclient.h"
 
 
 
@@ -27,6 +28,7 @@ int main(int argc, char *argv[])
 //    qmlRegisterType<PGen>("rolevax.sakilogy", 1, 0, "PGen");
     qmlRegisterType<PReplay>("rolevax.sakilogy", 1, 0, "PReplay");
     qmlRegisterType<PSettings>("rolevax.sakilogy", 1, 0, "PSettings");
+    qmlRegisterType<PClient>("rolevax.sakilogy", 1, 0, "PClient");
 
     qmlRegisterSingletonType<PGlobal>("rolevax.sakilogy", 1, 0, "PGlobal",
                                       pGlobalSingletonProvider);

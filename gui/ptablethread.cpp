@@ -17,8 +17,8 @@ PTableThread::~PTableThread()
     workThread.wait();
 }
 
-void PTableThread::startGame(const QVariant &girlIdsVar, const QVariant &gameRule,
-                             int tempDealer)
+void PTableThread::startLocal(const QVariant &girlIdsVar, const QVariant &gameRule,
+                              int tempDealer)
 {
     PTable *table = new PTable;
     table->moveToThread(&workThread);
@@ -49,6 +49,15 @@ void PTableThread::startGame(const QVariant &girlIdsVar, const QVariant &gameRul
     connect(table, &PTable::justPause, this, &PTableThread::justPause);
 
     table->start(girlIdsVar, gameRule, tempDealer);
+}
+
+void PTableThread::startOnline(PClient *client, const QVariant &girlIds, int tempDealer)
+{
+    assert(client != nullptr);
+
+    connect(client, &PClient::activated, this, &PTableThread::activated);
+
+    client->sendReady();
 }
 
 void PTableThread::startSample()

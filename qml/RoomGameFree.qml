@@ -188,7 +188,7 @@ Room {
         id: startTimer
         interval: 17
         onTriggered: {
-            loader.item.startGame(shuffledGirlIds, ruleConfig.gameRule, tempDealer);
+            loader.item.startLocal(shuffledGirlIds, ruleConfig.gameRule, tempDealer);
         }
     }
 }

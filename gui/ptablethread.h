@@ -2,6 +2,7 @@
 #define PTABLETHREAD_H
 
 #include "gui/ptable.h"
+#include "gui/pclient.h"
 
 #include <QObject>
 #include <QThread>
@@ -13,8 +14,9 @@ public:
     explicit PTableThread(QObject *parent = 0);
     ~PTableThread();
 
-    Q_INVOKABLE void startGame(const QVariant &girlIds, const QVariant &gameRule,
-                               int tempDealer);
+    Q_INVOKABLE void startLocal(const QVariant &girlIds, const QVariant &gameRule,
+                                int tempDealer);
+    Q_INVOKABLE void startOnline(PClient *client, const QVariant &girlIds, int tempDealer);
     Q_INVOKABLE void startSample();
 
 signals:

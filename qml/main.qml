@@ -80,55 +80,25 @@ Window {
         anchors.margins: parent.height / 9
         spacing: global.size.space
 
-        /*
-        Buddon {
-            text: "     牌效     "
-            onClicked: { loader.source = "RoomPrac.qml"; }
-        }
-        */
+        Repeater {
+            model: [
+                { text: "情报", load: "RoomHelp.qml" },
+                { text: "上线", load: "RoomClient.qml" },
+                { text: "对局", load: "RoomGameFree.qml" },
+                { text: "牌谱", load: "RoomReplay.qml" },
+                { text: "设定", load: "RoomSettings.qml" }
+//                { text: "牌效", load: "RoomPrac.qml" }
+//                { text: "手牌生成", load: "RoomGen.qml" }
+            ]
 
-        Buzzon {
-            text: "情报"
-            textLength: 8
-            onClicked: { loader.source = "RoomHelp.qml"; }
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
-
-        Buzzon {
-            text: "对局"
-            textLength: 8
-            onClicked: { loader.source = "RoomGameFree.qml"; }
-            anchors.horizontalCenter: parent.horizontalCenter
+            delegate: Buzzon {
+                text: modelData.text
+                textLength: 8
+                onClicked: { loader.source = modelData.load; }
+            }
         }
 
-        /*
-        Buzzon {
-            text: "   手牌生成   "
-            onClicked: { loader.source = "RoomGen.qml"; }
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
-        */
-
-        Buzzon {
-            text: "牌谱"
-            textLength: 8
-            onClicked: { loader.source = "RoomReplay.qml"; }
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
-
-        Buzzon {
-            text: "设定"
-            textLength: 8
-            onClicked: { loader.source = "RoomSettings.qml"; }
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
-
-        Buzzon {
-            text: "骑马"
-            textLength: 8
-            onClicked: { Qt.quit() }
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
+        Buzzon { text: "骑马"; textLength: 8; onClicked: { Qt.quit() } }
     }
 
     function closeRoom() {

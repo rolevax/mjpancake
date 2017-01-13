@@ -119,8 +119,12 @@ Image {
         }
     }
 
-    function startGame(girlIds, gameRule, tempDealer) {
-        table.pTable.startGame(girlIds, gameRule, tempDealer);
+    function startLocal(girlIds, gameRule, tempDealer) {
+        table.pTable.startLocal(girlIds, gameRule, tempDealer);
+    }
+
+    function startOnline(pClient, girlIds, tempDealer) {
+        table.pTable.startOnline(pClient, girlIds, tempDealer);
     }
 
     function startSample() {
