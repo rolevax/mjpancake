@@ -1,5 +1,5 @@
-#ifndef PCLIENT_H
-#define PCLIENT_H
+#ifndef P_CLIENT_H
+#define P_CLIENT_H
 
 #include <QObject>
 #include <QTcpSocket>
@@ -53,4 +53,4 @@ private:
     QString mNickname;
 };
 
-#endif // PCLIENT_H
+#endif // P_CLIENT_H

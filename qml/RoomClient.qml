@@ -185,7 +185,7 @@ Room {
         id: startTimer
         interval: 17
         onTriggered: {
-            loader.item.startOnline(pClient, girlIds, tempDealer);
+            loader.item.startOnline(pClient);
         }
     }
 

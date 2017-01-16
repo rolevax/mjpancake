@@ -1,22 +1,22 @@
-#ifndef PTABLETHREAD_H
-#define PTABLETHREAD_H
+#ifndef P_TABLE_H
+#define P_TABLE_H
 
-#include "gui/ptable.h"
-#include "gui/pclient.h"
+#include "gui/p_table_local.h"
+#include "gui/p_client.h"
 
 #include <QObject>
 #include <QThread>
 
-class PTableThread : public QObject
+class PTable : public QObject
 {
     Q_OBJECT
 public:
-    explicit PTableThread(QObject *parent = 0);
-    ~PTableThread();
+    explicit PTable(QObject *parent = 0);
+    ~PTable();
 
     Q_INVOKABLE void startLocal(const QVariant &girlIds, const QVariant &gameRule,
                                 int tempDealer);
-    Q_INVOKABLE void startOnline(PClient *client, const QVariant &girlIds, int tempDealer);
+    Q_INVOKABLE void startOnline(PClient *client);
     Q_INVOKABLE void startSample();
 
 signals:
@@ -50,4 +50,4 @@ private:
     QThread workThread;
 };
 
-#endif // PTABLETHREAD_H
+#endif // P_TABLE_H

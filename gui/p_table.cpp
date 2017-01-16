@@ -1,4 +1,4 @@
-#include "gui/ptablethread.h"
+#include "gui/p_table.h"
 #include "gui/pport.h"
 
 #include "libsaki/string_enum.h"
@@ -6,61 +6,61 @@
 
 #include <QEventLoop>
 
-PTableThread::PTableThread(QObject *parent)
+PTable::PTable(QObject *parent)
     : QObject(parent)
 {
 }
 
-PTableThread::~PTableThread()
+PTable::~PTable()
 {
     workThread.quit();
     workThread.wait();
 }
 
-void PTableThread::startLocal(const QVariant &girlIdsVar, const QVariant &gameRule,
+void PTable::startLocal(const QVariant &girlIdsVar, const QVariant &gameRule,
                               int tempDealer)
 {
-    PTable *table = new PTable;
+    PTableLocal *table = new PTableLocal;
     table->moveToThread(&workThread);
     workThread.start();
 
-    connect(&workThread, &QThread::finished, table, &PTable::deleteLater);
+    connect(&workThread, &QThread::finished, table, &PTableLocal::deleteLater);
 
-    connect(this, &PTableThread::action, table, &PTable::action);
-    connect(this, &PTableThread::saveRecord, table, &PTable::saveRecord);
+    connect(this, &PTable::action, table, &PTableLocal::action);
+    connect(this, &PTable::saveRecord, table, &PTableLocal::saveRecord);
 
-    connect(table, &PTable::firstDealerChoosen,
-            this, &PTableThread::firstDealerChoosen);
-    connect(table, &PTable::roundStarted, this, &PTableThread::roundStarted);
-    connect(table, &PTable::cleaned, this, &PTableThread::cleaned);
-    connect(table, &PTable::diced, this, &PTableThread::diced);
-    connect(table, &PTable::dealt, this, &PTableThread::dealt);
-    connect(table, &PTable::flipped, this, &PTableThread::flipped);
-    connect(table, &PTable::activated, this, &PTableThread::activated);
-    connect(table, &PTable::drawn, this, &PTableThread::drawn);
-    connect(table, &PTable::discarded, this, &PTableThread::discarded);
-    connect(table, &PTable::riichied, this, &PTableThread::riichied);
-    connect(table, &PTable::riichiPassed, this, &PTableThread::riichiPassed);
-    connect(table, &PTable::barked, this, &PTableThread::barked);
-    connect(table, &PTable::roundEnded, this, &PTableThread::roundEnded);
-    connect(table, &PTable::pointsChanged, this, &PTableThread::pointsChanged);
-    connect(table, &PTable::tableEnded, this, &PTableThread::tableEnded);
-    connect(table, &PTable::poppedUp, this, &PTableThread::poppedUp);
-    connect(table, &PTable::justPause, this, &PTableThread::justPause);
+    connect(table, &PTableLocal::firstDealerChoosen,
+            this, &PTable::firstDealerChoosen);
+    connect(table, &PTableLocal::roundStarted, this, &PTable::roundStarted);
+    connect(table, &PTableLocal::cleaned, this, &PTable::cleaned);
+    connect(table, &PTableLocal::diced, this, &PTable::diced);
+    connect(table, &PTableLocal::dealt, this, &PTable::dealt);
+    connect(table, &PTableLocal::flipped, this, &PTable::flipped);
+    connect(table, &PTableLocal::drawn, this, &PTable::drawn);
+    connect(table, &PTableLocal::discarded, this, &PTable::discarded);
+    connect(table, &PTableLocal::riichied, this, &PTable::riichied);
+    connect(table, &PTableLocal::riichiPassed, this, &PTable::riichiPassed);
+    connect(table, &PTableLocal::barked, this, &PTable::barked);
+    connect(table, &PTableLocal::roundEnded, this, &PTable::roundEnded);
+    connect(table, &PTableLocal::pointsChanged, this, &PTable::pointsChanged);
+    connect(table, &PTableLocal::tableEnded, this, &PTable::tableEnded);
+    connect(table, &PTableLocal::poppedUp, this, &PTable::poppedUp);
+    connect(table, &PTableLocal::justPause, this, &PTable::justPause);
+    connect(table, &PTableLocal::activated, this, &PTable::activated);
 
     table->start(girlIdsVar, gameRule, tempDealer);
 }
 
-void PTableThread::startOnline(PClient *client, const QVariant &girlIds, int tempDealer)
+void PTable::startOnline(PClient *client)
 {
     assert(client != nullptr);
 
-    connect(client, &PClient::activated, this, &PTableThread::activated);
+    connect(client, &PClient::activated, this, &PTable::activated);
 
     client->sendReady();
 }
 
-void PTableThread::startSample()
+void PTable::startSample()
 {
     using namespace saki::tiles37;
 

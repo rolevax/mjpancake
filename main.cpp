@@ -3,13 +3,13 @@
 #include <QtQml>
 #include <QQuickView>
 
-#include "gui/ptablethread.h"
+#include "gui/p_table.h"
 #include "gui/pgen.h"
 #include "gui/preplay.h"
 #include "gui/pimageprovider.h"
 #include "gui/psettings.h"
 #include "gui/pglobal.h"
-#include "gui/pclient.h"
+#include "gui/p_client.h"
 
 
 
@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 
     engine.addImageProvider(QString("impro"), new PImageProvider);
 
-    qmlRegisterType<PTableThread>("rolevax.sakilogy", 1, 0, "PTable");
+    qmlRegisterType<PTable>("rolevax.sakilogy", 1, 0, "PTable");
 //    qmlRegisterType<PGen>("rolevax.sakilogy", 1, 0, "PGen");
     qmlRegisterType<PReplay>("rolevax.sakilogy", 1, 0, "PReplay");
     qmlRegisterType<PSettings>("rolevax.sakilogy", 1, 0, "PSettings");

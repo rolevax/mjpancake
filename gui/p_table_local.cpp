@@ -1,4 +1,4 @@
-#include "ptable.h"
+#include "p_table_local.h"
 #include "pport.h"
 
 #include "libsaki/myrand.h"
@@ -18,25 +18,25 @@
 #include <iostream>
 #include <cassert>
 
-PTable::PTable(QObject *parent)
+PTableLocal::PTableLocal(QObject *parent)
     : QObject(parent)
     , TableOperator(saki::Who(saki::Who::HUMAN))
     , mTable(nullptr)
 {
 }
 
-void PTable::onTableStarted(const saki::Table &table, uint32_t seed)
+void PTableLocal::onTableStarted(const saki::Table &table, uint32_t seed)
 {
     (void) seed;
     onPointsChanged(table);
 }
 
-void PTable::onFirstDealerChoosen(saki::Who initDealer)
+void PTableLocal::onFirstDealerChoosen(saki::Who initDealer)
 {
     emit firstDealerChoosen(initDealer.index());
 }
 
-void PTable::onRoundStarted(int round, int extra, saki::Who dealer,
+void PTableLocal::onRoundStarted(int round, int extra, saki::Who dealer,
                             bool al, int deposit, uint32_t seed)
 {
     std::cout << 'r' << round << '.' << extra << " dl" << dealer.index()
@@ -47,19 +47,19 @@ void PTable::onRoundStarted(int round, int extra, saki::Who dealer,
     emit roundStarted(round, extra, dealer.index(), al, deposit);
 }
 
-void PTable::onCleaned()
+void PTableLocal::onCleaned()
 {
     emit cleaned();
 }
 
-void PTable::onDiced(const saki::Table &table, int die1, int die2)
+void PTableLocal::onDiced(const saki::Table &table, int die1, int die2)
 {
     if (!table.getDealer().human())
         emit justPause(700);
     emit diced(die1, die2);
 }
 
-void PTable::onDealt(const saki::Table &table)
+void PTableLocal::onDealt(const saki::Table &table)
 {
     QVariantList list;
     for (int w = 0; w < 4; w++)
@@ -68,19 +68,19 @@ void PTable::onDealt(const saki::Table &table)
     emit dealt(QVariant::fromValue(list));
 }
 
-void PTable::onFlipped(const saki::Table &table)
+void PTableLocal::onFlipped(const saki::Table &table)
 {
     emit flipped(createTileVar(table.getMount().getDrids().back()));
 }
 
-void PTable::onDrawn(const saki::Table &table, saki::Who who)
+void PTableLocal::onDrawn(const saki::Table &table, saki::Who who)
 {
     mInTile = table.getHand(who).drawn();
     mHasInTile = true;
     emit drawn(who.index(), createTileVar(mInTile), table.duringKan());
 }
 
-void PTable::onDiscarded(const saki::Table &table, bool spin)
+void PTableLocal::onDiscarded(const saki::Table &table, bool spin)
 {
     saki::Who who = table.getFocus().who();
     const saki::T37 &outTile = table.getFocusTile();
@@ -103,17 +103,17 @@ void PTable::onDiscarded(const saki::Table &table, bool spin)
     emit discarded(who.index(), createTileVar(outTile, lay), out, in);
 }
 
-void PTable::onRiichiCalled(saki::Who who)
+void PTableLocal::onRiichiCalled(saki::Who who)
 {
     emit riichied(who.index());
 }
 
-void PTable::onRiichiEstablished(saki::Who who)
+void PTableLocal::onRiichiEstablished(saki::Who who)
 {
     emit riichiPassed(who.index());
 }
 
-void PTable::onBarked(const saki::Table &table, saki::Who who,
+void PTableLocal::onBarked(const saki::Table &table, saki::Who who,
                       const saki::M37 &bark)
 {
     const saki::TileCount &closed = table.getHand(who).closed();
@@ -171,7 +171,7 @@ void PTable::onBarked(const saki::Table &table, saki::Who who,
                 index1, index2, createBarkVar(bark));
 }
 
-void PTable::onRoundEnded(const saki::Table &table, saki::RoundResult result,
+void PTableLocal::onRoundEnded(const saki::Table &table, saki::RoundResult result,
                           const std::vector<saki::Who> &openers, saki::Who gunner,
                           const std::vector<saki::Form> &forms)
 {
@@ -196,7 +196,7 @@ void PTable::onRoundEnded(const saki::Table &table, saki::RoundResult result,
                     createTilesVar(table.getMount().getUrids()));
 }
 
-void PTable::onPointsChanged(const saki::Table &table)
+void PTableLocal::onPointsChanged(const saki::Table &table)
 {
     const std::array<int, 4> &points = table.getPoints();
     QVariantList list;
@@ -205,7 +205,7 @@ void PTable::onPointsChanged(const saki::Table &table)
     emit pointsChanged(QVariant::fromValue(list));
 }
 
-void PTable::onTableEnded(const std::array<saki::Who, 4> &rank,
+void PTableLocal::onTableEnded(const std::array<saki::Who, 4> &rank,
                           const std::array<int, 4> &scores)
 {
     QVariantList rankList, pointsList;
@@ -216,13 +216,13 @@ void PTable::onTableEnded(const std::array<saki::Who, 4> &rank,
     emit tableEnded(rankList, pointsList);
 }
 
-void PTable::onPoppedUp(const saki::Table &table, saki::Who who, const saki::SkillExpr &expr)
+void PTableLocal::onPoppedUp(const saki::Table &table, saki::Who who, const saki::SkillExpr &expr)
 {
     std::string str = table.getGirl(who).stringOf(expr);
     emit poppedUp(who.index(), QString::fromStdString(str));
 }
 
-void PTable::onActivated(saki::Table &table)
+void PTableLocal::onActivated(saki::Table &table)
 {
     using ActCode = saki::ActCode;
 
@@ -324,7 +324,7 @@ void PTable::onActivated(saki::Table &table)
     emit activated(QVariant::fromValue(map), focusWho);
 }
 
-void PTable::start(const QVariant &girlIdsVar, const QVariant &gameRule,
+void PTableLocal::start(const QVariant &girlIdsVar, const QVariant &gameRule,
                    int tempDelaer)
 {
     QVariantList list = girlIdsVar.toList();
@@ -372,13 +372,13 @@ void PTable::start(const QVariant &girlIdsVar, const QVariant &gameRule,
     mTable->start();
 }
 
-void PTable::action(int who, QString actStr, int arg)
+void PTableLocal::action(int who, QString actStr, int arg)
 {
     saki::Action action = makeAction(actStr, arg);
     mTable->action(saki::Who(who), action);
 }
 
-void PTable::saveRecord()
+void PTableLocal::saveRecord()
 {
     QString path("user/replay");
     QDir().mkpath(path);
@@ -408,7 +408,7 @@ void PTable::saveRecord()
     file.close();
 }
 
-saki::Action PTable::makeAction(const QString &actStr, int arg)
+saki::Action PTableLocal::makeAction(const QString &actStr, int arg)
 {
     using ActCode = saki::ActCode;
 
@@ -431,7 +431,7 @@ saki::Action PTable::makeAction(const QString &actStr, int arg)
     }
 }
 
-void PTable::outInIndices(const saki::TileCount &closed,
+void PTableLocal::outInIndices(const saki::TileCount &closed,
                           const saki::T34 &drop, int &out, int &in)
 {
     out = closed.preceders(drop);

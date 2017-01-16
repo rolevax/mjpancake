@@ -123,8 +123,8 @@ Image {
         table.pTable.startLocal(girlIds, gameRule, tempDealer);
     }
 
-    function startOnline(pClient, girlIds, tempDealer) {
-        table.pTable.startOnline(pClient, girlIds, tempDealer);
+    function startOnline(pClient) {
+        table.pTable.startOnline(pClient);
     }
 
     function startSample() {

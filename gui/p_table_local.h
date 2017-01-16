@@ -1,5 +1,5 @@
-#ifndef PTABLE_H
-#define PTABLE_H
+#ifndef P_TABLE_LOCAL_H
+#define P_TABLE_LOCAL_H
 
 #include "libsaki/table.h"
 #include "libsaki/ai.h"
@@ -13,11 +13,11 @@
 
 
 
-class PTable : public QObject, saki::TableObserver, saki::TableOperator
+class PTableLocal : public QObject, saki::TableObserver, saki::TableOperator
 {
     Q_OBJECT
 public:
-    explicit PTable(QObject *parent = nullptr);
+    explicit PTableLocal(QObject *parent = nullptr);
 
     void onTableStarted(const saki::Table &table, uint32_t seed) override;
     void onFirstDealerChoosen(saki::Who initDealer) override;
@@ -85,4 +85,4 @@ private:
     int mOutPos; // precise out-pos in ui
 };
 
-#endif // PTABLE_H
+#endif // P_TABLE_LOCAL_H

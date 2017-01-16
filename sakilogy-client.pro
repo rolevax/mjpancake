@@ -8,7 +8,6 @@ CONFIG += c++11
 CONFIG(release, debug|release): DEFINES += NDEBUG
 
 SOURCES += main.cpp \
-    gui/ptable.cpp \
     libsaki/action.cpp \
     libsaki/ai.cpp \
     libsaki/form.cpp \
@@ -22,7 +21,6 @@ SOURCES += main.cpp \
     gui/pport.cpp \
     libsaki/tilecount.cpp \
     libsaki/explain.cpp \
-    gui/ptablethread.cpp \
     libsaki/princess.cpp \
     libsaki/girls_shiraitodai.cpp \
     libsaki/girls_kiyosumi.cpp \
@@ -50,7 +48,9 @@ SOURCES += main.cpp \
     libsaki/test.cpp \
     libsaki/girls_util_toki.cpp \
     libsaki/ticketfolder.cpp \
-    gui/pclient.cpp
+    gui/p_table_local.cpp \
+    gui/p_client.cpp \
+    gui/p_table.cpp
 
 RESOURCES += qml.qrc \
     pic.qrc \
@@ -63,10 +63,8 @@ QML_IMPORT_PATH =
 include(deployment.pri)
 
 HEADERS += \
-    gui/ptable.h \
     gui/pgen.h \
     gui/pport.h \
-    gui/ptablethread.h \
     libsaki/action.h \
     libsaki/ai.h \
     libsaki/form.h \
@@ -115,7 +113,9 @@ HEADERS += \
     libsaki/girls_util_toki.h \
     libsaki/ticketfolder.h \
     libsaki/debug_cheat.h \
-    gui/pclient.h
+    gui/p_table_local.h \
+    gui/p_client.h \
+    gui/p_table.h
 
 DISTFILES += \
     android/AndroidManifest.xml \
