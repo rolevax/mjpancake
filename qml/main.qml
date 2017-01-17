@@ -1,6 +1,7 @@
 import QtQuick 2.4
 import QtQuick.Window 2.2
 import rolevax.sakilogy 1.0
+import "widget"
 
 Window {
     id: window

@@ -1,7 +1,7 @@
 import QtQuick 2.0
-import "girlnames.js" as Names
-
 import rolevax.sakilogy 1.0
+import "girlnames.js" as Names
+import "widget"
 
 Room {
     id: room

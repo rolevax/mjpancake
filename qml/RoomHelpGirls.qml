@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import 'widget'
 import "girlnames.js" as Names
 
 Room {

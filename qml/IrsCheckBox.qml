@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import "widget"
 import "spell.js" as Spell
 
 Rectangle {

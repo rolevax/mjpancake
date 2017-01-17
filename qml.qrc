@@ -2,7 +2,6 @@
     <qresource prefix="/">
         <file>qml/ActionButton.qml</file>
         <file>qml/ActionButtonBar.qml</file>
-        <file>qml/Buddon.qml</file>
         <file>qml/DoraIndic.qml</file>
         <file>qml/FloatButton.qml</file>
         <file>qml/Game.qml</file>
@@ -21,7 +20,6 @@
         <file>qml/Shocker.qml</file>
         <file>qml/spell.js</file>
         <file>qml/Table.qml</file>
-        <file>qml/Texd.qml</file>
         <file>qml/Tile.qml</file>
         <file>qml/TileForm.qml</file>
         <file>qml/TileStand.qml</file>
@@ -32,9 +30,6 @@
         <file>qml/RoomGen.qml</file>
         <file>qml/ResultFinal.qml</file>
         <file>qml/GirlPhoto.qml</file>
-        <file>qml/GomboBuddon.qml</file>
-        <file>qml/GomboMenu.qml</file>
-        <file>qml/GomboToggle.qml</file>
         <file>qml/RoomGameFree.qml</file>
         <file>qml/RuleConfig.qml</file>
         <file>qml/girlnames.js</file>
@@ -43,11 +38,16 @@
         <file>qml/RoomHelpOp.qml</file>
         <file>qml/RoomHelpGirls.qml</file>
         <file>qml/RoomHelpFaq.qml</file>
-        <file>qml/Buzzon.qml</file>
         <file>qml/IrsCheckBox.qml</file>
         <file>qml/AnimadionBuffer.qml</file>
         <file>qml/RoomReplay.qml</file>
         <file>qml/RoomClient.qml</file>
-        <file>qml/TexdInput.qml</file>
+        <file>qml/widget/Buzzon.qml</file>
+        <file>qml/widget/Buddon.qml</file>
+        <file>qml/widget/GomboBuddon.qml</file>
+        <file>qml/widget/GomboMenu.qml</file>
+        <file>qml/widget/GomboToggle.qml</file>
+        <file>qml/widget/Texd.qml</file>
+        <file>qml/widget/TexdInput.qml</file>
     </qresource>
 </RCC>
