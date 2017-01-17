@@ -1,4 +1,4 @@
-#include "gui/pglobal.h"
+#include "gui/p_global.h"
 
 #include <QDir>
 #include <QFile>

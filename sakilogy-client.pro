@@ -17,8 +17,6 @@ SOURCES += main.cpp \
     libsaki/table.cpp \
     libsaki/myrand.cpp \
     libsaki/gen.cpp \
-    gui/pgen.cpp \
-    gui/pport.cpp \
     libsaki/tilecount.cpp \
     libsaki/explain.cpp \
     libsaki/princess.cpp \
@@ -28,9 +26,6 @@ SOURCES += main.cpp \
     libsaki/girls_achiga.cpp \
     libsaki/girls_senriyama.cpp \
     libsaki/girls_himematsu.cpp \
-    gui/pimageprovider.cpp \
-    gui/psettings.cpp \
-    gui/pglobal.cpp \
     libsaki/ai_senriyama.cpp \
     libsaki/skillpop.cpp \
     libsaki/ai_achiga.cpp \
@@ -39,7 +34,6 @@ SOURCES += main.cpp \
     libsaki/girls_usuzan.cpp \
     libsaki/ai_usuzan.cpp \
     libsaki/replay.cpp \
-    gui/preplay.cpp \
     libsaki/girls_eisui.cpp \
     libsaki/girls_miyamori.cpp \
     libsaki/ai_eisui.cpp \
@@ -50,7 +44,13 @@ SOURCES += main.cpp \
     libsaki/ticketfolder.cpp \
     gui/p_table_local.cpp \
     gui/p_client.cpp \
-    gui/p_table.cpp
+    gui/p_table.cpp \
+    gui/p_global.cpp \
+    gui/p_image_provider.cpp \
+    gui/p_port.cpp \
+    gui/p_replay.cpp \
+    gui/p_settings.cpp \
+    gui/p_gen.cpp
 
 RESOURCES += qml.qrc \
     pic.qrc \
@@ -63,8 +63,6 @@ QML_IMPORT_PATH =
 include(deployment.pri)
 
 HEADERS += \
-    gui/pgen.h \
-    gui/pport.h \
     libsaki/action.h \
     libsaki/ai.h \
     libsaki/form.h \
@@ -87,9 +85,6 @@ HEADERS += \
     libsaki/girls_achiga.h \
     libsaki/girls_senriyama.h \
     libsaki/girls_himematsu.h \
-    gui/pimageprovider.h \
-    gui/psettings.h \
-    gui/pglobal.h \
     libsaki/ai_senriyama.h \
     libsaki/skillpop.h \
     libsaki/ai_achiga.h \
@@ -98,7 +93,6 @@ HEADERS += \
     libsaki/girls_usuzan.h \
     libsaki/ai_usuzan.h \
     libsaki/replay.h \
-    gui/preplay.h \
     libsaki/girls_eisui.h \
     libsaki/girls_miyamori.h \
     libsaki/ai_eisui.h \
@@ -115,7 +109,13 @@ HEADERS += \
     libsaki/debug_cheat.h \
     gui/p_table_local.h \
     gui/p_client.h \
-    gui/p_table.h
+    gui/p_table.h \
+    gui/p_global.h \
+    gui/p_gen.h \
+    gui/p_image_provider.h \
+    gui/p_port.h \
+    gui/p_replay.h \
+    gui/p_settings.h
 
 DISTFILES += \
     android/AndroidManifest.xml \

@@ -1,4 +1,4 @@
-#include "gui/psettings.h"
+#include "gui/p_settings.h"
 
 #include <QFile>
 #include <QDir>

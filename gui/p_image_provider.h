@@ -1,5 +1,5 @@
-#ifndef PIMAGEPROVIDER_H
-#define PIMAGEPROVIDER_H
+#ifndef P_IMAGE_PROVIDER_H
+#define P_IMAGE_PROVIDER_H
 
 #include <QQuickImageProvider>
 
@@ -11,4 +11,4 @@ public:
     QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize);
 };
 
-#endif // PIMAGEPROVIDER_H
+#endif // P_IMAGE_PROVIDER_H

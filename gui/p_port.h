@@ -1,5 +1,5 @@
-#ifndef PPORT_H
-#define PPORT_H
+#ifndef P_PORT_H
+#define P_PORT_H
 
 #include "libsaki/tilecount.h"
 #include "libsaki/form.h"
@@ -53,6 +53,6 @@ QJsonArray std2json(const T &arr);
 
 
 
-#endif // PPORT_H
+#endif // P_PORT_H
 
 

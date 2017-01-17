@@ -4,11 +4,11 @@
 #include <QQuickView>
 
 #include "gui/p_table.h"
-#include "gui/pgen.h"
-#include "gui/preplay.h"
-#include "gui/pimageprovider.h"
-#include "gui/psettings.h"
-#include "gui/pglobal.h"
+#include "gui/p_gen.h"
+#include "gui/p_replay.h"
+#include "gui/p_image_provider.h"
+#include "gui/p_settings.h"
+#include "gui/p_global.h"
 #include "gui/p_client.h"
 
 

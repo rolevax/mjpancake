@@ -1,4 +1,4 @@
-#include "gui/pimageprovider.h"
+#include "gui/p_image_provider.h"
 
 #include <iostream> // debug
 

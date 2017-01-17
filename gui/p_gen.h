@@ -1,5 +1,5 @@
-#ifndef PGEN_H
-#define PGEN_H
+#ifndef P_GEN_H
+#define P_GEN_H
 
 #include <QObject>
 
@@ -21,4 +21,4 @@ signals:
 public slots:
 };
 
-#endif // PGEN_H
+#endif // P_GEN_H

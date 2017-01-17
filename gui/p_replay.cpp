@@ -1,5 +1,5 @@
-#include "gui/preplay.h"
-#include "gui/pport.h"
+#include "gui/p_replay.h"
+#include "gui/p_port.h"
 
 #include "libsaki/util.h"
 

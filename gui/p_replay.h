@@ -1,5 +1,5 @@
-#ifndef PREPLAY_H
-#define PREPLAY_H
+#ifndef P_REPLAY_H
+#define P_REPLAY_H
 
 #include "libsaki/replay.h"
 
@@ -32,6 +32,6 @@ private:
 
 
 
-#endif // PREPLAY_H
+#endif // P_REPLAY_H
 
 

@@ -1,5 +1,5 @@
-#ifndef PSETTINGS_H
-#define PSETTINGS_H
+#ifndef P_SETTINGS_H
+#define P_SETTINGS_H
 
 #include <QObject>
 
@@ -41,4 +41,4 @@ private:
 #endif
 };
 
-#endif // PSETTINGS_H
+#endif // P_SETTINGS_H

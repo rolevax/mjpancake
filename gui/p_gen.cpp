@@ -1,5 +1,5 @@
-#include "gui/pgen.h"
-#include "gui/pport.h"
+#include "gui/p_gen.h"
+#include "gui/p_port.h"
 #include "libsaki/gen.h"
 #include "libsaki/myrand.h"
 

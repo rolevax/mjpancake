@@ -1,5 +1,5 @@
-#ifndef PGLOBAL_H
-#define PGLOBAL_H
+#ifndef P_GLOBAL_H
+#define P_GLOBAL_H
 
 #include <QObject>
 #include <QJsonDocument>
@@ -48,4 +48,6 @@ private:
 
 QObject *pGlobalSingletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine);
 
-#endif // PGLOBAL_H
+#endif // P_GLOBAL_H
+
+
