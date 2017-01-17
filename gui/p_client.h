@@ -35,6 +35,9 @@ signals:
 
     void activated(const QVariant &action, int lastDiscarder);
 
+public slots:
+    void action(QString actStr, const QVariant &actArg);
+
 private slots:
     void onConnected();
     void showError(QAbstractSocket::SocketError socketError);

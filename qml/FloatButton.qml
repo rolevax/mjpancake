@@ -3,10 +3,9 @@ import QtQuick 2.0
 Rectangle {
     id: frame
 
-    signal buttonPressed(string actStr, int actArg)
+    signal buttonPressed
 
     property string actStr: ""
-    property var actArg
 
     width: 40
     height: 30
@@ -19,7 +18,7 @@ Rectangle {
         enabled: frame.visible
         hoverEnabled: true
         onClicked: {
-            buttonPressed(actStr, actArg);
+            buttonPressed();
         }
     }
 

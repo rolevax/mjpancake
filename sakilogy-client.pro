@@ -144,6 +144,7 @@ OTHER_FILES += \
     qml/Table.qml \
     qml/Game.qml \
     qml/Tile.qml \
+    qml/Meld.qml \
     qml/TileStand.qml \
     qml/PlayerControl.qml \
     qml/OppoControl.qml \

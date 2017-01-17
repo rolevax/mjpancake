@@ -62,6 +62,15 @@ void PClient::sendReady()
     send(req);
 }
 
+void PClient::action(QString actStr, const QVariant &actArg)
+{
+    QJsonObject req;
+    req["Type"] = "t-action";
+    req["ActStr"] = actStr;
+    req["ActArg"] = actArg.toString();
+    send(req);
+}
+
 void PClient::onConnected()
 {
     mOnConn();

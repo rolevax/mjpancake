@@ -4,7 +4,7 @@ import rolevax.sakilogy 1.0
 Item {
     id: frame
 
-    signal actionTriggered(string actStr, int index)
+    signal actionTriggered(string actStr, var actArg)
 
     property bool animEnabled: true
     property string tileSet: "std"
@@ -13,6 +13,7 @@ Item {
     property color backColor
     property bool face: true // false when no-ten at ryuukyoku
     property var can: { "tsumokiri": false, "pass": false }
+    property int outPos
 
     ActionButtonBar {
         id: actionButtons
@@ -67,7 +68,8 @@ Item {
             tileWidth: twb
             backColor: frame.backColor
             onClicked: {
-                frame.actionTriggered("SWAP_OUT", index);
+                outPos = index;
+                frame.actionTriggered("SWAP_OUT", tileStr);
             }
             tileStr: frame.face && modelTileStr ? modelTileStr : "back"
             lay: modelLay
@@ -79,9 +81,8 @@ Item {
                 height: 1.35 * twb / 2
                 anchors.bottom: parent.bottom
                 actStr: modelFloatAct
-                actArg: modelFloatArg
                 onButtonPressed: {
-                    frame.actionTriggered(actStr, actArg);
+                    frame.actionTriggered(modelFloatAct, modelFloatArg);
                 }
             }
         }
@@ -137,7 +138,7 @@ Item {
         function deactivate() {
             for (var i = 0; i < handModel.count; i++) {
                 handModel.set(i, { modelDark: false, modelClickable: false,
-                                   modelFloatAct: "", modelFloatArg: -1 });
+                                   modelFloatAct: "", modelFloatArg: "-1" });
             }
         }
     } // end of hand
@@ -165,9 +166,8 @@ Item {
                 y: -(table.tw / 2)
                 x:  meld.open === 0 ? 2 : (meld.open === 1 ? tw + 2 : tw * 2 + 2);
                 actStr: modelFloatAct
-                actArg: modelFloatArg
                 onButtonPressed: {
-                    frame.actionTriggered(actStr, actArg);
+                    frame.actionTriggered(modelFloatAct, modelFloatArg);
                 }
             }
         }
@@ -185,7 +185,7 @@ Item {
             init[i].modelDark = false;
             init[i].modelClickable = false;
             init[i].modelFloatAct = "";
-            init[i].modelFloatArg = -1;
+            init[i].modelFloatArg = "-1";
             handModel.append(init[i]);
         }
         hand.model = handModel;
@@ -193,7 +193,7 @@ Item {
         frame.face = true;
     }
 
-    function activate(action) {
+    function activate(action, lastDiscardStr) {
         drawn.dark = true; // will be unset if needed
         for (var actStr in action) {
             switch (actStr) {
@@ -205,23 +205,40 @@ Item {
                 drawn.activate();
                 break;
             case "CHII_AS_LEFT":
+                handModel.set(_offIndexInHand34(lastDiscardStr, 1),
+                              { modelFloatAct: actStr, modelFloatArg: "2" });
+                break;
             case "CHII_AS_MIDDLE":
+                handModel.set(_offIndexInHand34(lastDiscardStr, -1),
+                              { modelFloatAct: actStr, modelFloatArg: "2" });
+                break;
             case "CHII_AS_RIGHT":
+                handModel.set(_offIndexInHand34(lastDiscardStr, -2),
+                              { modelFloatAct: actStr, modelFloatArg: "2" });
+                break;
             case "PON":
+                handModel.set(_indexInHand34(lastDiscardStr) + 1,
+                              { modelFloatAct: actStr, modelFloatArg: "2" });
+                break;
             case "DAIMINKAN":
-                handModel.set(action[actStr],
-                              { modelFloatAct: actStr, modelFloatArg: 2 });
-                            // '2' is dummy, for 'remain-red-max'
+                handModel.set(_indexInHand34(lastDiscardStr) + 2,
+                              { modelFloatAct: actStr, modelFloatArg: "2" });
                 break;
             case "ANKAN":
-                for (var i = 0; i < action[actStr].length; i++)
-                    handModel.set(action[actStr][i],
+                for (var i = 0; i < action[actStr].length; i++) {
+                    handModel.set(_indexInHand34(action[actStr][i]) + 2,
                                   { modelFloatAct: actStr, modelFloatArg: action[actStr][i] });
+                }
                 break;
             case "KAKAN":
-                for (var j = 0; j < action[actStr].length; j++)
-                    barksModel.set(action[actStr][j],
-                                   { modelFloatAct: actStr, modelFloatArg: action[actStr][j] });
+                for (var j = 0; j < action[actStr].length; j++) {
+                    var model = {
+                        modelFloatAct: actStr,
+                        // why string -> see deactivate()
+                        modelFloatArg: "" + action[actStr][j]
+                    };
+                    barksModel.set(action[actStr][j], model);
+                }
                 break;
             case "PASS":
                 frame.can.pass = true;
@@ -245,8 +262,10 @@ Item {
         hand.deactivate();
         drawn.deactivate();
         actionButtons.clear();
+        // using string as modelFloatArg since list model is kind of
+        // internally statically typed and say don't allow blablabla
         for (var i = 0; i < barksModel.count; i++)
-            barksModel.set(i, { modelFloatAct: "", modelFloatArg: -1 });
+            barksModel.set(i, { modelFloatAct: "", modelFloatArg: "-1" });
     }
 
     function draw(t) {
@@ -260,32 +279,57 @@ Item {
             drawn.inAnim.start();
     }
 
-    function outIn(tile, outPos, inPos) {
-        var res;
-        if (outPos === 13) {
-            res = mapFromItem(drawn, 0, 0);
-            drawn.tileStr = "hide";
-        } else {
-            res = mapFromItem(frame, outPos * twb, 0);
-            handModel.remove(outPos, 1);
-            if (inPos >= 0)
-                insertDrawn(inPos);
-        }
+    function swapOut() {
+        var res = mapFromItem(frame, outPos * twb, 0);
+        handModel.remove(outPos, 1);
+        if (drawn.visible)
+            insertDrawn();
 
         return res;
     }
 
-    function outBark(index, index2, bark) {
-        if (bark.type === 1) {
-            handModel.remove(index2, 1);
-            handModel.remove(index, 1);
-        } else if (bark.isAnkan) {
-            if (index2 >= 0) {
-                handModel.remove(index - 2, 4);
-                insertDrawn(index2);
-            } else {
-                handModel.remove(index - 2, 3);
+    function spinOut() {
+        var res = mapFromItem(drawn, 0, 0);
+        drawn.tileStr = "hide";
+        return res;
+    }
+
+    function _offIndexInHand34(tileStr, off) {
+        var arr = [
+            "1m", "2m", "3m", "4m", "5m", "6m", "7m", "8m", "9m",
+            "1p", "2p", "3p", "4p", "5p", "6p", "7p", "8p", "9p",
+            "1s", "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s"
+        ];
+        var ts = tileStr[0] === "0" ? ("5" + tileStr[1]) : tileStr;
+        var id34 = arr.indexOf(ts);
+        return _indexInHand34(arr[id34 + off]);
+    }
+
+    function _indexInHand37(tileStr) {
+        for (var i = 0; i < handModel.count; i++)
+            if (handModel.get(i).modelTileStr === tileStr)
+                return i;
+        return -1;
+    }
+
+    function _indexInHand34(tileStr) {
+        if (tileStr[0] === "0" || tileStr[0] === "5") {
+            var resRed = _indexInHand37("0" + tileStr[1])
+            return resRed >= 0 ? resRed : _indexInHand37("5" + tileStr[1]);
+        }
+
+        return _indexInHand37(tileStr);
+    }
+
+    function bark(bark, spin) {
+        var ti;
+        if (bark.isAnkan) {
+            if (spin) {
+                handModel.remove(_indexInHand34(bark[0].modelTileStr), 3);
                 drawn.tileStr = "hide";
+            } else {
+                handModel.remove(_indexInHand34(bark[0].modelTileStr), 4);
+                insertDrawn();
             }
         } else if (bark.isKakan) {
             for (var i = 0; i < barksModel.count; i++) {
@@ -295,32 +339,70 @@ Item {
                     break;
                 }
             }
-            outIn(null, index, index2);
-        } else {
-            handModel.remove(index - (bark.type === 4 ? 2 : 1),
-                             bark.type === 4 ? 3 : 2);
+
+            if (spin) {
+                drawn.tileStr = "hide";
+            } else {
+                handModel.remove(_indexInHand34(bark[3].modelTileStr), 1);
+                insertDrawn();
+            }
+        } else { // chii, pon, daiminkan
+            var size = bark.isDaiminkan ? 4 : 3;
+            for (ti = 0; ti < size; ti++) {
+                if (ti === bark.open)
+                    continue;
+                handModel.remove(_indexInHand37(bark[ti].modelTileStr), 1);
+            }
         }
 
         if (!bark.isKakan) {
-            barksModel.append({ modelMeld: bark, modelFloatAct: "",
-                                  modelFloatArg: -1, modelIndex: -1 });
+            var barkModel = {
+                modelMeld: bark,
+                modelFloatAct: "",
+                modelFloatArg: "-1",
+                modelIndex: -1
+            };
+            barksModel.append(barkModel);
         }
     }
 
     function setBarks(barks) {
         barksModel.clear();
-        for (var i = 0; i < barks.length; i++)
-            barksModel.append({ modelMeld: barks[i], modelFloatAct: "",
-                                  modelFloatArg: -1, modelIndex: -1 });
+        for (var i = 0; i < barks.length; i++) {
+            var barkModel = {
+                modelMeld: barks[i],
+                modelFloatAct: "",
+                modelFloatArg: "-1",
+                modelIndex: -1
+            };
+            barksModel.append(barkModel);
+        }
     }
 
-    function insertDrawn(inPos) {
+    function order37(tileStr) {
+        var arr = [
+            "1m", "2m", "3m", "4m", "0m", "5m", "6m", "7m", "8m", "9m",
+            "1p", "2p", "3p", "4p", "0p", "5p", "6p", "7p", "8p", "9p",
+            "1s", "2s", "3s", "4s", "0s", "5s", "6s", "7s", "8s", "9s",
+            "1f", "2f", "3f", "4f", "1y", "2y", "3y"
+        ];
+        return arr.indexOf(tileStr);
+    }
+
+    function insertDrawn() {
+        var inPos = 0;
+        var ndl = order37(drawn.tileStr)
+        while (inPos < handModel.count
+               && ndl > order37(handModel.get(inPos).modelTileStr))
+            inPos++;
+
         var drawnModel = {
             modelTileStr: drawn.tileStr,
             modelLay: false, modelDark: drawn.dark,
             modelClickable: drawn.clickable,
-            modelFloatAct: "", modelFloatArg: -1
+            modelFloatAct: "", modelFloatArg: "-1"
         };
+
         handModel.insert(inPos, drawnModel);
         drawn.tileStr = "hide";
     }

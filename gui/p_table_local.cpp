@@ -43,7 +43,6 @@ void PTableLocal::onRoundStarted(int round, int extra, saki::Who dealer,
               << " al" << al << " dp" << deposit
               << ' ' << seed << std::endl;
 
-    mHasInTile = false; // clear previous tsumo
     emit roundStarted(round, extra, dealer.index(), al, deposit);
 }
 
@@ -61,11 +60,7 @@ void PTableLocal::onDiced(const saki::Table &table, int die1, int die2)
 
 void PTableLocal::onDealt(const saki::Table &table)
 {
-    QVariantList list;
-    for (int w = 0; w < 4; w++)
-        list << createTilesVar(table.getHand(saki::Who(w)).closed());
-
-    emit dealt(QVariant::fromValue(list));
+    emit dealt(createTilesVar(table.getHand(mSelf).closed()));
 }
 
 void PTableLocal::onFlipped(const saki::Table &table)
@@ -75,9 +70,8 @@ void PTableLocal::onFlipped(const saki::Table &table)
 
 void PTableLocal::onDrawn(const saki::Table &table, saki::Who who)
 {
-    mInTile = table.getHand(who).drawn();
-    mHasInTile = true;
-    emit drawn(who.index(), createTileVar(mInTile), table.duringKan());
+    const saki::T37 &in = table.getHand(who).drawn();
+    emit drawn(who.index(), createTileVar(in), table.duringKan());
 }
 
 void PTableLocal::onDiscarded(const saki::Table &table, bool spin)
@@ -86,21 +80,7 @@ void PTableLocal::onDiscarded(const saki::Table &table, bool spin)
     const saki::T37 &outTile = table.getFocusTile();
     bool lay = table.lastDiscardLay();
 
-    int out = 13;
-    int in = -1;
-    if (!spin) {
-        if (mHasInTile)
-            outInIndices(table.getHand(who).closed(), outTile, out, in);
-        else // after bark
-            out = table.getHand(who).closed().preceders(outTile);
-
-        if (who == mSelf) // use precise out-pos
-            out = mOutPos;
-    }
-
-    mHasInTile =  false;
-
-    emit discarded(who.index(), createTileVar(outTile, lay), out, in);
+    emit discarded(who.index(), createTileVar(outTile, lay), spin);
 }
 
 void PTableLocal::onRiichiCalled(saki::Who who)
@@ -114,61 +94,11 @@ void PTableLocal::onRiichiEstablished(saki::Who who)
 }
 
 void PTableLocal::onBarked(const saki::Table &table, saki::Who who,
-                      const saki::M37 &bark)
+                      const saki::M37 &bark, bool spin)
 {
-    const saki::TileCount &closed = table.getHand(who).closed();
-    int index1 = -1; // float-button index
-    int index2 = -1; // multiple use... design is fucking, though
-    int fromWhom = -1;
-    if (bark.type() == saki::M37::Type::ANKAN) {
-        index1 = closed.preceders(bark[0]) + 2;
-        assert(mHasInTile);
-        if (mInTile.id34() < bark[0].id34()) // won't be same id34
-            index1--; // recover insert-before-materials
-        if (bark[0] != mInTile) // four continues, insert drawn
-            index2 = closed.preceders(mInTile);
-        mHasInTile = false;
-    } else if (bark.type() == saki::M37::Type::KAKAN) {
-        // equivalent to an out-in after discard
-        assert(mHasInTile);
-        if (bark[0] == mInTile) {
-            index1 = 13;
-        } else {
-            outInIndices(closed, bark[3], index1, index2);
-        }
-        mHasInTile = false;
-    } else {
-        const saki::TableFocus &focus = table.getFocus();
-        const saki::T34 &pick = table.getFocusTile();
-        fromWhom = focus.who().index();
-        // FUCK displace indices by aka5-remain settings
-        switch (bark.type()) {
-        case saki::M37::Type::CHII:
-            if (pick == bark[0]) {
-                index1 = closed.preceders(pick.next());
-                index2 = closed.preceders(pick.nnext()) + 1;
-            } else if (pick == bark[1]) {
-                index1 = closed.preceders(pick.prev());
-                index2 = closed.preceders(pick.next()) + 1;
-            } else {
-                assert(pick == bark[2]);
-                index1 = closed.preceders(pick.pprev());
-                index2 = closed.preceders(pick.prev()) + 1;
-            }
-            break;
-        case saki::M37::Type::PON:
-            index1 = closed.preceders(pick) + 1;
-            break;
-        case saki::M37::Type::DAIMINKAN:
-            index1 = closed.preceders(pick) + 2;
-            break;
-        default:
-            unreached("PTable::onBarked");
-        }
-    }
-
+    int fromWhom = bark.isCpdmk() ? table.getFocus().who().index() : -1;
     emit barked(who.index(), fromWhom, QString(stringOf(bark.type())),
-                index1, index2, createBarkVar(bark));
+                createBarkVar(bark), spin);
 }
 
 void PTableLocal::onRoundEnded(const saki::Table &table, saki::RoundResult result,
@@ -177,6 +107,7 @@ void PTableLocal::onRoundEnded(const saki::Table &table, saki::RoundResult resul
 {
     QVariantList openersList;
     QVariantList formsList;
+    QVariantList handsList;
 
     for (saki::Who who : openers)
         openersList << who.index();
@@ -190,10 +121,15 @@ void PTableLocal::onRoundEnded(const saki::Table &table, saki::RoundResult resul
                                    hand, pick);
     }
 
+    for (int w = 0; w < 4; w++)
+        handsList << createTilesVar(table.getHand(saki::Who(w)).closed());
+
     emit roundEnded(QString(stringOf(result)),
-                    QVariant::fromValue(openersList),
-                    gunner.nobody() ? -1 : gunner.index(), formsList,
-                    createTilesVar(table.getMount().getUrids()));
+                    openersList,
+                    gunner.nobody() ? -1 : gunner.index(),
+                    formsList,
+                    createTilesVar(table.getMount().getUrids()),
+                    handsList);
 }
 
 void PTableLocal::onPointsChanged(const saki::Table &table)
@@ -224,102 +160,76 @@ void PTableLocal::onPoppedUp(const saki::Table &table, saki::Who who, const saki
 
 void PTableLocal::onActivated(saki::Table &table)
 {
-    using ActCode = saki::ActCode;
+    using AC = saki::ActCode;
 
     const saki::TableView view = table.getView(mSelf);
 
     if (table.riichiEstablished(mSelf) && view.iCanOnlySpin()) {
         emit justPause(500); // a little pause
-        table.action(mSelf, saki::Action(ActCode::SPIN_OUT));
+        table.action(mSelf, saki::Action(AC::SPIN_OUT));
         return;
     }
 
-    QVariantMap map;
-    int focusWho = -1; // set in bark activation
 
-    if (view.iCan(ActCode::SWAP_OUT)) {
-        map.insert(stringOf(ActCode::SWAP_OUT),
+    int focusWho;
+    if (view.iCan(AC::CHII_AS_LEFT)
+            || view.iCan(AC::CHII_AS_MIDDLE)
+            || view.iCan(AC::CHII_AS_RIGHT)
+            || view.iCan(AC::PON)
+            || view.iCan(AC::DAIMINKAN)
+            || view.iCan(AC::RON)) {
+        focusWho = view.getFocus().who().index();
+    } else {
+        focusWho = -1;
+    }
+
+    QVariantMap map;
+
+    if (view.iCan(AC::SWAP_OUT)) {
+        map.insert(stringOf(AC::SWAP_OUT),
                    createSwapMask(table.getHand(mSelf).closed(), view.mySwappables()));
     }
 
-    if (view.iCan(ActCode::CHII_AS_LEFT)) {
-        int push = view.myHand().closed().preceders(view.getFocusTile().next());
-        map.insert(stringOf(ActCode::CHII_AS_LEFT), push);
-        focusWho = view.getFocus().who().index();
+    if (view.iCan(AC::ANKAN)) {
+        map.insert(stringOf(AC::ANKAN), createTileStrsVar(view.myAnkanables()));
     }
 
-    if (view.iCan(ActCode::CHII_AS_MIDDLE)) {
-        int push = view.myHand().closed().preceders(view.getFocusTile().prev());
-        map.insert(stringOf(ActCode::CHII_AS_MIDDLE), push);
-        focusWho = view.getFocus().who().index();
-    }
-
-    if (view.iCan(ActCode::CHII_AS_RIGHT)) {
-        int push = view.myHand().closed().preceders(view.getFocusTile().pprev());
-        map.insert(stringOf(ActCode::CHII_AS_RIGHT), push);
-        focusWho = view.getFocus().who().index();
-    }
-
-    if (view.iCan(ActCode::PON)) {
-        int push = view.myHand().closed().preceders(saki::T34(view.getFocusTile())) + 1;
-        map.insert(stringOf(ActCode::PON), push);
-        focusWho = view.getFocus().who().index();
-    }
-
-    if (view.iCan(ActCode::DAIMINKAN)) {
-        int push = view.myHand().closed().preceders(saki::T34(view.getFocusTile())) + 2;
-        map.insert(stringOf(ActCode::DAIMINKAN), push);
-        focusWho = view.getFocus().who().index();
-    }
-
-    if (view.iCan(ActCode::ANKAN)) {
-        QVariantList list;
-        for (saki::T34 t : view.myAnkanables())
-            list << view.myHand().closed().preceders(t) + 2;
-        map.insert(stringOf(ActCode::ANKAN), QVariant::fromValue(list));
-    }
-
-    if (view.iCan(ActCode::KAKAN)) {
+    if (view.iCan(AC::KAKAN)) {
         QVariantList list;
         for (int barkId : view.myKakanables())
             list << barkId;
-        map.insert(stringOf(ActCode::KAKAN), QVariant::fromValue(list));
+        map.insert(stringOf(AC::KAKAN), QVariant::fromValue(list));
     }
 
-    if (view.iCan(ActCode::IRS_CHECK)) {
+    if (view.iCan(AC::IRS_CHECK)) {
         const saki::Girl &girl = table.getGirl(mSelf);
         int prediceCount = girl.irsCheckCount();
         QVariantList list;
         for (int i = 0; i < prediceCount; i++)
             list << createIrsCheckRowVar(girl.irsCheckRow(i));
-        map.insert(stringOf(ActCode::IRS_CHECK), QVariant::fromValue(list));
+        map.insert(stringOf(AC::IRS_CHECK), QVariant::fromValue(list));
     }
 
-    if (view.iCan(ActCode::IRS_RIVAL)) {
+    if (view.iCan(AC::IRS_RIVAL)) {
         const saki::Girl &girl = table.getGirl(mSelf);
         QVariantList list;
         for (int i = 0; i < 4; i++)
             if (girl.irsRivalMask()[i])
                 list << i;
-        map.insert(stringOf(ActCode::IRS_RIVAL), QVariant::fromValue(list));
+        map.insert(stringOf(AC::IRS_RIVAL), QVariant::fromValue(list));
     }
 
-    if (view.iCan(ActCode::RON)) {
-        map.insert(stringOf(ActCode::RON), true);
-        focusWho = view.getFocus().who().index();
-    }
-
-    static const ActCode just[] = {
-        ActCode::PASS, ActCode::SPIN_OUT, ActCode::RIICHI,
-        ActCode::TSUMO, ActCode::RYUUKYOKU,
-        ActCode::END_TABLE, ActCode::NEXT_ROUND,
-        ActCode::DICE, ActCode::IRS_CLICK
+    static const AC just[] = {
+        AC::PASS, AC::SPIN_OUT,
+        AC::CHII_AS_LEFT, AC::CHII_AS_MIDDLE, AC::CHII_AS_RIGHT,
+        AC::PON, AC::DAIMINKAN, AC::RIICHI,
+        AC::RON, AC::TSUMO, AC::RYUUKYOKU,
+        AC::END_TABLE, AC::NEXT_ROUND, AC::DICE, AC::IRS_CLICK
     };
 
-    for (ActCode code : just) {
+    for (AC code : just)
         if (view.iCan(code))
             map.insert(stringOf(code), true);
-    }
 
     emit activated(QVariant::fromValue(map), focusWho);
 }
@@ -372,10 +282,10 @@ void PTableLocal::start(const QVariant &girlIdsVar, const QVariant &gameRule,
     mTable->start();
 }
 
-void PTableLocal::action(int who, QString actStr, int arg)
+void PTableLocal::action(QString actStr, const QVariant &actArg)
 {
-    saki::Action action = makeAction(actStr, arg);
-    mTable->action(saki::Who(who), action);
+    saki::Action action = makeAction(actStr, actArg);
+    mTable->action(saki::Who(0), action);
 }
 
 void PTableLocal::saveRecord()
@@ -408,16 +318,15 @@ void PTableLocal::saveRecord()
     file.close();
 }
 
-saki::Action PTableLocal::makeAction(const QString &actStr, int arg)
+saki::Action PTableLocal::makeAction(const QString &actStr, const QVariant &actArg)
 {
     using ActCode = saki::ActCode;
 
     ActCode act = saki::actCodeOf(actStr.toStdString().c_str());
     switch (act) {
     case ActCode::SWAP_OUT:
-        mOutPos = arg;
     case ActCode::ANKAN:
-        return saki::Action(act, mTable->getHand(mSelf).closed().pointOut(arg));
+        return saki::Action(act, saki::T37(actArg.toString().toLatin1().data()));
     case ActCode::CHII_AS_LEFT:
     case ActCode::CHII_AS_MIDDLE:
     case ActCode::CHII_AS_RIGHT:
@@ -425,20 +334,10 @@ saki::Action PTableLocal::makeAction(const QString &actStr, int arg)
     case ActCode::KAKAN:
     case ActCode::IRS_CHECK:
     case ActCode::IRS_RIVAL:
-        return saki::Action(act, arg);
+        return saki::Action(act, actArg.toInt());
     default:
         return saki::Action(act);
     }
 }
-
-void PTableLocal::outInIndices(const saki::TileCount &closed,
-                          const saki::T34 &drop, int &out, int &in)
-{
-    out = closed.preceders(drop);
-    in = closed.preceders(mInTile);
-    out -= (out > in);
-}
-
-
 
 

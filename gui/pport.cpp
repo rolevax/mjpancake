@@ -52,6 +52,16 @@ QVariant createTilesVar(const std::vector<saki::T37> &tiles)
     return QVariant::fromValue(list);
 }
 
+QVariant createTileStrsVar(const std::vector<saki::T34> &tiles)
+{
+    QVariantList list;
+
+    for (saki::T34 t : tiles)
+        list << QString(t.str());
+
+    return QVariant::fromValue(list);
+}
+
 QVariant createSwapMask(const saki::TileCount &count,
                         const std::vector<saki::T37> &choices)
 {

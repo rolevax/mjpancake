@@ -12,17 +12,17 @@ Item {
     property int tw
 
     TileStand {
-        property string tileStr
         id: drawnStand
         visible: false
         tileSet: frame.tileSet
         backColor: frame.backColor
         width: frame.tw
-        x: stand.x + stand.width + 10
+        anchors.left: stand.right
+        anchors.leftMargin: 0.2 * frame.tw
 
         PropertyAnimation on y {
             id: animDraw
-            from: -50
+            from: -frame.tw
             to: 0
             duration: 100
         }
@@ -34,8 +34,8 @@ Item {
         tileSet: frame.tileSet
         tileWidth: frame.tw
         backColor: frame.backColor
-        anchors.top: drawnStand.top
-        anchors.left: drawnStand.left
+        anchors.left: hand.right
+        anchors.leftMargin: 0.2 * frame.tw
     }
 
     ListModel { id: standModel } // using empty object ({}) as element
@@ -156,80 +156,48 @@ Item {
         drawnTile.visible = false;
     }
 
-    function deal(init) {
+    function deal() {
         stand.model = []; // use 'populate' transition
-        for (var i in init) {
+        for (var i = 0; i < 13; i++)
             standModel.append({});
-            handModel.append(init[i]);
-        }
         stand.model = standModel;
 
         drawnStand.visible = false;
-        if (!keepOpen) {
-            frame.stand = true;
-        } else {
-            frame.stand = false;
-            frame.show = true;
-        }
+        frame.stand = true;
     }
 
     function draw(tile) {
-        drawnStand.tileStr = tile.modelTileStr;
-
-        if (keepOpen) {
-            drawnTile.tileStr = tile.modelTileStr;
-            drawnTile.visible = true;
-        } else {
-            drawnStand.visible = true;
-        }
+        drawnStand.visible = true;
 
         if (frame.animEnabled)
             animDraw.start();
     }
 
-    function outIn(tile, outPos, inPos) {
-        var res;
-
-        if (outPos !== 13) {
-            var randPos = Math.floor(Math.random() * standModel.count);
-            res = mapFromItem(frame, randPos * tw, 0);
-            standModel.remove(randPos, 1);
-            handModel.remove(outPos, 1);
-            if (inPos >= 0) { // insert drawn into hand
-                insertDrawn(inPos);
-            }
-        } else {
-            res = mapFromItem(drawnStand, 0, 0);
-        }
-
-        drawnStand.tileStr = "hide";
-        drawnStand.visible = false;
-        drawnTile.visible = false;
-
+    function swapOut() {
+        var randPos = Math.floor(Math.random() * standModel.count);
+        var res = mapFromItem(frame, randPos * tw, 0);
+        standModel.remove(randPos, 1);
+        if (drawnStand.visible)
+            _insertDrawn();
         return res;
     }
 
-    function outBark(index, index2, bark) {
+    function spinOut() {
+        drawnStand.visible = false;
+        return mapFromItem(drawnStand, 0, 0);
+    }
+
+    function bark(bark, spin) {
         var randPos;
-        if (bark.type === 1) { // chii
-            randPos = Math.floor(Math.random() * (standModel.count - 1));
-            standModel.remove(randPos, 2);
-
-            handModel.remove(index2, 1);
-            handModel.remove(index, 1);
-        } else if (bark.isAnkan) {
-            if (index2 >= 0) {
-                randPos = Math.floor(Math.random() * (standModel.count - 3));
-                standModel.remove(randPos, 4);
-
-                handModel.remove(index - 2, 4);
-                insertDrawn(index2);
-            } else {
+        if (bark.isAnkan) {
+            if (spin) {
                 randPos = Math.floor(Math.random() * (standModel.count - 2));
                 standModel.remove(randPos, 3);
-
-                handModel.remove(index - 2, 3);
                 drawnStand.tileStr = "hide";
+            } else {
+                randPos = Math.floor(Math.random() * (standModel.count - 3));
+                standModel.remove(randPos, 4);
+                _insertDrawn();
             }
         } else if (bark.isKakan) {
             for (var i = 0; i < barksModel.count; i++) {
@@ -239,19 +207,31 @@ Item {
                     break;
                 }
             }
-            outIn(null, index, index2);
-        } else { // daiminkan or pon
-            var removeCt = bark.type === 4 ? 3 : 2;
-            randPos = Math.floor(Math.random() *
-                                 (standModel.count - (removeCt - 1)));
+            if (spin)
+                spinOut();
+            else
+                swapOut();
+        } else { // chii, pon, daiminkan
+            var removeCt = bark.isDaiminkan ? 3 : 2;
+            randPos = Math.floor(Math.random() * (standModel.count - (removeCt - 1)));
             standModel.remove(randPos, removeCt);
-
-            handModel.remove(index - (removeCt - 1), removeCt);
         }
 
         if (!bark.isKakan) {
             barksModel.append({ modelMeld: bark });
         }
+    }
+
+    function setHand(hand, show) {
+        handModel.clear();
+        for (var i in hand)
+            handModel.append(hand[i]);
+    }
+
+    function setDrawn(tile) {
+        drawnTile.tileStr = tile.modelTileStr;
+        drawnStand.visible = true; // for anchoring
+        drawnTile.visible = true;
     }
 
     function setBarks(barks) {
@@ -260,23 +240,16 @@ Item {
             barksModel.append({ modelMeld: barks[i] });
     }
 
-    function insertDrawn(inPos) {
-        var drawnModel = {
-            modelTileStr: drawnStand.tileStr,
-            modelLay: false,
-            modelDark: false,
-            modelClickable: false
-        };
-        handModel.insert(inPos, drawnModel);
+    function _insertDrawn() {
         standModel.append({});
-        drawnStand.tileStr = "hide";
+        drawnStand.visible = false;
     }
 
-    function pushDown(show) {
+    function pushDown(show, tsumoTile) {
         frame.stand = false;
         frame.show = show;
-        if (show && drawnStand.tileStr) {
-            drawnTile.tileStr = drawnStand.tileStr;
+        if (show && tsumoTile) {
+            drawnTile.tileStr = tsumoTile.modelTileStr;
         }
     }
 }

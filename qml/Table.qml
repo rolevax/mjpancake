@@ -31,6 +31,8 @@ Item {
     property alias pTable: pTable
     property alias middle: middle // for temp-dealer showing
 
+    property string _lastDiscardStr
+
     PTable {
         id: pTable
         onFirstDealerChoosen: {
@@ -86,10 +88,10 @@ Item {
 
         onDealt: {
             function cb() {
-                playerControl.deal(inits[0]);
-                oppoControls.itemAt(0).deal(inits[1]);
-                oppoControls.itemAt(1).deal(inits[2]);
-                oppoControls.itemAt(2).deal(inits[3]);
+                playerControl.deal(init);
+                oppoControls.itemAt(0).deal();
+                oppoControls.itemAt(1).deal();
+                oppoControls.itemAt(2).deal();
             }
 
             function wr() {
@@ -125,7 +127,7 @@ Item {
                     if (action.CHII || action.PON || action.DAIMINKAN
                             || action.RON)
                         rivers.itemAt(lastDiscarder).showCircle(true);
-                    playerControl.activate(action);
+                    playerControl.activate(action, _lastDiscardStr);
                 }
             }
 
@@ -138,7 +140,7 @@ Item {
                 if (who === 0)
                     playerControl.draw(tile);
                 else
-                    oppoControls.itemAt(who - 1).draw(tile);
+                    oppoControls.itemAt(who - 1).draw();
             }
 
             var delay = rinshan ? 500 : 0;
@@ -150,16 +152,18 @@ Item {
                 var osc; // out-tile's scene coord
 
                 if (who === 0) {
-                    osc = playerControl.outIn(tile, outPos, inPos);
+                    osc = spin ? playerControl.spinOut() : playerControl.swapOut();
                     osc = mapFromItem(playerControl, osc.x, osc.y);
                     osc = mapToItem(rivers.itemAt(0), osc.x, osc.y);
                 } else {
-                    osc = oppoControls.itemAt(who - 1).outIn(tile, outPos, inPos);
+                    var oppo = oppoControls.itemAt(who - 1);
+                    osc = spin ? oppo.spinOut() : oppo.swapOut();
                     osc = mapFromItem(playerControl, osc.x, osc.y);
                     osc = mapToItem(rivers.itemAt(0), osc.x, osc.y);
                 }
 
                 rivers.itemAt(who).add(tile, osc);
+                _lastDiscardStr = tile.modelTileStr;
             }
 
             var hesi = who === 0 ? 0 : 500;
@@ -187,9 +191,9 @@ Item {
             function cb() {
                 shockers.itemAt(who).shock(actStr);
                 if (who === 0)
-                    playerControl.outBark(index, index2, bark);
+                    playerControl.bark(bark, spin);
                 else
-                    oppoControls.itemAt(who - 1).outBark(index, index2, bark);
+                    oppoControls.itemAt(who - 1).bark(bark, spin);
                 if (fromWhom >= 0)
                     rivers.itemAt(fromWhom).sub();
             }
@@ -200,25 +204,34 @@ Item {
 
         onRoundEnded: {
             function cb() {
-                if (result === "TSUMO" || result === "RON") {
-                    for (var i = 0; i < openers.length; i++) {
+                var i;
+                for (i = 1; i < 4; i++)
+                    oppoControls.itemAt(i - 1).setHand(hands[i]);
+
+                logBox.clear();
+                middle.removeBars();
+
+                if (result === "TSUMO") {
+                    shockers.itemAt(openers[0]).shock(result);
+                    if (openers[0] !== 0)
+                        oppoControls.itemAt(openers[0] - 1).pushDown(true, forms[0].pick);
+
+                    resultWindow.uraIndic.doraIndic = uraIndics;
+                    resultWindow.agari(openers, -1, forms);
+                } else if (result === "RON") {
+                    for (i = 0; i < openers.length; i++) {
                         var who = openers[i];
-                        shockers.itemAt(who).shock(gunner >= 0 ? "RON" : "TSUMO");
+                        shockers.itemAt(who).shock(result);
                         if (who !== 0)
                             oppoControls.itemAt(who - 1).pushDown(true);
                     }
 
-                    if (gunner >= 0)
-                        rivers.itemAt(gunner).showCircle(false);
-
-                    logBox.clear();
-
+                    rivers.itemAt(gunner).showCircle(false);
                     resultWindow.uraIndic.doraIndic = uraIndics;
 
                     // array 'openers' may be longer than actual winners
                     // since it contains jumpees
                     resultWindow.agari(openers, gunner, forms);
-                    middle.removeBars();
                 } else {
                     var whoReady = [ false, false, false, false ];
                     for (var j = 0; j < openers.length; j++) {
@@ -234,8 +247,6 @@ Item {
                     }
 
                     resultWindow.ryuukyoku(result);
-                    middle.removeBars();
-                    logBox.clear();
                 }
             }
 
@@ -289,6 +300,14 @@ Item {
         onJustPause: {
             animBuf.push({ callback: function() { }, duration: ms });
         }
+
+        onJustSetOutPos: {
+            function cb() {
+                playerControl.outPos = outPos;
+            }
+
+            animBuf.push({ callback: cb, duration: 0 });
+        }
     }
 
     AnimadionBuffer { id: animBuf }
@@ -305,7 +324,7 @@ Item {
             logBox.clear();
 
             // '234' is useless
-            pTable.action(0, "DICE", 234);
+            pTable.action("DICE", 234);
         }
     }
 
@@ -315,7 +334,7 @@ Item {
         anchors.centerIn: parent
         fontSize: global.size.middleFont
         onActionTriggered: {
-            pTable.action(0, "IRS_CHECK", mask);
+            pTable.action("IRS_CHECK", mask);
         }
     }
 
@@ -340,8 +359,8 @@ Item {
             tileSet: table.tileSet
             backColor: table.backColors[table.colorIndex]
             tw: table.tw
-            onNextRound: pTable.action(0, "NEXT_ROUND");
-            onEndTable: pTable.action(0, "END_TABLE");
+            onNextRound: pTable.action("NEXT_ROUND", -1);
+            onEndTable: pTable.action("END_TABLE", -1);
             onVisibleChanged: {
                 if (table.animEnabled && visible)
                     animResult.start();
@@ -472,7 +491,7 @@ Item {
                 rivers.itemAt(i).clearCircles();
             logBox.clear();
 
-            pTable.action(0, actStr, index);
+            pTable.action(actStr, actArg);
         }
     }
 
@@ -526,7 +545,8 @@ Item {
 
         for (i = 0; i < 3; i++) {
             oppoControls.itemAt(i).clear();
-            oppoControls.itemAt(i).deal(snap.players[i + 1].hand);
+            oppoControls.itemAt(i).setHand(snap.players[i + 1].hand);
+            oppoControls.itemAt(i).pushDown(true);
             oppoControls.itemAt(i).setBarks(snap.players[i + 1].barks);
         }
 
@@ -539,7 +559,7 @@ Item {
         if (snap.whoDrawn === 0)
             playerControl.draw(snap.drawn);
         else if (snap.whoDrawn > 0)
-            oppoControls.itemAt(snap.whoDrawn - 1).draw(snap.drawn);
+            oppoControls.itemAt(snap.whoDrawn - 1).setDrawn(snap.drawn);
 
         if (snap.endOfRound) {
             if (snap.result === "TSUMO" || snap.result === "RON") {
