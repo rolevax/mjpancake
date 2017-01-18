@@ -142,8 +142,10 @@ Room {
                 text: "蹬"
                 visible: !locked && unInput.acceptableInput && pwInput.acceptableInput
                 onClicked: {
-                    locked = true;
-                    pClient.login(unInput.text, pwInput.text);
+                    if (visible) {
+                        locked = true;
+                        pClient.login(unInput.text, pwInput.text);
+                    }
                 }
             }
 

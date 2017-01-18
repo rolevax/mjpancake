@@ -57,6 +57,21 @@ void PTable::startOnline(PClient *client)
 
     connect(this, &PTable::action, client, &PClient::action);
 
+    connect(client, &PClient::firstDealerChoosen, this, &PTable::firstDealerChoosen);
+    connect(client, &PClient::roundStarted, this, &PTable::roundStarted);
+    connect(client, &PClient::cleaned, this, &PTable::cleaned);
+    connect(client, &PClient::diced, this, &PTable::diced);
+    connect(client, &PClient::dealt, this, &PTable::dealt);
+    connect(client, &PClient::flipped, this, &PTable::flipped);
+    connect(client, &PClient::drawn, this, &PTable::drawn);
+    connect(client, &PClient::discarded, this, &PTable::discarded);
+    connect(client, &PClient::riichied, this, &PTable::riichied);
+    connect(client, &PClient::riichiPassed, this, &PTable::riichiPassed);
+    connect(client, &PClient::barked, this, &PTable::barked);
+    connect(client, &PClient::roundEnded, this, &PTable::roundEnded);
+    connect(client, &PClient::pointsChanged, this, &PTable::pointsChanged);
+    connect(client, &PClient::tableEnded, this, &PTable::tableEnded);
+    connect(client, &PClient::poppedUp, this, &PTable::poppedUp);
     connect(client, &PClient::activated, this, &PTable::activated);
 
     client->sendReady();

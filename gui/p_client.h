@@ -34,6 +34,22 @@ signals:
     void nicknameChanged();
 
     void activated(const QVariant &action, int lastDiscarder);
+    void firstDealerChoosen(int dealer);
+    void roundStarted(int round, int extra, int dealer, bool allLast, int deposit);
+    void cleaned();
+    void diced(int die1, int die2);
+    void dealt(const QVariant &init);
+    void flipped(const QVariant &newIndic);
+    void drawn(int who, const QVariant &tile, bool rinshan);
+    void discarded(int who, const QVariant &tile, bool spin);
+    void riichied(int who);
+    void riichiPassed(int who);
+    void barked(int who, int fromWhom, QString actStr, const QVariant &bark, bool spin);
+    void roundEnded(QString result, const QVariant &openers, int gunner,
+                    const QVariant &forms, const QVariant &uraIndics, const QVariant &hands);
+    void pointsChanged(const QVariant &points);
+    void tableEnded(const QVariant &rank, const QVariant &scores);
+    void poppedUp(int who, QString str);
 
 public slots:
     void action(QString actStr, const QVariant &actArg);
@@ -46,6 +62,8 @@ private slots:
 private:
     void conn();
     void send(const QJsonObject &obj);
+    void recvLine(const QString &line);
+    void recvTableEvent(const QString &type, const QJsonObject &msg);
 
 private:
     QTcpSocket mSocket;
