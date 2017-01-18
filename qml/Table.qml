@@ -82,8 +82,7 @@ Item {
                 middle.setDice(die1, die2);
             }
 
-            var hesi = middle.dealer === 0 ? 0 : 500;
-            animBuf.push({ callback: cb, duration: 1600 + hesi, prelude: hesi });
+            animBuf.push({ callback: cb, duration: 1600 });
         }
 
         onDealt: {
@@ -166,8 +165,7 @@ Item {
                 _lastDiscardStr = tile.modelTileStr;
             }
 
-            var hesi = who === 0 ? 0 : 500;
-            animBuf.push({ callback: cb, duration: hesi + 200, prelude: hesi });
+            animBuf.push({ callback: cb, duration: 200 });
         }
 
         onRiichied: {
@@ -175,8 +173,7 @@ Item {
                 shockers.itemAt(who).shock("RIICHI");
             }
 
-            var hesi = who === 0 ? 0 : 500;
-            animBuf.push({ callback: cb, duration: hesi, prelude: hesi });
+            animBuf.push({ callback: cb, duration: 0 });
         }
 
         onRiichiPassed: {
@@ -198,8 +195,7 @@ Item {
                     rivers.itemAt(fromWhom).sub();
             }
 
-            var hesi = who === 0 ? 0 : 500;
-            animBuf.push({ callback: cb, duration: hesi, prelude: hesi });
+            animBuf.push({ callback: cb, duration: 0 });
         }
 
         onRoundEnded: {
@@ -250,11 +246,8 @@ Item {
                 }
             }
 
-            var time = result === "TSUMO" || result === "RON" || result === "SCHR";
-            var hesi = time && (openers.length > 1 || openers[0] !== 0) ? 700 : 0;
-
             // extra duration to delay point change animation
-            animBuf.push({ callback: cb, duration: hesi + 200, prelude: hesi });
+            animBuf.push({ callback: cb, duration: 200 });
         }
 
         onPointsChanged: {

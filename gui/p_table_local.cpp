@@ -80,11 +80,15 @@ void PTableLocal::onDiscarded(const saki::Table &table, bool spin)
     const saki::T37 &outTile = table.getFocusTile();
     bool lay = table.lastDiscardLay();
 
+    if (!who.human())
+        emit justPause(500);
     emit discarded(who.index(), createTileVar(outTile, lay), spin);
 }
 
 void PTableLocal::onRiichiCalled(saki::Who who)
 {
+    if (!who.human())
+        emit justPause(500);
     emit riichied(who.index());
 }
 
@@ -97,6 +101,8 @@ void PTableLocal::onBarked(const saki::Table &table, saki::Who who,
                       const saki::M37 &bark, bool spin)
 {
     int fromWhom = bark.isCpdmk() ? table.getFocus().who().index() : -1;
+    if (!who.human())
+        emit justPause(500);
     emit barked(who.index(), fromWhom, QString(stringOf(bark.type())),
                 createBarkVar(bark), spin);
 }
@@ -105,6 +111,8 @@ void PTableLocal::onRoundEnded(const saki::Table &table, saki::RoundResult resul
                           const std::vector<saki::Who> &openers, saki::Who gunner,
                           const std::vector<saki::Form> &forms)
 {
+    using RR = saki::RoundResult;
+
     QVariantList openersList;
     QVariantList formsList;
     QVariantList handsList;
@@ -115,14 +123,18 @@ void PTableLocal::onRoundEnded(const saki::Table &table, saki::RoundResult resul
     for (size_t i = 0; i < forms.size(); i++) {
         const saki::Hand &hand = table.getHand(openers[i]);
         const saki::Form &form = forms[i];
-        const saki::T37 &pick = result == saki::RoundResult::RON ? table.getFocusTile()
-                                                                 : hand.drawn();
+        const saki::T37 &pick = result == RR::RON ? table.getFocusTile() : hand.drawn();
         formsList << createFormVar(form.spell().c_str(), form.charge().c_str(),
                                    hand, pick);
     }
 
     for (int w = 0; w < 4; w++)
         handsList << createTilesVar(table.getHand(saki::Who(w)).closed());
+
+    if ((result == RR::TSUMO || result == RR::RON || result == RR::SCHR)
+            && (openers.size() > 1 || !openers[0].human())) {
+        emit justPause(700);
+    }
 
     emit roundEnded(QString(stringOf(result)),
                     openersList,
