@@ -111,16 +111,12 @@ QVariant createBarkVar(const saki::M37 &m)
     return QVariant::fromValue(map);
 }
 
-QVariant createFormVar(const char *spell, const char *charge,
-                       const saki::Hand &hand, const saki::T37 &pick)
+QVariant createFormVar(const char *spell, const char *charge)
 {
     QVariantMap map;
 
     map.insert("spell", QString(spell));
     map.insert("charge", QString(charge));
-    map.insert("hand", createTilesVar(hand.closed()));
-    map.insert("pick", createTileVar(pick, true));
-    map.insert("barks", createBarksVar(hand.barks()));
 
     return QVariant::fromValue(map);
 }
@@ -191,6 +187,9 @@ QVariantMap createTableSnapMap(const saki::TableSnap &snap)
     map.insert("result", QString(saki::stringOf(snap.result)));
     map.insert("endOfRound", snap.endOfRound);
     map.insert("gunner", snap.gunner.somebody() ? snap.gunner.index() : -1);
+    using RR = saki::RoundResult;
+    if (snap.endOfRound && (snap.result == RR::RON || snap.result == RR::SCHR))
+        map.insert("cannon", createTileVar(snap.cannon));
 
     QVariantList openers;
     for (saki::Who opener : snap.openers)
@@ -198,16 +197,10 @@ QVariantMap createTableSnapMap(const saki::TableSnap &snap)
     map.insert("openers", openers);
 
     QVariantList forms;
-    for (size_t i = 0; i < snap.spells.size(); i++) {
-        int opener = snap.openers[i].index();
-        const saki::T37 &pick = snap.result == saki::RoundResult::TSUMO ? snap.drawn
-                                                                        : snap.cannon;
-        forms << createFormVar(snap.spells[i].c_str(), snap.charges[i].c_str(),
-                               saki::Hand(saki::TileCount(snap[opener].hand),
-                                          snap[opener].barks),
-                               pick);
-    }
+    for (size_t i = 0; i < snap.spells.size(); i++)
+        forms << createFormVar(snap.spells[i].c_str(), snap.charges[i].c_str());
     map.insert("forms", forms);
+
 
     return map;
 }

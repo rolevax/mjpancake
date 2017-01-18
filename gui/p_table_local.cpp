@@ -89,12 +89,12 @@ void PTableLocal::onRiichiCalled(saki::Who who)
 {
     if (!who.human())
         emit justPause(500);
-    emit riichied(who.index());
+    emit riichiCalled(who.index());
 }
 
 void PTableLocal::onRiichiEstablished(saki::Who who)
 {
-    emit riichiPassed(who.index());
+    emit riichiEstablished(who.index());
 }
 
 void PTableLocal::onBarked(const saki::Table &table, saki::Who who,
@@ -117,19 +117,27 @@ void PTableLocal::onRoundEnded(const saki::Table &table, saki::RoundResult resul
     QVariantList formsList;
     QVariantList handsList;
 
-    for (saki::Who who : openers)
+    for (saki::Who who : openers) {
         openersList << who.index();
 
-    for (size_t i = 0; i < forms.size(); i++) {
-        const saki::Hand &hand = table.getHand(openers[i]);
-        const saki::Form &form = forms[i];
-        const saki::T37 &pick = result == RR::RON ? table.getFocusTile() : hand.drawn();
-        formsList << createFormVar(form.spell().c_str(), form.charge().c_str(),
-                                   hand, pick);
+        const saki::Hand &hand = table.getHand(who);
+
+        QVariantMap handMap;
+        handMap.insert("closed", createTilesVar(hand.closed()));
+        handMap.insert("barks", createBarksVar(hand.barks()));
+
+        if (result == RR::TSUMO)
+            handMap.insert("pick", createTileVar(hand.drawn(), true));
+        else if (result == RR::RON || result == RR::SCHR)
+            handMap.insert("pick", createTileVar(table.getFocusTile(), true));
+
+        handsList << handMap;
     }
 
-    for (int w = 0; w < 4; w++)
-        handsList << createTilesVar(table.getHand(saki::Who(w)).closed());
+    for (size_t i = 0; i < forms.size(); i++) {
+        const saki::Form &form = forms[i];
+        formsList << createFormVar(form.spell().c_str(), form.charge().c_str());
+    }
 
     if ((result == RR::TSUMO || result == RR::RON || result == RR::SCHR)
             && (openers.size() > 1 || !openers[0].human())) {
@@ -137,11 +145,9 @@ void PTableLocal::onRoundEnded(const saki::Table &table, saki::RoundResult resul
     }
 
     emit roundEnded(QString(stringOf(result)),
-                    openersList,
-                    gunner.nobody() ? -1 : gunner.index(),
-                    formsList,
-                    createTilesVar(table.getMount().getUrids()),
-                    handsList);
+                    openersList, gunner.nobody() ? -1 : gunner.index(),
+                    handsList, formsList,
+                    createTilesVar(table.getMount().getUrids()));
 }
 
 void PTableLocal::onPointsChanged(const saki::Table &table)

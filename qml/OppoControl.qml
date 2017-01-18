@@ -247,6 +247,16 @@ Item {
     }
 
     function pushDown(show, tsumoTile) {
+        while (handModel.count < standModel.count) {
+            var dummyModel = {
+                modelTileStr: "back",
+                modelLay: false,
+                modelDark: false,
+                modelClickable: false,
+            };
+            handModel.append(dummyModel);
+        }
+
         frame.stand = false;
         frame.show = show;
         if (show && tsumoTile) {

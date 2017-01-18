@@ -160,13 +160,13 @@ Item {
         }
     }
 
-    function agari(winners, gunner, forms) {
+    function agari(winners, gunner, hands, forms) {
         state = "big";
 
         form.clear();
-        form.addHand(forms[0].hand);
-        form.addBarks(forms[0].barks);
-        form.addPick(forms[0].pick);
+        form.addHand(hands[0].closed);
+        form.addBarks(hands[0].barks);
+        form.addPick(hands[0].pick);
 
         text.text = Spell.spell(forms[0].spell);
         text.text += "\n";
@@ -180,9 +180,9 @@ Item {
             state = "huge";
 
             form2.clear();
-            form2.addHand(forms[1].hand);
-            form2.addBarks(forms[1].barks);
-            form2.addPick(forms[1].pick);
+            form2.addHand(hands[1].closed);
+            form2.addBarks(hands[1].barks);
+            form2.addPick(hands[1].pick);
 
             text2.text = Spell.spell(forms[1].spell);
             text2.text += "\n";

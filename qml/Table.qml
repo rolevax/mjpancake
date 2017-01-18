@@ -168,7 +168,7 @@ Item {
             animBuf.push({ callback: cb, duration: 200 });
         }
 
-        onRiichied: {
+        onRiichiCalled: {
             function cb() {
                 shockers.itemAt(who).shock("RIICHI");
             }
@@ -176,7 +176,7 @@ Item {
             animBuf.push({ callback: cb, duration: 0 });
         }
 
-        onRiichiPassed: {
+        onRiichiEstablished: {
             function cb() {
                 middle.addBar(who);
             }
@@ -201,8 +201,11 @@ Item {
         onRoundEnded: {
             function cb() {
                 var i;
-                for (i = 1; i < 4; i++)
-                    oppoControls.itemAt(i - 1).setHand(hands[i]);
+                for (i = 0; i < openers.length; i++) {
+                    if (openers[i] === 0)
+                        continue;
+                    oppoControls.itemAt(openers[i] - 1).setHand(hands[i].closed);
+                }
 
                 logBox.clear();
                 middle.removeBars();
@@ -210,10 +213,10 @@ Item {
                 if (result === "TSUMO") {
                     shockers.itemAt(openers[0]).shock(result);
                     if (openers[0] !== 0)
-                        oppoControls.itemAt(openers[0] - 1).pushDown(true, forms[0].pick);
+                        oppoControls.itemAt(openers[0] - 1).pushDown(true, hands[0].pick);
 
-                    resultWindow.uraIndic.doraIndic = uraIndics;
-                    resultWindow.agari(openers, -1, forms);
+                    resultWindow.uraIndic.doraIndic = urids;
+                    resultWindow.agari(openers, -1, hands, forms);
                 } else if (result === "RON") {
                     for (i = 0; i < openers.length; i++) {
                         var who = openers[i];
@@ -223,11 +226,11 @@ Item {
                     }
 
                     rivers.itemAt(gunner).showCircle(false);
-                    resultWindow.uraIndic.doraIndic = uraIndics;
+                    resultWindow.uraIndic.doraIndic = urids;
 
                     // array 'openers' may be longer than actual winners
                     // since it contains jumpees
-                    resultWindow.agari(openers, gunner, forms);
+                    resultWindow.agari(openers, gunner, hands, forms);
                 } else {
                     var whoReady = [ false, false, false, false ];
                     for (var j = 0; j < openers.length; j++) {
@@ -237,7 +240,7 @@ Item {
                     }
 
                     playerControl.face = whoReady[0] || result === "SCRC";
-                    for (var i = 0; i < 3; i++) {
+                    for (i = 0; i < 3; i++) {
                         var face = whoReady[i + 1] || result == "SCRC";
                         oppoControls.itemAt(i).pushDown(face);
                     }
@@ -556,11 +559,23 @@ Item {
 
         if (snap.endOfRound) {
             if (snap.result === "TSUMO" || snap.result === "RON") {
+                var hands = [];
+                var hand;
+                for (i = 0; i < snap.openers.length; i++) {
+                    hand = {
+                        closed: snap.players[snap.openers[i]].hand,
+                        barks: snap.players[snap.openers[i]].barks,
+                        pick: snap.result === "TSUMO" ? snap.drawn : snap.cannon
+                    };
+                    hand.pick.modelLay = true;
+                    hands.push(hand);
+                }
+
                 resultWindow.doraIndic.doraIndic = snap.drids;
                 resultWindow.uraIndic.doraIndic = snap.urids;
                 // array 'openers' may be longer than actual winners
                 // since it contains jumpees
-                resultWindow.agari(snap.openers, snap.gunner, snap.forms);
+                resultWindow.agari(snap.openers, snap.gunner, hands, snap.forms);
             } else {
                 resultWindow.ryuukyoku(snap.result);
             }

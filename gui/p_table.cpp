@@ -38,8 +38,8 @@ void PTable::startLocal(const QVariant &girlIdsVar, const QVariant &gameRule,
     connect(table, &PTableLocal::flipped, this, &PTable::flipped);
     connect(table, &PTableLocal::drawn, this, &PTable::drawn);
     connect(table, &PTableLocal::discarded, this, &PTable::discarded);
-    connect(table, &PTableLocal::riichied, this, &PTable::riichied);
-    connect(table, &PTableLocal::riichiPassed, this, &PTable::riichiPassed);
+    connect(table, &PTableLocal::riichiCalled, this, &PTable::riichiCalled);
+    connect(table, &PTableLocal::riichiEstablished, this, &PTable::riichiEstablished);
     connect(table, &PTableLocal::barked, this, &PTable::barked);
     connect(table, &PTableLocal::roundEnded, this, &PTable::roundEnded);
     connect(table, &PTableLocal::pointsChanged, this, &PTable::pointsChanged);
@@ -65,8 +65,8 @@ void PTable::startOnline(PClient *client)
     connect(client, &PClient::flipped, this, &PTable::flipped);
     connect(client, &PClient::drawn, this, &PTable::drawn);
     connect(client, &PClient::discarded, this, &PTable::discarded);
-    connect(client, &PClient::riichied, this, &PTable::riichied);
-    connect(client, &PClient::riichiPassed, this, &PTable::riichiPassed);
+    connect(client, &PClient::riichiCalled, this, &PTable::riichiCalled);
+    connect(client, &PClient::riichiEstablished, this, &PTable::riichiEstablished);
     connect(client, &PClient::barked, this, &PTable::barked);
     connect(client, &PClient::roundEnded, this, &PTable::roundEnded);
     connect(client, &PClient::pointsChanged, this, &PTable::pointsChanged);

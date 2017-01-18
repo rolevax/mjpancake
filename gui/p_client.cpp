@@ -182,6 +182,24 @@ void PClient::recvTableEvent(const QString &type, const QJsonObject &msg)
         if (w == 0)
             tile = msg["Tile"].toObject();
         emit drawn(w, tile.toVariantMap(), rinshan);
+    } else if (type == "t-discarded") {
+        int w = msg["Who"].toInt();
+        QJsonObject tile = msg["Tile"].toObject();
+        bool spin = msg["Spin"].toBool();
+        emit discarded(w, tile.toVariantMap(), spin);
+    } else if (type == "t-riichi-called") {
+        int w = msg["Who"].toInt();
+        emit riichiCalled(w);
+    } else if (type == "t-riichi-established") {
+        int w = msg["Who"].toInt();
+        emit riichiEstablished(w);
+    } else if (type == "t-barked") {
+        int w = msg["Who"].toInt();
+        int from = msg["FromWhom"].toInt();
+        QString actStr = msg["ActStr"].toString();
+        QJsonObject bark = msg["Bark"].toObject();
+        bool spin = msg["Spin"].toBool();
+        emit barked(w, from, actStr, bark.toVariantMap(), spin);
     } else if (type == "t-points-changed") {
         QJsonArray points = msg["Points"].toArray();
         emit pointsChanged(points.toVariantList());

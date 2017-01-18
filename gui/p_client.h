@@ -42,11 +42,11 @@ signals:
     void flipped(const QVariant &newIndic);
     void drawn(int who, const QVariant &tile, bool rinshan);
     void discarded(int who, const QVariant &tile, bool spin);
-    void riichied(int who);
-    void riichiPassed(int who);
+    void riichiCalled(int who);
+    void riichiEstablished(int who);
     void barked(int who, int fromWhom, QString actStr, const QVariant &bark, bool spin);
     void roundEnded(QString result, const QVariant &openers, int gunner,
-                    const QVariant &forms, const QVariant &uraIndics, const QVariant &hands);
+                    const QVariant &hands, const QVariant &forms, const QVariant &urids);
     void pointsChanged(const QVariant &points);
     void tableEnded(const QVariant &rank, const QVariant &scores);
     void poppedUp(int who, QString str);
