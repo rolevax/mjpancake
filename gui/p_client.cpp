@@ -200,9 +200,23 @@ void PClient::recvTableEvent(const QString &type, const QJsonObject &msg)
         QJsonObject bark = msg["Bark"].toObject();
         bool spin = msg["Spin"].toBool();
         emit barked(w, from, actStr, bark.toVariantMap(), spin);
+    } else if (type == "t-round-ended") {
+        QString result = msg["Result"].toString();
+        QJsonArray openers = msg["Openers"].toArray();
+        int gunner = msg["Gunner"].toInt();
+        QJsonArray hands = msg["Hands"].toArray();
+        QJsonArray forms = msg["Forms"].toArray();
+        QJsonArray urids = msg["Urids"].toArray();
+        emit roundEnded(result, openers, gunner, hands, forms, urids);
     } else if (type == "t-points-changed") {
         QJsonArray points = msg["Points"].toArray();
         emit pointsChanged(points.toVariantList());
+    } else if (type == "t-table-ended") {
+        QJsonArray rank = msg["Rank"].toArray();
+        QJsonArray scores = msg["Scores"].toArray();
+        emit tableEnded(rank, scores);
+    } else if (type == "t-popped-up") {
+        // FUCK
     } else {
         saki::util::p("WTF unkown recv type", type.toStdString());
     }
