@@ -1,11 +1,11 @@
 #ifndef P_CLIENT_H
 #define P_CLIENT_H
 
-#include <QObject>
-#include <QTcpSocket>
-#include <QTextStream>
+#include "p_json_tcp.h"
 
-#include <functional>
+#include <QObject>
+#include <QQmlEngine>
+#include <QJSEngine>
 
 
 
@@ -15,23 +15,32 @@ class PClient : public QObject
 public:
     explicit PClient(QObject *parent = nullptr);
 
-    Q_PROPERTY(QString nickname READ nickname NOTIFY nicknameChanged)
+    Q_PROPERTY(bool loggedIn READ loggedIn NOTIFY usernameChanged)
+    Q_PROPERTY(QString username READ username NOTIFY usernameChanged)
+    Q_PROPERTY(int connCt READ connCt NOTIFY lookedAround)
+    Q_PROPERTY(int idleCt READ idleCt NOTIFY lookedAround)
+    Q_PROPERTY(int bookCt READ bookCt NOTIFY lookedAround)
+    Q_PROPERTY(int playCt READ playCt NOTIFY lookedAround)
 
-    Q_INVOKABLE void fetchAnn();
     Q_INVOKABLE void login(const QString &username, const QString &password);
+    Q_INVOKABLE void lookAround();
     Q_INVOKABLE void book();
 
-    QString nickname() const;
+    QString username() const;
+    bool loggedIn() const;
+    int connCt() const;
+    int idleCt() const;
+    int bookCt() const;
+    int playCt() const;
 
     void sendReady();
 
 signals:
-    void entryIn(const QString &ann, bool login);
     void authFailIn(const QString &reason);
-    void authOkIn();
     void startIn(int tempDealer);
 
-    void nicknameChanged();
+    void usernameChanged();
+    void lookedAround();
 
     void activated(const QVariant &action, int lastDiscarder);
     void firstDealerChoosen(int dealer);
@@ -54,24 +63,24 @@ signals:
 public slots:
     void action(QString actStr, const QVariant &actArg);
 
-private slots:
-    void onConnected();
-    void showError(QAbstractSocket::SocketError socketError);
-    void readMsg();
-
 private:
-    void conn();
     void send(const QJsonObject &obj);
-    void recvLine(const QString &line);
+    void onJsonReceived(const QJsonObject &msg);
     void recvTableEvent(const QString &type, const QJsonObject &msg);
 
 private:
-    QTcpSocket mSocket;
-    QTextStream mNetIo;
-    std::function<void()> mOnConn;
-
-    bool mLoggedIn = false;
-    QString mNickname;
+    PJsonTcpSocket mSocket;
+    QString mUsername;
+    int mConnCt = 0;
+    int mIdleCt = 0;
+    int mBookCt = 0;
+    int mPlayCt = 0;
 };
 
+QObject *pClientSingletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine);
+
+
+
 #endif // P_CLIENT_H
+
+

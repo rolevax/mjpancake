@@ -25,7 +25,7 @@ Window {
     visible: true
     width: 1207; height: 679
     color: PGlobal.themeBack
-    title: "Sakilogy " + global.version
+    title: (PClient.loggedIn ? PClient.username + "@" : "") + "Sakilogy " + global.version
 
     Image {
         id: titleImage
@@ -75,21 +75,41 @@ Window {
         }
     }
 
+    AreaLogin {
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.margins: parent.height / 9
+        visible: !PClient.loggedIn
+    }
+
+    Buzzon {
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.margins: parent.height / 9
+        visible: PClient.loggedIn
+        text: PClient.username
+        textLength: 8
+    }
+
     Column {
         anchors.left: parent.left
         anchors.bottom: parent.bottom
         anchors.margins: parent.height / 9
         spacing: global.size.space
 
+        Buzzon {
+            text: "对局"
+            textLength: 8
+            visible: PClient.loggedIn
+            onClicked: { loader.source = "RoomClient.qml"; }
+        }
+
         Repeater {
             model: [
                 { text: "情报", load: "RoomHelp.qml" },
-                { text: "上线", load: "RoomClient.qml" },
-                { text: "对局", load: "RoomGameFree.qml" },
+                { text: "练习", load: "RoomGameFree.qml" },
                 { text: "牌谱", load: "RoomReplay.qml" },
                 { text: "设定", load: "RoomSettings.qml" }
-//                { text: "牌效", load: "RoomPrac.qml" }
-//                { text: "手牌生成", load: "RoomGen.qml" }
             ]
 
             delegate: Buzzon {

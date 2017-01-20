@@ -6,61 +6,73 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
-#include <QAbstractSocket>
 #include <QDebug>
 
 PClient::PClient(QObject *parent) : QObject(parent)
 {
-    using ErrorSignal = void (QAbstractSocket::*)(QAbstractSocket::SocketError);
-    connect(&mSocket, static_cast<ErrorSignal>(&QTcpSocket::error),
-            this, &PClient::showError);
-    connect(&mSocket, &QTcpSocket::connected, this, &PClient::onConnected);
-    connect(&mSocket, &QTcpSocket::readyRead, this, &PClient::readMsg);
-
-    mNetIo.setDevice(&mSocket);
-}
-
-void PClient::fetchAnn()
-{
-    mOnConn = [this]() {
-        QJsonObject req;
-        req["Type"] = "fetch-ann";
-        send(req);
-    };
-
-    conn();
+    connect(&mSocket, &PJsonTcpSocket::recvJson, this, &PClient::onJsonReceived);
 }
 
 void PClient::login(const QString &username, const QString &password)
 {
-    mOnConn = [&]() {
+    mSocket.conn([&]() {
         QJsonObject req;
         req["Type"] = "login";
         req["Username"] = username;
         req["Password"] = password;
-        send(req);
-    };
+        mSocket.send(req);
+    });
+}
 
-    conn();
+void PClient::lookAround()
+{
+    QJsonObject req;
+    req["Type"] = "look-around";
+    mSocket.send(req);
 }
 
 void PClient::book()
 {
     QJsonObject req;
     req["Type"] = "book";
-    send(req);
+    mSocket.send(req);
 }
 
-QString PClient::nickname() const
+QString PClient::username() const
 {
-    return mNickname;
+    return mUsername;
+}
+
+bool PClient::loggedIn() const
+{
+    return mUsername != "";
+}
+
+int PClient::connCt() const
+{
+    return mConnCt;
+}
+
+int PClient::idleCt() const
+{
+    return mIdleCt;
+}
+
+int PClient::bookCt() const
+{
+    return mBookCt;
+}
+
+int PClient::playCt() const
+{
+    return mPlayCt;
 }
 
 void PClient::sendReady()
 {
     QJsonObject req;
     req["Type"] = "ready";
-    send(req);
+    mSocket.send(req);
 }
 
 void PClient::action(QString actStr, const QVariant &actArg)
@@ -69,81 +81,35 @@ void PClient::action(QString actStr, const QVariant &actArg)
     req["Type"] = "t-action";
     req["ActStr"] = actStr;
     req["ActArg"] = actArg.toString();
-    send(req);
+    mSocket.send(req);
 }
 
-void PClient::onConnected()
+void PClient::onJsonReceived(const QJsonObject &msg)
 {
-    mOnConn();
-}
-
-void PClient::showError(QAbstractSocket::SocketError socketError)
-{
-    switch (socketError) {
-    case QAbstractSocket::RemoteHostClosedError:
-        if (mLoggedIn) {
-            emit entryIn("", false);
-            fetchAnn();
-        }
-        break;
-    case QAbstractSocket::HostNotFoundError:
-        saki::util::p("E host not found");
-        break;
-    case QAbstractSocket::ConnectionRefusedError:
-        saki::util::p("E connection refused");
-        break;
-    default:
-        saki::util::p("E unknown conncetion error");
-        break;
-    }
-}
-
-void PClient::readMsg()
-{
-    QStringList lines = mNetIo.readAll().split("\n", QString::SplitBehavior::SkipEmptyParts);
-
-    for (const QString &line : lines)
-        recvLine(line);
-}
-
-void PClient::conn()
-{
-    mSocket.abort();
-    mSocket.connectToHost("127.0.0.1", 6171);
-}
-
-void PClient::send(const QJsonObject &obj)
-{
-    QString str = QString(QJsonDocument(obj).toJson(QJsonDocument::Compact));
-    mNetIo << str << '\n';
-    saki::util::p("<---", str.toStdString());
-    mNetIo.flush();
-}
-
-void PClient::recvLine(const QString &line)
-{
-    saki::util::p("--->", line.toStdString());
-    QJsonObject reply = QJsonDocument::fromJson(line.toUtf8()).object();
-    QString type = reply["Type"].toString();
-    if (type == "fetch-ann") {
-        emit entryIn(reply["Ann"].toString(), reply["Login"].toBool(false));
-    } else if (type == "auth") {
-        bool ok = reply["Ok"].toBool(false);
+    QString type = msg["Type"].toString();
+    if (type == "auth") {
+        bool ok = msg["Ok"].toBool(false);
         if (ok) {
-            mLoggedIn = true;
-            mNickname = reply["User"].toObject()["Nickname"].toString();
-            emit nicknameChanged();
-            emit authOkIn();
+            mUsername = msg["User"].toObject()["Username"].toString();
+            emit usernameChanged();
         } else {
-            emit authFailIn(reply["Reason"].toString());
+            mUsername = "";
+            emit usernameChanged();
+            emit authFailIn(msg["Reason"].toString());
         }
+    } else if (type == "look-around") {
+        mConnCt = msg["Conn"].toInt();
+        mIdleCt = msg["Idle"].toInt();
+        mBookCt = msg["Book"].toInt();
+        mPlayCt = msg["Play"].toInt();
+        emit lookedAround();
     } else if (type == "start") {
-        QJsonArray users = reply["Users"].toArray();
-        QJsonArray girlIds = reply["GirlIds"].toArray();
-        int tempDealer = reply["TempDealer"].toInt();
+        QJsonArray users = msg["Users"].toArray();
+        QJsonArray girlIds = msg["GirlIds"].toArray();
+        int tempDealer = msg["TempDealer"].toInt();
         emit startIn(tempDealer);
     } else if (type.startsWith("t-")) {
-        recvTableEvent(type, reply);
+        recvTableEvent(type, msg);
     }
 }
 
@@ -220,6 +186,15 @@ void PClient::recvTableEvent(const QString &type, const QJsonObject &msg)
     } else {
         saki::util::p("WTF unkown recv type", type.toStdString());
     }
+}
+
+QObject *pClientSingletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
+
+    PClient *pClient = new PClient();
+    return pClient;
 }
 
 

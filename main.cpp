@@ -28,10 +28,11 @@ int main(int argc, char *argv[])
 //    qmlRegisterType<PGen>("rolevax.sakilogy", 1, 0, "PGen");
     qmlRegisterType<PReplay>("rolevax.sakilogy", 1, 0, "PReplay");
     qmlRegisterType<PSettings>("rolevax.sakilogy", 1, 0, "PSettings");
-    qmlRegisterType<PClient>("rolevax.sakilogy", 1, 0, "PClient");
 
     qmlRegisterSingletonType<PGlobal>("rolevax.sakilogy", 1, 0, "PGlobal",
                                       pGlobalSingletonProvider);
+    qmlRegisterSingletonType<PClient>("rolevax.sakilogy", 1, 0, "PClient",
+                                      pClientSingletonProvider);
 
     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
 

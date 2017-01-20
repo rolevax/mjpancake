@@ -8,12 +8,14 @@ Rectangle {
     property color textColor: "white"
     property color lightColor: "#16FFFFFF"
     property bool smallFont: false
+    property bool enabled: true
     property real textLength: 4.0
     property int fontSize: smallFont ? global.size.smallFont : global.size.middleFont
 
     width: textLength * fontSize
     height: 1.5 * fontSize
     color: "#333344"
+    opacity: enabled ? 1.0 : 0.5
     border.width: 0.03 * height
     border.color: "white"
 
@@ -26,6 +28,7 @@ Rectangle {
 
     MouseArea {
         id: mouseArea
+        enabled: buddon.enabled
         hoverEnabled: true
         anchors.fill: parent
         onClicked: {

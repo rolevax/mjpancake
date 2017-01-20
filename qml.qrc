@@ -23,7 +23,6 @@
         <file>qml/Tile.qml</file>
         <file>qml/TileForm.qml</file>
         <file>qml/TileStand.qml</file>
-        <file>qml/RoomPrac.qml</file>
         <file>qml/RoomHelpRules.qml</file>
         <file>qml/GirlBox.qml</file>
         <file>qml/LogBox.qml</file>
@@ -49,5 +48,6 @@
         <file>qml/widget/GomboToggle.qml</file>
         <file>qml/widget/Texd.qml</file>
         <file>qml/widget/TexdInput.qml</file>
+        <file>qml/AreaLogin.qml</file>
     </qresource>
 </RCC>

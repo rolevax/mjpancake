@@ -22,6 +22,7 @@ Rectangle {
     color: PGlobal.themeBack
     border.width: 0.03 * height
     border.color: PGlobal.themeText
+    opacity: enabled ? 1.0 : 0.5
 
     Texd {
         visible: input.text.length === 0

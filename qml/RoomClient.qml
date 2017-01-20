@@ -11,159 +11,50 @@ Room {
     property var displayedNames: [ "???", "???", "???", "???" ]
     property int tempDealer
 
-    PClient {
-        id: pClient
-
-        onEntryIn: {
-            annText.text = ann === "" ? "正在戳戳服务器娘……" : ann;
-            loginArea.visible = login;
-            opArea.visible = false;
-            loader.source = "";
-        }
-
-        onAuthFailIn: {
-            locked = false;
-            loginErrorText.text = reason;
-        }
-
-        onAuthOkIn: {
-            locked = false;
-            loginArea.visible = false;
-            opArea.visible = true;
-        }
-
-        onStartIn: {
-            room.tempDealer = tempDealer;
-            console.log("qml: yeah, time to load table! tempDealer=", tempDealer);
-            loader.source = "Game.qml";
-        }
-    }
-
-    Texd {
-        id: annText
-        anchors.top: parent.top
-        anchors.topMargin: global.size.gap
-        anchors.horizontalCenter: parent.horizontalCenter
-        text: "正在戳戳服务器娘……"
-    }
-
     Column {
         id: opArea
-        anchors.top: annText.bottom
-        anchors.topMargin: global.size.gap
-        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.centerIn: parent
         spacing: global.size.space
-        visible: false
 
         Texd {
             anchors.horizontalCenter: parent.horizontalAlignment
-            text: "欢迎，" + pClient.nickname + "!"
+            horizontalAlignment: Text.AlignHCenter
+            width: parent.width
+            text: "在线：" + PClient.connCt + "      呆萌：" + PClient.idleCt
         }
 
-        Item {
-            width: bookButton.width
-            height: bookButton.height
-            anchors.horizontalCenter: parent.horizontalCenter
+        Item {  width:1; height: global.size.gap }
+
+        Row {
+            spacing: global.size.gap
+            Texd {
+                text: "71届IH规则（除包杠）"
+                font.pixelSize: global.size.middleFont
+                anchors.verticalCenter: parent.verticalCenter
+            }
 
             Buzzon {
                 id: bookButton
-                textLength: 8
-                text: "约"
+                anchors.verticalCenter: parent.verticalCenter
+                textLength: 4
+                text: "预约"
                 onClicked: {
-                    visible = false;
-                    pClient.book();
+                    enabled = false;
+                    PClient.book();
                 }
             }
 
             Texd {
-                anchors.centerIn: bookButton
-                text: "约ing……"
-                visible: !bookButton.visible
+                anchors.verticalCenter: parent.verticalCenter
+                font.pixelSize: global.size.middleFont
+                text: PClient.bookCt + ":" + PClient.playCt
             }
         }
     }
 
-    Column {
-        id: loginArea
-
-        anchors.top: annText.bottom
-        anchors.topMargin: global.size.gap
-        anchors.horizontalCenter: parent.horizontalCenter
-        spacing: global.size.space
-        visible: false
-
-        TexdInput {
-            id: unInput
-            anchors.horizontalCenter: parent.horizontalCenter
-            textLength: 8
-            hintText: "用户名"
-            enabled: !locked
-            opacity: locked ? 0.5 : 1
-            validator: RegExpValidator { regExp: /^[[a-zA-Z0-9_\-]{4,32}$/ }
-            KeyNavigation.tab: pwInput
-            onVisibleChanged: {
-                if (visible && !global.mobile)
-                    focus = true;
-            }
-            onTextChanged: {
-                loginErrorText.text = "";
-            }
-            onAccepted: {
-                pwInput.focus = true;
-            }
-        }
-
-        TexdInput {
-            id: pwInput
-            anchors.horizontalCenter: parent.horizontalCenter
-            textLength: 8
-            hintText: "密码"
-            enabled: !locked
-            opacity: locked ? 0.5 : 1
-            validator: RegExpValidator { regExp: /^.{8,32}$/ }
-            echoMode: TextInput.Password
-            KeyNavigation.tab: unInput
-            onTextChanged: {
-                loginErrorText.text = "";
-            }
-            onAccepted: {
-                loginButton.clicked();
-            }
-        }
-
-        Item {
-            width: loginButton.width
-            height: loginButton.height
-            anchors.horizontalCenter: parent.horizontalCenter
-
-            Buzzon {
-                id: loginButton
-                textLength: 8
-                text: "蹬"
-                visible: !locked && unInput.acceptableInput && pwInput.acceptableInput
-                onClicked: {
-                    if (visible) {
-                        locked = true;
-                        pClient.login(unInput.text, pwInput.text);
-                    }
-                }
-            }
-
-            Texd {
-                anchors.centerIn: loginButton
-                text: "蹬ing……"
-                visible: locked
-            }
-        }
-
-        Texd {
-            id: loginErrorText
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
-    }
-
-    function closeTable() {
+    function _closeTable() {
         loader.source = "";
+        bookButton.enabled = true;
     }
 
     Loader {
@@ -177,22 +68,35 @@ Room {
             item.table.tileSet = "std";
             item.table.setNames(displayedNames);
             item.table.middle.setDealer(tempDealer, true);
-            item.table.closed.connect(closeTable);
+            item.table.closed.connect(_closeTable);
 
             startTimer.start();
         }
     }
 
     Timer {
-        // delay one frame to solve android crash somehow
         id: startTimer
         interval: 17
         onTriggered: {
-            loader.item.startOnline(pClient);
+            loader.item.startOnline(PClient);
         }
     }
 
-    Component.onCompleted: {
-        pClient.fetchAnn();
+    Timer {
+        interval: 5000
+        repeat: true
+        running: loader.source == ""
+        triggeredOnStart: true
+        onTriggered: {
+            PClient.lookAround();
+        }
+    }
+
+    Connections {
+        target: PClient
+        onStartIn: {
+            room.tempDealer = tempDealer;
+            loader.source = "Game.qml";
+        }
     }
 }
