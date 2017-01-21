@@ -55,6 +55,8 @@ void PTable::startOnline(PClient *client)
 {
     assert(client != nullptr);
 
+    mOnline = true;
+
     connect(this, &PTable::action, client, &PClient::action);
 
     connect(client, &PClient::firstDealerChoosen, this, &PTable::firstDealerChoosen);
@@ -163,6 +165,11 @@ void PTable::startSample()
     emit barked(0, -1, QString(saki::stringOf(kan3.type())), createBarkVar(kan3), false);
     emit flipped(createTileVar(2_f));
     emit drawn(0, createTileVar(0_p), true);
+}
+
+bool PTable::online() const
+{
+    return mOnline;
 }
 
 

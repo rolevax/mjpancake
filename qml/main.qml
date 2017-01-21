@@ -1,6 +1,7 @@
-import QtQuick 2.4
+import QtQuick 2.7
 import QtQuick.Window 2.2
 import rolevax.sakilogy 1.0
+import "area"
 import "widget"
 
 Window {
@@ -101,21 +102,21 @@ Window {
             text: "对局"
             textLength: 8
             visible: PClient.loggedIn
-            onClicked: { loader.source = "RoomClient.qml"; }
+            onClicked: { loader.source = "room/RoomClient.qml"; }
         }
 
         Repeater {
             model: [
-                { text: "情报", load: "RoomHelp.qml" },
-                { text: "练习", load: "RoomGameFree.qml" },
-                { text: "牌谱", load: "RoomReplay.qml" },
-                { text: "设定", load: "RoomSettings.qml" }
+                { text: "情报", load: "Help" },
+                { text: "练习", load: "GameFree" },
+                { text: "牌谱", load: "Replay" },
+                { text: "设定", load: "Settings" }
             ]
 
             delegate: Buzzon {
                 text: modelData.text
                 textLength: 8
-                onClicked: { loader.source = modelData.load; }
+                onClicked: { loader.source = "room/Room" + modelData.load + ".qml"; }
             }
         }
 
@@ -130,19 +131,19 @@ Window {
     Loader {
         id: loader
         anchors.fill: parent
-        focus: true
         onLoaded: {
+            loader.focus = true;
             item.closed.connect(closeRoom);
         }
+    }
 
-        Keys.onPressed: {
-            if (event.key === Qt.Key_F11) {
-                if (window.visibility === Window.Windowed)
-                    window.visibility = Window.FullScreen;
-                else if (window.visibility === Window.FullScreen)
-                    window.visibility = Window.Windowed;
-                event.accepted = true;
-            }
+    Shortcut {
+        sequence: "F11"
+        onActivated: {
+            if (window.visibility === Window.Windowed)
+                window.visibility = Window.FullScreen;
+            else if (window.visibility === Window.FullScreen)
+                window.visibility = Window.Windowed;
         }
     }
 }

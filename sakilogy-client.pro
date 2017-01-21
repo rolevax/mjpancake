@@ -135,7 +135,11 @@ DISTFILES += \
 
 OTHER_FILES += \
     qml/*.qml \
-    qml/widget/*.qml
+    qml/area/*.qml \
+    qml/game/*.qml \
+    qml/room/*.qml \
+    qml/widget/*.qml \
+    qml/js/*.js
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 
