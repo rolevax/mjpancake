@@ -4,6 +4,14 @@
 
 #include <QJsonDocument>
 
+
+
+const char *SRV_ADDR = "127.0.0.1";
+//const char *SRV_ADDR = "138.197.35.203";
+const quint16 SRV_PORT = 6171;
+
+
+
 PJsonTcpSocket::PJsonTcpSocket(QObject *parent)
     : QObject(parent)
 {
@@ -20,7 +28,7 @@ void PJsonTcpSocket::conn(std::function<void()> callback)
 {
     mOnConn = callback;
     mSocket.abort();
-    mSocket.connectToHost("127.0.0.1", 6171);
+    mSocket.connectToHost(SRV_ADDR, SRV_PORT);
 }
 
 void PJsonTcpSocket::send(const QJsonObject &msg)
