@@ -36,6 +36,7 @@ public:
     void sendReady();
 
 signals:
+    void remoteClosed();
     void authFailIn(const QString &reason);
     void startIn(int tempDealer);
 
@@ -64,6 +65,7 @@ public slots:
     void action(QString actStr, const QVariant &actArg);
 
 private:
+    void onRemoteClosed();
     void send(const QJsonObject &obj);
     void onJsonReceived(const QJsonObject &msg);
     void recvTableEvent(const QString &type, const QJsonObject &msg);

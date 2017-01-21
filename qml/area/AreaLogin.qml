@@ -15,7 +15,7 @@ Column {
         textLength: 8
         hintText: "用户名"
         enabled: !frozen
-        validator: RegExpValidator { regExp: /^[[a-zA-Z0-9_\-]{4,32}$/ }
+        validator: RegExpValidator { regExp: /^.{1,32}$/ }
         KeyNavigation.tab: pwInput
         onTextChanged: {
             loginErrorText.text = "";
@@ -44,7 +44,7 @@ Column {
     Buzzon {
         id: loginButton
         textLength: 8
-        text: frozen ? "灵压吓人中……" : "上线"
+        text: frozen ? "灵压威慑中…" : "上线"
         enabled: !frozen && unInput.acceptableInput && pwInput.acceptableInput
         onClicked: {
             frozen = true;

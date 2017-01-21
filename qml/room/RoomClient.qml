@@ -98,5 +98,9 @@ Room {
             room.tempDealer = tempDealer;
             loader.source = "../game/Game.qml";
         }
+
+        onRemoteClosed: {
+            closed();
+        }
     }
 }

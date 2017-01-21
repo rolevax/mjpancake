@@ -11,6 +11,8 @@
 PClient::PClient(QObject *parent) : QObject(parent)
 {
     connect(&mSocket, &PJsonTcpSocket::recvJson, this, &PClient::onJsonReceived);
+    connect(&mSocket, &PJsonTcpSocket::remoteClosed, this, &PClient::remoteClosed);
+    connect(&mSocket, &PJsonTcpSocket::remoteClosed, this, &PClient::onRemoteClosed);
 }
 
 void PClient::login(const QString &username, const QString &password)
@@ -82,6 +84,12 @@ void PClient::action(QString actStr, const QVariant &actArg)
     req["ActStr"] = actStr;
     req["ActArg"] = actArg.toString();
     mSocket.send(req);
+}
+
+void PClient::onRemoteClosed()
+{
+    mUsername = "";
+    emit usernameChanged();
 }
 
 void PClient::onJsonReceived(const QJsonObject &msg)
