@@ -6,6 +6,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QCryptographicHash>
 #include <QDebug>
 
 PClient::PClient(QObject *parent) : QObject(parent)
@@ -21,7 +22,7 @@ void PClient::login(const QString &username, const QString &password)
         QJsonObject req;
         req["Type"] = "login";
         req["Username"] = username;
-        req["Password"] = password;
+        req["Password"] = hash(password);
         mSocket.send(req);
     });
 }
@@ -32,7 +33,7 @@ void PClient::signUp(const QString &username, const QString &password)
         QJsonObject req;
         req["Type"] = "sign-up";
         req["Username"] = username;
-        req["Password"] = password;
+        req["Password"] = hash(password);
         mSocket.send(req);
     });
 }
@@ -205,6 +206,13 @@ void PClient::recvTableEvent(const QString &type, const QJsonObject &msg)
     } else {
         saki::util::p("WTF unkown recv type", type.toStdString());
     }
+}
+
+QString PClient::hash(const QString &password) const
+{
+    QCryptographicHash hasher(QCryptographicHash::Sha256);
+    hasher.addData(password.toUtf8());
+    return QString::fromUtf8(hasher.result().toBase64());
 }
 
 QObject *pClientSingletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine)

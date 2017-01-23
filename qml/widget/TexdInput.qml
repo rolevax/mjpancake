@@ -38,7 +38,7 @@ Rectangle {
         font.pixelSize: fontSize
         horizontalAlignment: TextInput.AlignHCenter
         color: PGlobal.themeText
-        focus: true
+        focus: false
         font.family: wqy.name
         inputMethodHints: Qt.ImhNoAutoUppercase
         onAccepted: {

@@ -71,6 +71,8 @@ private:
     void onJsonReceived(const QJsonObject &msg);
     void recvTableEvent(const QString &type, const QJsonObject &msg);
 
+    QString hash(const QString &password) const;
+
 private:
     PJsonTcpSocket mSocket;
     QString mUsername;
