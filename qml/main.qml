@@ -81,6 +81,9 @@ Window {
         anchors.left: parent.left
         anchors.margins: parent.height / 9
         visible: !PClient.loggedIn
+        onSignUpClicked: {
+            loader.source = "room/RoomSignUp.qml";
+        }
     }
 
     Buzzon {

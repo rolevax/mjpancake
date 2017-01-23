@@ -28,7 +28,7 @@ Room {
         Row {
             spacing: global.size.gap
             Texd {
-                text: "71届IH规则（除包杠）"
+                text: "东南战/全体随机/71届IH规则"
                 font.pixelSize: global.size.middleFont
                 anchors.verticalCenter: parent.verticalCenter
             }

@@ -26,6 +26,17 @@ void PClient::login(const QString &username, const QString &password)
     });
 }
 
+void PClient::signUp(const QString &username, const QString &password)
+{
+    mSocket.conn([&]() {
+        QJsonObject req;
+        req["Type"] = "sign-up";
+        req["Username"] = username;
+        req["Password"] = password;
+        mSocket.send(req);
+    });
+}
+
 void PClient::lookAround()
 {
     QJsonObject req;

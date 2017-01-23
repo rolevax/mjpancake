@@ -49,5 +49,6 @@
         <file>qml/room/RoomHelpRules.qml</file>
         <file>qml/room/RoomReplay.qml</file>
         <file>qml/room/RoomSettings.qml</file>
+        <file>qml/room/RoomSignUp.qml</file>
     </qresource>
 </RCC>

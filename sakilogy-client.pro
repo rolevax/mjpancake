@@ -132,6 +132,7 @@ DISTFILES += \
     android/gradle/wrapper/gradle-wrapper.properties \
     android/gradlew.bat \
     android/src/rolevax/sakilogy/ImagePickerActivity.java \
+    qml/room/RoomSignUp.qml
 
 OTHER_FILES += \
     qml/*.qml \

@@ -5,7 +5,7 @@ import "../widget"
 Column {
     id: frame
 
-    signal authOk
+    signal signUpClicked
     property bool frozen: false
 
     spacing: global.size.space
@@ -44,11 +44,20 @@ Column {
     Buzzon {
         id: loginButton
         textLength: 8
-        text: frozen ? "灵压威慑中…" : "上线"
+        text: frozen ? "灵压吓人中…" : "上线"
         enabled: !frozen && unInput.acceptableInput && pwInput.acceptableInput
         onClicked: {
             frozen = true;
-            PClient.login(unInput.text, pwInput.text);
+            PClient.login(unInput.text.trim(), pwInput.text);
+        }
+    }
+
+    Buzzon {
+        textLength: 8
+        text: "入坑"
+        visible: unInput.text === "" && pwInput.text === ""
+        onClicked: {
+            frame.signUpClicked();
         }
     }
 

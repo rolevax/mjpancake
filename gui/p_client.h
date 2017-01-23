@@ -23,6 +23,7 @@ public:
     Q_PROPERTY(int playCt READ playCt NOTIFY lookedAround)
 
     Q_INVOKABLE void login(const QString &username, const QString &password);
+    Q_INVOKABLE void signUp(const QString &username, const QString &password);
     Q_INVOKABLE void lookAround();
     Q_INVOKABLE void book();
 
