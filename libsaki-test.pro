@@ -23,7 +23,6 @@ SOURCES += main_test.cpp \
     libsaki/girls_senriyama.cpp \
     libsaki/girls_himematsu.cpp \
     libsaki/ai_senriyama.cpp \
-    libsaki/skillpop.cpp \
     libsaki/ai_achiga.cpp \
     libsaki/ai_shiraitodai.cpp \
     libsaki/girls_other.cpp \
@@ -66,7 +65,6 @@ HEADERS += \
     libsaki/girls_senriyama.h \
     libsaki/girls_himematsu.h \
     libsaki/ai_senriyama.h \
-    libsaki/skillpop.h \
     libsaki/ai_achiga.h \
     libsaki/ai_shiraitodai.h \
     libsaki/girls_other.h \

@@ -39,8 +39,7 @@ public:
     void onPointsChanged(const saki::Table &table) override;
     void onTableEnded(const std::array<saki::Who, 4> &rank,
                       const std::array<int, 4> &scores) override;
-    void onPoppedUp(const saki::Table &table, saki::Who who,
-                    const saki::SkillExpr &expr) override;
+    void onPoppedUp(const saki::Table &table, saki::Who who) override;
 
     void onActivated(saki::Table &table) override;
 

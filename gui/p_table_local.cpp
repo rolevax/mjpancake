@@ -4,6 +4,7 @@
 #include "libsaki/myrand.h"
 #include "libsaki/string_enum.h"
 #include "libsaki/util.h"
+#include "libsaki/myrand.h"
 
 #include <QDir>
 #include <QFile>
@@ -170,9 +171,9 @@ void PTableLocal::onTableEnded(const std::array<saki::Who, 4> &rank,
     emit tableEnded(rankList, pointsList);
 }
 
-void PTableLocal::onPoppedUp(const saki::Table &table, saki::Who who, const saki::SkillExpr &expr)
+void PTableLocal::onPoppedUp(const saki::Table &table, saki::Who who)
 {
-    std::string str = table.getGirl(who).stringOf(expr);
+    std::string str = table.getGirl(who).popUpStr();
     emit poppedUp(who.index(), QString::fromStdString(str));
 }
 
@@ -297,6 +298,7 @@ void PTableLocal::start(const QVariant &girlIdsVar, const QVariant &gameRule,
 
     mTable.reset(new saki::Table(points, girlIds, operators, observers,
                                  rule, saki::Who(tempDelaer)));
+    mySrand();
     mTable->start();
 }
 

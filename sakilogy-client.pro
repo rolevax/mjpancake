@@ -35,7 +35,6 @@ SOURCES += main.cpp \
     libsaki/myrand.cpp \
     libsaki/princess.cpp \
     libsaki/replay.cpp \
-    libsaki/skillpop.cpp \
     libsaki/string_enum.cpp \
     libsaki/table.cpp \
     libsaki/tableview.cpp \
@@ -97,7 +96,6 @@ HEADERS += \
     libsaki/pointinfo.h \
     libsaki/princess.h \
     libsaki/replay.h \
-    libsaki/skillpop.h \
     libsaki/string_enum.h \
     libsaki/tablefocus.h \
     libsaki/table.h \
