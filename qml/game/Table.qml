@@ -280,9 +280,6 @@ Item {
 
         onPoppedUp: {
             function cb() {
-                if (who !== 0) // omit Ai's log
-                    return;
-
                 if (str === "GREEN") {
                     green.visible = !green.visible;
                 } else {

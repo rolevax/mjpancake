@@ -202,7 +202,8 @@ void PClient::recvTableEvent(const QString &type, const QJsonObject &msg)
         QJsonArray scores = msg["Scores"].toArray();
         emit tableEnded(rank, scores);
     } else if (type == "t-popped-up") {
-        // FUCK
+        QString str = msg["Str"].toString();
+        emit poppedUp(str);
     } else {
         saki::util::p("WTF unkown recv type", type.toStdString());
     }

@@ -173,8 +173,7 @@ void PTableLocal::onTableEnded(const std::array<saki::Who, 4> &rank,
 
 void PTableLocal::onPoppedUp(const saki::Table &table, saki::Who who)
 {
-    std::string str = table.getGirl(who).popUpStr();
-    emit poppedUp(who.index(), QString::fromStdString(str));
+    emit poppedUp(QString::fromStdString(table.getGirl(who).popUpStr()));
 }
 
 void PTableLocal::onActivated(saki::Table &table)

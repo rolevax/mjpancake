@@ -60,7 +60,7 @@ signals:
                     const QVariant &hands, const QVariant &forms, const QVariant &urids);
     void pointsChanged(const QVariant &points);
     void tableEnded(const QVariant &rank, const QVariant &scores);
-    void poppedUp(int who, QString str);
+    void poppedUp(QString str);
     void justPause(int ms);
 
 public slots:
