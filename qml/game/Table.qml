@@ -111,28 +111,6 @@ Item {
             animBuf.push({ callback: cb, duration: 0 });
         }
 
-        onActivated: {
-            function cb() {
-                if (action.END_TABLE || action.NEXT_ROUND) {
-                    resultWindow.activate(action);
-                } else if (action.DICE) {
-                    middle.activateDice();
-                } else if (action.IRS_CHECK) {
-                    irsCheckBox.activate(action);
-                } else if (action.IRS_RIVAL) {
-                    for (var i = 0; i < action.IRS_RIVAL.length; i++)
-                        photos[action.IRS_RIVAL[i]].activateIrsRival();
-                } else {
-                    if (action.CHII || action.PON || action.DAIMINKAN
-                            || action.RON)
-                        rivers.itemAt(lastDiscarder).showCircle(true);
-                    playerControl.activate(action, _lastDiscardStr);
-                }
-            }
-
-            animBuf.push({ callback: cb, duration: 0 });
-        }
-
         onDrawn: {
             function cb() {
                 middle.wallRemain--;
@@ -278,6 +256,29 @@ Item {
             animBuf.push({ callback: cb, duration: 0 });
         }
 
+        onActivated: {
+            function cb() {
+                if (action.END_TABLE || action.NEXT_ROUND) {
+                    resultWindow.activate(action);
+                } else if (action.DICE) {
+                    middle.activateDice();
+                } else if (action.IRS_CHECK) {
+                    irsCheckBox.activate(action);
+                } else if (action.IRS_RIVAL) {
+                    for (var i = 0; i < action.IRS_RIVAL.length; i++)
+                        photos[action.IRS_RIVAL[i]].activateIrsRival();
+                } else {
+                    if (action.CHII_AS_LEFT || action.CHII_AS_MIDDLE || action.CHII_AS_RIGHT
+                            || action.PON || action.DAIMINKAN || action.RON) {
+                        rivers.itemAt(lastDiscarder).showCircle(true);
+                    }
+                    playerControl.activate(action, _lastDiscardStr);
+                }
+            }
+
+            animBuf.push({ callback: cb, duration: 0 });
+        }
+
         onPoppedUp: {
             function cb() {
                 if (str === "GREEN") {
@@ -287,6 +288,15 @@ Item {
                 }
             }
 
+            animBuf.push({ callback: cb, duration: 0 });
+        }
+
+        onDeactivated: {
+            function cb() {
+                table.deactivate();
+            }
+
+            // still use buffer to prevent unintentional re-activate
             animBuf.push({ callback: cb, duration: 0 });
         }
 
@@ -314,10 +324,8 @@ Item {
         y: (parent.height - height) / 2 - 20
         z: 4
         onDiceRolled: {
-            logBox.clear();
-
-            // '234' is useless
-            pTable.action("DICE", 234);
+            table.deactivate();
+            pTable.action("DICE", -1);
         }
     }
 
@@ -327,6 +335,7 @@ Item {
         anchors.centerIn: parent
         fontSize: global.size.middleFont
         onActionTriggered: {
+            table.deactivate();
             pTable.action("IRS_CHECK", mask);
         }
     }
@@ -352,8 +361,14 @@ Item {
             tileSet: table.tileSet
             backColor: table.backColors[table.colorIndex]
             tw: table.tw
-            onNextRound: pTable.action("NEXT_ROUND", -1);
-            onEndTable: pTable.action("END_TABLE", -1);
+            onNextRound: {
+                table.deactivate();
+                pTable.action("NEXT_ROUND", -1);
+            }
+            onEndTable: {
+                table.deactivate();
+                pTable.action("END_TABLE", -1);
+            }
             onVisibleChanged: {
                 if (table.animEnabled && visible)
                     animResult.start();
@@ -478,12 +493,7 @@ Item {
         height: table.thb
 
         onActionTriggered: {
-            // deactivate
-            playerControl.deactivate();
-            for (var i = 0; i < 4; i++)
-                rivers.itemAt(i).clearCircles();
-            logBox.clear();
-
+            table.deactivate();
             pTable.action(actStr, actArg);
         }
     }
@@ -513,6 +523,15 @@ Item {
                 table.closed();
             }
         }
+    }
+
+    function deactivate() {
+        playerControl.deactivate();
+        for (var i = 0; i < 4; i++) {
+            rivers.itemAt(i).clearCircles();
+            photos[i].deactivate();
+        }
+        logBox.clear();
     }
 
     function setNames(names) {

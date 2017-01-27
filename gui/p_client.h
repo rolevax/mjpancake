@@ -44,7 +44,6 @@ signals:
     void usernameChanged();
     void lookedAround();
 
-    void activated(const QVariant &action, int lastDiscarder);
     void firstDealerChoosen(int dealer);
     void roundStarted(int round, int extra, int dealer, bool allLast, int deposit);
     void cleaned();
@@ -61,6 +60,8 @@ signals:
     void pointsChanged(const QVariant &points);
     void tableEnded(const QVariant &rank, const QVariant &scores);
     void poppedUp(QString str);
+    void activated(const QVariant &action, int lastDiscarder);
+    void deactivated();
 
 public slots:
     void action(QString actStr, const QVariant &actArg);
@@ -80,6 +81,7 @@ private:
     int mIdleCt = 0;
     int mBookCt = 0;
     int mPlayCt = 0;
+    int mLastNonce = 0;
 };
 
 QObject *pClientSingletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine);

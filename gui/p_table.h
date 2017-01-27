@@ -35,7 +35,6 @@ signals:
     void diced(int die1, int die2);
     void dealt(const QVariant &init);
     void flipped(const QVariant &newIndic);
-    void activated(const QVariant &action, int lastDiscarder);
     void drawn(int who, const QVariant &tile, bool rinshan);
     void discarded(int who, const QVariant &tile, bool spin);
     void riichiCalled(int who);
@@ -46,6 +45,8 @@ signals:
     void pointsChanged(const QVariant &points);
     void tableEnded(const QVariant &rank, const QVariant &scores);
     void poppedUp(QString str);
+    void activated(const QVariant &action, int lastDiscarder);
+    void deactivated();
 
     void justPause(int ms);
     void justSetOutPos(int outPos);

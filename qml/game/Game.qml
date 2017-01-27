@@ -48,10 +48,8 @@ Image {
             anchors.topMargin: photoGap
             anchors.leftMargin: photoGap
             onRivalShotted: {
-                photo0.deactivate();
-                photo1.deactivate();
-                photo3.deactivate();
-                table.pTable.action(0, "IRS_RIVAL", 2);
+                table.deactivate();
+                table.pTable.action("IRS_RIVAL", 2);
             }
         }
 
@@ -64,10 +62,8 @@ Image {
             anchors.bottomMargin: photoGap
             anchors.leftMargin: photoGap
             onRivalShotted: {
-                photo0.deactivate();
-                photo1.deactivate();
-                photo2.deactivate();
-                table.pTable.action(0, "IRS_RIVAL", 3);
+                table.deactivate();
+                table.pTable.action("IRS_RIVAL", 3);
             }
         }
 
@@ -80,10 +76,8 @@ Image {
             anchors.topMargin: photoGap
             anchors.rightMargin: photoGap
             onRivalShotted: {
-                photo0.deactivate();
-                photo2.deactivate();
-                photo3.deactivate();
-                table.pTable.action(0, "IRS_RIVAL", 1);
+                table.deactivate();
+                table.pTable.action("IRS_RIVAL", 1);
             }
         }
 
@@ -96,10 +90,8 @@ Image {
             anchors.bottomMargin: photoGap
             anchors.rightMargin: photoGap
             onRivalShotted: {
-                photo1.deactivate();
-                photo2.deactivate();
-                photo3.deactivate();
-                table.pTable.action(0, "IRS_RIVAL", 0);
+                table.deactivate();
+                table.pTable.action("IRS_RIVAL", 0);
             }
         }
 

@@ -93,6 +93,7 @@ void PClient::action(QString actStr, const QVariant &actArg)
 {
     QJsonObject req;
     req["Type"] = "t-action";
+    req["Nonce"] = mLastNonce;
     req["ActStr"] = actStr;
     req["ActArg"] = actArg.toString();
     mSocket.send(req);
@@ -135,6 +136,12 @@ void PClient::onJsonReceived(const QJsonObject &msg)
 
 void PClient::recvTableEvent(const QString &type, const QJsonObject &msg)
 {
+    int nonce = msg["Nonce"].toInt();
+    if (nonce > mLastNonce) {
+        mLastNonce = nonce;
+        emit deactivated();
+    }
+
     if (type == "t-activated") {
         QJsonObject action = msg["Action"].toObject();
         int lastDiscarder = msg["LastDiscarder"].toInt();
