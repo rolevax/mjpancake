@@ -1,10 +1,9 @@
 #include "p_table_local.h"
 #include "p_port.h"
 
-#include "libsaki/myrand.h"
+#include "libsaki/rand.h"
 #include "libsaki/string_enum.h"
 #include "libsaki/util.h"
-#include "libsaki/myrand.h"
 
 #include <QDir>
 #include <QFile>
@@ -297,7 +296,6 @@ void PTableLocal::start(const QVariant &girlIdsVar, const QVariant &gameRule,
 
     mTable.reset(new saki::Table(points, girlIds, operators, observers,
                                  rule, saki::Who(tempDelaer)));
-    mySrand();
     mTable->start();
 }
 

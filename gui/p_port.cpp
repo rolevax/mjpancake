@@ -1,6 +1,5 @@
 #include "gui/p_port.h"
 #include "libsaki/tableobserver.h"
-#include "libsaki/myrand.h"
 #include "libsaki/girl.h"
 #include "libsaki/replay.h"
 #include "libsaki/string_enum.h"

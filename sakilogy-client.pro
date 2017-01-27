@@ -32,7 +32,6 @@ SOURCES += main.cpp \
     libsaki/girls_util_toki.cpp \
     libsaki/hand.cpp \
     libsaki/mount.cpp \
-    libsaki/myrand.cpp \
     libsaki/princess.cpp \
     libsaki/replay.cpp \
     libsaki/string_enum.cpp \
@@ -50,7 +49,8 @@ SOURCES += main.cpp \
     gui/p_settings.cpp \
     gui/p_table.cpp \
     gui/p_table_local.cpp \
-    gui/p_json_tcp.cpp
+    gui/p_json_tcp.cpp \
+    libsaki/rand.cpp
 
 
 
@@ -92,7 +92,6 @@ HEADERS += \
     libsaki/hand.h \
     libsaki/meld.h \
     libsaki/mount.h \
-    libsaki/myrand.h \
     libsaki/pointinfo.h \
     libsaki/princess.h \
     libsaki/replay.h \
@@ -117,7 +116,8 @@ HEADERS += \
     gui/p_settings.h \
     gui/p_table.h \
     gui/p_table_local.h \
-    gui/p_json_tcp.h
+    gui/p_json_tcp.h \
+    libsaki/rand.h
 
 
 

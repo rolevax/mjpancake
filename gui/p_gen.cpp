@@ -1,15 +1,14 @@
 #include "gui/p_gen.h"
 #include "gui/p_port.h"
 #include "libsaki/gen.h"
-#include "libsaki/myrand.h"
 
 #include <QVariantMap>
 #include <iostream>
 
 PGen::PGen(QObject *parent) : QObject(parent)
 {
-    auto seed = mySrand();
-    std::cout << "gen: seed is " << seed << std::endl;
+//    auto seed = mySrand();
+//    std::cout << "gen: seed is " << seed << std::endl;
 }
 
     /*
