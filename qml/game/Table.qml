@@ -292,12 +292,8 @@ Item {
         }
 
         onDeactivated: {
-            function cb() {
-                table.deactivate();
-            }
-
-            // still use buffer to prevent unintentional re-activate
-            animBuf.push({ callback: cb, duration: 0 });
+            // assume: the server auto-move-delay always bigger than max-anim-duration
+            table.deactivate();
         }
 
         onJustPause: {
@@ -526,6 +522,8 @@ Item {
     }
 
     function deactivate() {
+        resultWindow.visible = false;
+        middle.deactivate();
         playerControl.deactivate();
         for (var i = 0; i < 4; i++) {
             rivers.itemAt(i).clearCircles();

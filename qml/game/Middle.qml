@@ -133,6 +133,10 @@ Rectangle {
         diceButton.visible = true;
     }
 
+    function deactivate() {
+        diceButton.visible = false;
+    }
+
     function setDice(die1, die2) {
         roundText.blinking = false;
         middle.die1 = die1;
