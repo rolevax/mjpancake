@@ -6,8 +6,8 @@ import "../widget"
 Room {
     id: room
 
-    PSettings {
-        id: pSettings
+    PImageSettings {
+        id: pImageSettings
 
         onBackgroundCopied: {
             // force reload
@@ -35,6 +35,14 @@ Room {
             textLength: 8
             onClicked: {
                 PGlobal.nightMode = !PGlobal.nightMode;
+            }
+        }
+
+        Buzzon {
+            text: PGlobal.savePassword ? "保存密码 O" : "保存密码 X"
+            textLength: 8
+            onClicked: {
+                PGlobal.savePassword = !PGlobal.savePassword;
             }
         }
     }
@@ -69,7 +77,7 @@ Room {
             smallFont: true
             onClicked: {
                 if (global.mobile) {
-                    pSettings.setBackgroundByAndroidGallery();
+                    pImageSettings.setBackgroundByAndroidGallery();
                 } else {
                     fileDialog.open()
                 }
@@ -93,7 +101,7 @@ Room {
             // in Windoge's case, slice one more character
             // to get rid of the initial '/' and make it "C:/..."
             var filename = fileUrl.toString().slice(global.windows ? 8 : 7);
-            pSettings.setBackground(filename);
+            pImageSettings.setBackground(filename);
         }
     }
 

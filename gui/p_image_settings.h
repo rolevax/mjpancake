@@ -1,28 +1,28 @@
-#ifndef P_SETTINGS_H
-#define P_SETTINGS_H
+#ifndef P_IMAGE_SETTINGS_H
+#define P_IMAGE_SETTINGS_H
 
 #include <QObject>
 
 #ifdef Q_OS_ANDROID
 #include <QAndroidActivityResultReceiver>
 
-class PSettings;
+class PImageSettings;
 
 class ImagePickReceiver : public QAndroidActivityResultReceiver {
 public:
-    ImagePickReceiver(PSettings &pSettings) : pSettings(pSettings) { }
+    ImagePickReceiver(PImageSettings &pSettings) : mPImageSettings(pSettings) { }
     void handleActivityResult(int requestCode, int resultCode,
                               const QAndroidJniObject & data);
 private:
-    PSettings &pSettings;
+    PImageSettings &mPImageSettings;
 };
 #endif
 
-class PSettings : public QObject
+class PImageSettings : public QObject
 {
     Q_OBJECT
 public:
-    explicit PSettings(QObject *parent = 0);
+    explicit PImageSettings(QObject *parent = 0);
 
     Q_INVOKABLE void setBackground(QString path);
     Q_INVOKABLE void setBackgroundByAndroidGallery();
@@ -41,4 +41,4 @@ private:
 #endif
 };
 
-#endif // P_SETTINGS_H
+#endif // P_IMAGE_SETTINGS_H

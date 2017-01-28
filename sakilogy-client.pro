@@ -46,11 +46,11 @@ SOURCES += main.cpp \
     gui/p_image_provider.cpp \
     gui/p_port.cpp \
     gui/p_replay.cpp \
-    gui/p_settings.cpp \
     gui/p_table.cpp \
     gui/p_table_local.cpp \
     gui/p_json_tcp.cpp \
-    libsaki/rand.cpp
+    libsaki/rand.cpp \
+    gui/p_image_settings.cpp
 
 
 
@@ -113,11 +113,11 @@ HEADERS += \
     gui/p_image_provider.h \
     gui/p_port.h \
     gui/p_replay.h \
-    gui/p_settings.h \
     gui/p_table.h \
     gui/p_table_local.h \
     gui/p_json_tcp.h \
-    libsaki/rand.h
+    libsaki/rand.h \
+    gui/p_image_settings.h
 
 
 

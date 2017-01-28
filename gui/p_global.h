@@ -19,6 +19,11 @@ public:
     Q_PROPERTY(bool nightMode READ nightMode WRITE setNightMode NOTIFY nightModeChanged)
     Q_PROPERTY(QColor themeBack READ themeBack NOTIFY themeBackChanged)
     Q_PROPERTY(QColor themeText READ themeText NOTIFY themeTextChanged)
+    Q_PROPERTY(QString savedUsername READ savedUsername WRITE setSavedUsername\
+               NOTIFY savedUsernameChanged)
+    Q_PROPERTY(bool savePassword READ savePassword WRITE setSavePassword NOTIFY savePasswordChanged)
+    Q_PROPERTY(QString savedPassword READ savedPassword WRITE setSavedPassword\
+               NOTIFY savedPasswordChanged)
 
     Q_INVOKABLE void save();
 
@@ -31,11 +36,22 @@ public:
     QColor themeBack() const;
     QColor themeText() const;
 
+    QString savedUsername() const;
+    void setSavedUsername(const QString &username);
+
+    bool savePassword() const;
+    void setSavePassword(bool v);
+    QString savedPassword() const;
+    void setSavedPassword(const QString &password);
+
 signals:
     void backColorsChanged();
     void nightModeChanged();
     void themeBackChanged();
     void themeTextChanged();
+    void savedUsernameChanged();
+    void savePasswordChanged();
+    void savedPasswordChanged();
 
 public slots:
 

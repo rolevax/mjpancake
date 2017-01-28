@@ -14,6 +14,7 @@ Column {
         id: unInput
         textLength: 8
         hintText: "用户名"
+        text: PGlobal.savedUsername
         enabled: !frozen
         validator: RegExpValidator { regExp: /^.{1,32}$/ }
         KeyNavigation.tab: pwInput
@@ -29,6 +30,7 @@ Column {
         id: pwInput
         textLength: 8
         hintText: "密码"
+        text: PGlobal.savedPassword
         enabled: !frozen
         validator: RegExpValidator { regExp: /^.{8,32}$/ }
         echoMode: TextInput.Password
@@ -72,6 +74,14 @@ Column {
         onAuthFailIn: {
             loginErrorText.text = reason;
             frame.frozen = false;
+        }
+
+        onUsernameChanged: {
+            if (PClient.loggedIn) {
+                PGlobal.savedUsername = PClient.username;
+                if (PGlobal.savePassword)
+                    PGlobal.savedPassword = pwInput.text;
+            }
         }
     }
 }

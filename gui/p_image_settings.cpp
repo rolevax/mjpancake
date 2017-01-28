@@ -1,4 +1,4 @@
-#include "gui/p_settings.h"
+#include "gui/p_image_settings.h"
 
 #include <QFile>
 #include <QDir>
@@ -23,13 +23,13 @@ void ImagePickReceiver::handleActivityResult(int requestCode, int resultCode,
                     "(Landroid/net/Uri;)Ljava/lang/String;",
                     imageUri.object<jobject>());
 
-        pSettings.setBackground(imagePath.toString());
+        mPImageSettings.setBackground(imagePath.toString());
     }
 }
 #endif
 
 
-PSettings::PSettings(QObject *parent)
+PImageSettings::PImageSettings(QObject *parent)
     : QObject(parent)
 #ifdef Q_OS_ANDROID
     , imagePickReceiver(*this)
@@ -37,7 +37,7 @@ PSettings::PSettings(QObject *parent)
 {
 }
 
-void PSettings::setBackground(QString path)
+void PImageSettings::setBackground(QString path)
 {
     QDir().mkpath(QString("user"));
     static const char *bgPath = "user/background";
@@ -49,7 +49,7 @@ void PSettings::setBackground(QString path)
     emit backgroundCopied();
 }
 
-void PSettings::setBackgroundByAndroidGallery()
+void PImageSettings::setBackgroundByAndroidGallery()
 {
 #ifdef Q_OS_ANDROID
     QAndroidJniObject intent = QAndroidJniObject::callStaticObjectMethod(

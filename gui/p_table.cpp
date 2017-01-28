@@ -106,6 +106,7 @@ void PTable::startSample()
 
     auto oppoOut = [this](int w, const saki::T37 &tout, bool spin) {
         emit drawn(w, QVariant(), false);
+        emit justPause(500);
         emit discarded(w, createTileVar(tout), spin);
     };
 

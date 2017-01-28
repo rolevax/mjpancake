@@ -76,6 +76,41 @@ QColor PGlobal::themeText() const
     return root["nightMode"].toBool() ? QColor("#AAAAAA") : QColor("#111111");
 }
 
+QString PGlobal::savedUsername() const
+{
+    return root["savedUsername"].toString();
+}
+
+void PGlobal::setSavedUsername(const QString &username)
+{
+    root["savedUsername"] = username;
+    emit savedUsernameChanged();
+}
+
+bool PGlobal::savePassword() const
+{
+    return root["savePassword"].toBool();
+}
+
+void PGlobal::setSavePassword(bool v)
+{
+    root["savePassword"] = v;
+    emit savePasswordChanged();
+    if (!v)
+        setSavedPassword("");
+}
+
+QString PGlobal::savedPassword() const
+{
+    return root["savedPassword"].toString();
+}
+
+void PGlobal::setSavedPassword(const QString &password)
+{
+    root["savedPassword"] = password;
+    emit savedPasswordChanged();
+}
+
 void PGlobal::regulateRoot()
 {
     if (!root["backColors"].isArray()) // TODO check inside array, see if all QColor str
@@ -83,6 +118,15 @@ void PGlobal::regulateRoot()
 
     if (!root["nightMode"].isBool())
         root["nightMode"] = false;
+
+    if (!root["savedUsername"].isString())
+        root["savedUsername"] = QString();
+
+    if (!root["savePassword"].isBool())
+        root["savePassword"] = false;
+
+    if (!root["savedPassword"].isString())
+        root["savedPassword"] = QString();
 }
 
 QObject *pGlobalSingletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine)
