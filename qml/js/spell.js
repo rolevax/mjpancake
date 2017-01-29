@@ -82,7 +82,6 @@ function logtr(str) {
     // in winning hand, barks are omitted
     // in kan predict, 4 chars are too verbose
     // so just use one char
-    // TODO FIXIT continues f or y is translated partially
     str = str.replace(/1111f/g, "東");
     str = str.replace(/2222f/g, "南");
     str = str.replace(/3333f/g, "西");
@@ -91,29 +90,42 @@ function logtr(str) {
     str = str.replace(/2222y/g, "發");
     str = str.replace(/3333y/g, "中");
 
-    str = str.replace(/111f/g, "東東東");
-    str = str.replace(/222f/g, "南南南");
-    str = str.replace(/333f/g, "西西西");
-    str = str.replace(/444f/g, "北北北");
-    str = str.replace(/111y/g, "白白白");
-    str = str.replace(/222y/g, "發發發");
-    str = str.replace(/333y/g, "中中中");
+    var lookF = false, posF;
+    var lookY = false, posY;
+    for (var i = str.length - 1; i >= 0; i--) {
+        var c = str[i], zstr;
 
-    str = str.replace(/11f/g, "東東");
-    str = str.replace(/22f/g, "南南");
-    str = str.replace(/33f/g, "西西");
-    str = str.replace(/44f/g, "北北");
-    str = str.replace(/11y/g, "白白");
-    str = str.replace(/22y/g, "發發");
-    str = str.replace(/33y/g, "中中");
+        if (lookF) {
+            if (c !== "1" && c !== "2" && c !== "3" && c !== "4") {
+                zstr = str.substring(i + 1, posF);
+                zstr = zstr.replace(/1/g, "東");
+                zstr = zstr.replace(/2/g, "南");
+                zstr = zstr.replace(/3/g, "西");
+                zstr = zstr.replace(/4/g, "北");
+                str = str.substring(0, i + 1) + zstr + str.substring(posF + 1, str.length);
+                lookF = false;
+            }
+        } else if (lookY) {
+            if (c !== "1" && c !== "2" && c !== "3") {
+                zstr = str.substring(i + 1, posY);
+                zstr = zstr.replace(/1/g, "白");
+                zstr = zstr.replace(/2/g, "發");
+                zstr = zstr.replace(/3/g, "中");
+                str = str.substring(0, i + 1) + zstr + str.substring(posY + 1, str.length);
+                lookY = false;
+            }
+        }
 
-    str = str.replace(/1f/g, "東");
-    str = str.replace(/2f/g, "南");
-    str = str.replace(/3f/g, "西");
-    str = str.replace(/4f/g, "北");
-    str = str.replace(/1y/g, "白");
-    str = str.replace(/2y/g, "發");
-    str = str.replace(/3y/g, "中");
+        if (!lookF && !lookY) {
+            if (c === "f") {
+                lookF = true;
+                posF = i;
+            } else if (c === "y") {
+                lookY = true;
+                posY = i;
+            }
+        }
+    }
 
     return str;
 }
