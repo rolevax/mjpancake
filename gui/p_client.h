@@ -26,6 +26,7 @@ public:
     Q_INVOKABLE void signUp(const QString &username, const QString &password);
     Q_INVOKABLE void lookAround();
     Q_INVOKABLE void book();
+    Q_INVOKABLE void unbook();
 
     QString username() const;
     bool loggedIn() const;

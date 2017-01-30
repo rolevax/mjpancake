@@ -103,4 +103,8 @@ Room {
             closed();
         }
     }
+
+    onClosed: {
+        PClient.unbook();
+    }
 }

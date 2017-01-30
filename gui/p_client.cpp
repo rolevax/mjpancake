@@ -52,6 +52,13 @@ void PClient::book()
     mSocket.send(req);
 }
 
+void PClient::unbook()
+{
+    QJsonObject req;
+    req["Type"] = "unbook";
+    mSocket.send(req);
+}
+
 QString PClient::username() const
 {
     return mUsername;
