@@ -3,6 +3,7 @@ import "../widget"
 
 Grid {
     property var gameRule: {
+        "roundLimit": 8,
         "fly": true, "returnLevel": 30000, "hill": 20000,
         "headJump": true, "daiminkanPao": true,
         "nagashimangan": true, "ippatsu": true,
