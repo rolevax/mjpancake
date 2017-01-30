@@ -266,18 +266,7 @@ void PTableLocal::start(const QVariant &girlIdsVar, const QVariant &gameRule,
     assert(girlIds[1] == 0 || girlIds[1] != girlIds[3]);
     assert(girlIds[2] == 0 || girlIds[2] != girlIds[3]);
 
-    QVariantMap map = gameRule.toMap();
-
-    saki::RuleInfo rule;
-    rule.fly = map["fly"].toBool();
-    rule.headJump = map["headJump"].toBool();
-    rule.nagashimangan = map["nagashimangan"].toBool();
-    rule.ippatsu = map["ippatsu"].toBool();
-    rule.uradora = map["uradora"].toBool();
-    rule.kandora = map["kandora"].toBool();
-    rule.akadora = saki::TileCount::AkadoraCount(map["akadora"].toInt());
-    rule.returnLevel = map["returnLevel"].toInt();
-    rule.hill = map["hill"].toInt();
+    saki::RuleInfo rule = readRuleJson(QJsonObject::fromVariantMap(gameRule.toMap()));
 
     std::array<int, 4> points {
         rule.returnLevel - rule.hill / 4,

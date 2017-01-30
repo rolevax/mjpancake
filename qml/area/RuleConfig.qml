@@ -4,7 +4,7 @@ import "../widget"
 Grid {
     property var gameRule: {
         "fly": true, "returnLevel": 30000, "hill": 20000,
-        "headJump": true,
+        "headJump": true, "daiminkanPao": true,
         "nagashimangan": true, "ippatsu": true,
         "uradora": true, "kandora": true,
         "akadora": 2 // int 2 denotes 4 akadoras
@@ -64,5 +64,11 @@ Grid {
         model: ["一发 X", "一发 O"]
         onActivated: { gameRule.ippatsu = index }
         Component.onCompleted: { currentIndex = gameRule.ippatsu; }
+    }
+
+    GomboToggle {
+        model: ["包杠 X", "包杠 O"]
+        onActivated: { gameRule.daiminkanPao = index }
+        Component.onCompleted: { currentIndex = gameRule.daiminkanPao; }
     }
 }

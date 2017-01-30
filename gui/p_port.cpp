@@ -240,6 +240,7 @@ QJsonObject createRuleJson(const saki::RuleInfo &rule)
     obj["uradora"] = rule.uradora;
     obj["kandora"] = rule.kandora;
     obj["akadora"] = int(rule.akadora);
+    obj["daiminkanPao"] = rule.daiminkanPao;
     obj["hill"] = rule.hill;
     obj["returnLevel"] = rule.returnLevel;
     obj["roundLimit"] = rule.roundLimit;
@@ -395,6 +396,8 @@ saki::RuleInfo readRuleJson(const QJsonObject &obj)
     rule.uradora = obj["uradora"].toBool();
     rule.kandora = obj["kandora"].toBool();
     rule.akadora = saki::TileCount::AkadoraCount(obj["akadora"].toInt());
+    // no pao in version <= 0.6.3, so use default 'false'
+    rule.daiminkanPao = obj["daiminkanPao"].toBool(false);
     rule.hill = obj["hill"].toInt();
     rule.returnLevel = obj["returnLevel"].toInt();
     rule.roundLimit = obj["roundLimit"].toInt();
