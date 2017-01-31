@@ -6,8 +6,11 @@
 
 
 
+#ifdef NDEBUG
+const char *SRV_ADDR = "138.197.35.203";
+#else
 const char *SRV_ADDR = "127.0.0.1";
-//const char *SRV_ADDR = "138.197.35.203";
+#endif
 const quint16 SRV_PORT = 6171;
 
 

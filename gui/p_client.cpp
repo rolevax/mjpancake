@@ -18,7 +18,7 @@ PClient::PClient(QObject *parent) : QObject(parent)
 
 void PClient::login(const QString &username, const QString &password)
 {
-    mSocket.conn([&]() {
+    mSocket.conn([=]() {
         QJsonObject req;
         req["Type"] = "login";
         req["Username"] = username;
@@ -29,7 +29,7 @@ void PClient::login(const QString &username, const QString &password)
 
 void PClient::signUp(const QString &username, const QString &password)
 {
-    mSocket.conn([&]() {
+    mSocket.conn([=]() {
         QJsonObject req;
         req["Type"] = "sign-up";
         req["Username"] = username;
