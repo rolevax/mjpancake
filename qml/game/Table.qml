@@ -539,6 +539,11 @@ Item {
             photos[i].name = names[i];
     }
 
+    function setUsers(users) {
+        for (var i = 0; i < 4; i++)
+            photos[i].username = users[i].Username;
+    }
+
     function easyPass() {
         playerControl.easyPass();
     }

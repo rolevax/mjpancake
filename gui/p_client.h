@@ -40,7 +40,7 @@ public:
 signals:
     void remoteClosed();
     void authFailIn(const QString &reason);
-    void startIn(int tempDealer);
+    void startIn(const QVariantList &users, const QVariantList &girlIds, int tempDealer);
 
     void usernameChanged();
     void lookedAround();

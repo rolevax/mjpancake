@@ -7,10 +7,23 @@ Rectangle {
     signal rivalShotted
 
     property string name
+    property string username: ""
+    property string title: "嘿嘿嘿嘿嘿"
 
     color: "#33AAAACC"
 
     Texd {
+        color: "white"
+        font.pixelSize: 0.6 * nameText.font.pixelSize
+        text: username === "" ? "" : title + "\n" + username + " X段 R1500"
+        horizontalAlignment: Text.AlignHCenter
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: frame.height / 24
+    }
+
+    Texd {
+        id: nameText
         color: "white"
         font.pixelSize: frame.height / 13
         text: frame.name

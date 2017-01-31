@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import rolevax.sakilogy 1.0
+import "../js/girlnames.js" as Names
 import "../widget"
 
 Room {
@@ -9,6 +10,7 @@ Room {
 
     property var girlIds: [ 0, 0, 0, 0 ]
     property var displayedNames: [ "???", "???", "???", "???" ]
+    property var users: [ null, null, null, null ]
     property int tempDealer
 
     Column {
@@ -67,6 +69,7 @@ Room {
 
             item.table.tileSet = "std";
             item.table.setNames(displayedNames);
+            item.table.setUsers(users);
             item.table.middle.setDealer(tempDealer, true);
             item.table.closed.connect(_closeTable);
 
@@ -96,6 +99,11 @@ Room {
         target: PClient
         onStartIn: {
             room.tempDealer = tempDealer;
+            room.girlIds = girlIds;
+            for (var i = 0; i < 4; i++) {
+                room.displayedNames[i] = Names.names[girlIds[i]];
+                room.users[i] = users[i];
+            }
             loader.source = "../game/Game.qml";
         }
 

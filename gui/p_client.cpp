@@ -135,7 +135,7 @@ void PClient::onJsonReceived(const QJsonObject &msg)
         QJsonArray users = msg["Users"].toArray();
         QJsonArray girlIds = msg["GirlIds"].toArray();
         int tempDealer = msg["TempDealer"].toInt();
-        emit startIn(tempDealer);
+        emit startIn(users.toVariantList(), girlIds.toVariantList(), tempDealer);
     } else if (type.startsWith("t-")) {
         recvTableEvent(type, msg);
     }
