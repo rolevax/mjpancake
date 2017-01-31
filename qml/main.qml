@@ -10,7 +10,7 @@ Window {
     readonly property bool mobile: Qt.platform.os === "android"
 
     readonly property var global: {
-        "version": "v0.6.3",
+        "version": "v0.6.4",
         "window": window,
         "mobile": mobile,
         "windows": Qt.platform.os === "windows",
