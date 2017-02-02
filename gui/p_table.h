@@ -45,7 +45,7 @@ signals:
     void pointsChanged(const QVariant &points);
     void tableEnded(const QVariant &rank, const QVariant &scores);
     void poppedUp(QString str);
-    void activated(const QVariant &action, int lastDiscarder);
+    void activated(const QVariant &action, int lastDiscarder, int nonce);
     void deactivated();
 
     void justPause(int ms);

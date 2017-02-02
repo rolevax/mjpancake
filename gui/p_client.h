@@ -21,6 +21,7 @@ public:
     Q_PROPERTY(int connCt READ connCt NOTIFY lookedAround)
     Q_PROPERTY(int bookCt READ bookCt NOTIFY lookedAround)
     Q_PROPERTY(int playCt READ playCt NOTIFY lookedAround)
+    Q_PROPERTY(int lastNonce READ lastNonce NOTIFY lastNonceChanged)
 
     Q_INVOKABLE void login(const QString &username, const QString &password);
     Q_INVOKABLE void signUp(const QString &username, const QString &password);
@@ -34,6 +35,7 @@ public:
     int connCt() const;
     int bookCt() const;
     int playCt() const;
+    int lastNonce() const;
 
     void sendReady();
 
@@ -44,6 +46,7 @@ signals:
 
     void usernameChanged();
     void lookedAround();
+    void lastNonceChanged();
 
     void firstDealerChoosen(int dealer);
     void roundStarted(int round, int extra, int dealer, bool allLast, int deposit);
@@ -61,7 +64,7 @@ signals:
     void pointsChanged(const QVariant &points);
     void tableEnded(const QVariant &rank, const QVariant &scores);
     void poppedUp(QString str);
-    void activated(const QVariant &action, int lastDiscarder);
+    void activated(const QVariant &action, int lastDiscarder, int nonce);
     void deactivated();
 
 public slots:

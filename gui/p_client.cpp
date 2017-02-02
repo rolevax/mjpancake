@@ -94,6 +94,11 @@ int PClient::playCt() const
     return mPlayCt;
 }
 
+int PClient::lastNonce() const
+{
+    return mLastNonce;
+}
+
 void PClient::sendReady()
 {
     QJsonObject req;
@@ -137,6 +142,8 @@ void PClient::onJsonReceived(const QJsonObject &msg)
         mPlayCt = msg["Play"].toInt();
         emit lookedAround();
     } else if (type == "start") {
+        mLastNonce = 0;
+        emit lastNonceChanged();
         QJsonArray users = msg["Users"].toArray();
         QJsonArray girlIds = msg["GirlIds"].toArray();
         int tempDealer = msg["TempDealer"].toInt();
@@ -151,13 +158,14 @@ void PClient::recvTableEvent(const QString &type, const QJsonObject &msg)
     int nonce = msg["Nonce"].toInt();
     if (nonce > mLastNonce) {
         mLastNonce = nonce;
+        emit lastNonceChanged();
         emit deactivated();
     }
 
     if (type == "t-activated") {
         QJsonObject action = msg["Action"].toObject();
         int lastDiscarder = msg["LastDiscarder"].toInt();
-        emit activated(action.toVariantMap(), lastDiscarder);
+        emit activated(action.toVariantMap(), lastDiscarder, nonce);
     } else if (type == "t-first-dealer-choosen") {
         int initDealer = msg["InitDealer"].toInt();
         emit firstDealerChoosen(initDealer);

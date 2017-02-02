@@ -248,7 +248,7 @@ void PTableLocal::onActivated(saki::Table &table)
         if (view.iCan(code))
             map.insert(stringOf(code), true);
 
-    emit activated(QVariant::fromValue(map), focusWho);
+    emit activated(QVariant::fromValue(map), focusWho, -1);
 }
 
 void PTableLocal::start(const QVariant &girlIdsVar, const QVariant &gameRule,

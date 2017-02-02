@@ -32,6 +32,7 @@ Item {
     property alias middle: middle // for temp-dealer showing
 
     property string _lastDiscardStr
+    property int _nonce: -1
 
     PTable {
         id: pTable
@@ -258,6 +259,12 @@ Item {
 
         onActivated: {
             function cb() {
+                if (nonce >= 0) {
+                    table._nonce = nonce;
+                    if (nonce !== PClient.lastNonce)
+                        return;
+                }
+
                 if (action.END_TABLE || action.NEXT_ROUND) {
                     resultWindow.activate(action);
                 } else if (action.DICE) {
@@ -292,8 +299,11 @@ Item {
         }
 
         onDeactivated: {
-            // assume: the server auto-move-delay always bigger than max-anim-duration
-            table.deactivate();
+            function cb() {
+                table.deactivate();
+            }
+
+            animBuf.push({ callback: cb, duration: 0 });
         }
 
         onJustPause: {
@@ -320,8 +330,7 @@ Item {
         y: (parent.height - height) / 2 - 20
         z: 4
         onDiceRolled: {
-            table.deactivate();
-            pTable.action("DICE", -1);
+            table.action("DICE", -1)
         }
     }
 
@@ -331,8 +340,7 @@ Item {
         anchors.centerIn: parent
         fontSize: global.size.middleFont
         onActionTriggered: {
-            table.deactivate();
-            pTable.action("IRS_CHECK", mask);
+            table.action("IRS_CHECK", mask)
         }
     }
 
@@ -358,12 +366,10 @@ Item {
             backColor: table.backColors[table.colorIndex]
             tw: table.tw
             onNextRound: {
-                table.deactivate();
-                pTable.action("NEXT_ROUND", -1);
+                table.action("NEXT_ROUND", -1)
             }
             onEndTable: {
-                table.deactivate();
-                pTable.action("END_TABLE", -1);
+                table.action("END_TABLE", -1)
             }
             onVisibleChanged: {
                 if (table.animEnabled && visible)
@@ -489,8 +495,7 @@ Item {
         height: table.thb
 
         onActionTriggered: {
-            table.deactivate();
-            pTable.action(actStr, actArg);
+            table.action(actStr, actArg)
         }
     }
 
@@ -523,6 +528,7 @@ Item {
 
     function deactivate() {
         resultWindow.visible = false;
+        irsCheckBox.visible = false;
         middle.deactivate();
         playerControl.deactivate();
         for (var i = 0; i < 4; i++) {
@@ -530,6 +536,12 @@ Item {
             photos[i].deactivate();
         }
         logBox.clear();
+    }
+
+    function action(actStr, actArg) {
+        table.deactivate();
+        if (table._nonce < 0 || table._nonce === PClient.lastNonce)
+            pTable.action(actStr, actArg);
     }
 
     function setNames(names) {

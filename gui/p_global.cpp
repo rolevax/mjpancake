@@ -4,8 +4,9 @@
 #include <QFile>
 #include <QJsonArray>
 #include <QColor>
+#ifdef Q_OS_ANDROID
 #include <QAndroidJniObject>
-#include <QApplication> // temp
+#endif
 
 #include <cassert>
 
