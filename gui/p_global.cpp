@@ -42,6 +42,11 @@ void PGlobal::save()
     file.write(QJsonDocument(root).toJson());
 }
 
+QString PGlobal::version()
+{
+    return QString("0.6.5");
+}
+
 QVariant PGlobal::backColors() const
 {
     return root["backColors"].toVariant();

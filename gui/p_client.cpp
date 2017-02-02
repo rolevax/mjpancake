@@ -1,4 +1,5 @@
 #include "p_client.h"
+#include "p_global.h"
 
 #include "libsaki/util.h"
 
@@ -21,6 +22,7 @@ void PClient::login(const QString &username, const QString &password)
     mSocket.conn([=]() {
         QJsonObject req;
         req["Type"] = "login";
+        req["Version"] = PGlobal::version();
         req["Username"] = username;
         req["Password"] = hash(password);
         mSocket.send(req);
@@ -32,6 +34,7 @@ void PClient::signUp(const QString &username, const QString &password)
     mSocket.conn([=]() {
         QJsonObject req;
         req["Type"] = "sign-up";
+        req["Version"] = PGlobal::version();
         req["Username"] = username;
         req["Password"] = hash(password);
         mSocket.send(req);
@@ -69,14 +72,14 @@ bool PClient::loggedIn() const
     return mUsername != "";
 }
 
+bool PClient::bookable() const
+{
+    return mBookable;
+}
+
 int PClient::connCt() const
 {
     return mConnCt;
-}
-
-int PClient::idleCt() const
-{
-    return mIdleCt;
 }
 
 int PClient::bookCt() const
@@ -126,8 +129,8 @@ void PClient::onJsonReceived(const QJsonObject &msg)
             emit authFailIn(msg["Reason"].toString());
         }
     } else if (type == "look-around") {
+        mBookable = msg["Bookable"].toBool(false);
         mConnCt = msg["Conn"].toInt();
-        mIdleCt = msg["Idle"].toInt();
         mBookCt = msg["Book"].toInt();
         mPlayCt = msg["Play"].toInt();
         emit lookedAround();

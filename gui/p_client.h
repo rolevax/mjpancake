@@ -17,8 +17,8 @@ public:
 
     Q_PROPERTY(bool loggedIn READ loggedIn NOTIFY usernameChanged)
     Q_PROPERTY(QString username READ username NOTIFY usernameChanged)
+    Q_PROPERTY(bool bookable READ bookable NOTIFY lookedAround)
     Q_PROPERTY(int connCt READ connCt NOTIFY lookedAround)
-    Q_PROPERTY(int idleCt READ idleCt NOTIFY lookedAround)
     Q_PROPERTY(int bookCt READ bookCt NOTIFY lookedAround)
     Q_PROPERTY(int playCt READ playCt NOTIFY lookedAround)
 
@@ -30,8 +30,8 @@ public:
 
     QString username() const;
     bool loggedIn() const;
+    bool bookable() const;
     int connCt() const;
-    int idleCt() const;
     int bookCt() const;
     int playCt() const;
 
@@ -78,8 +78,8 @@ private:
 private:
     PJsonTcpSocket mSocket;
     QString mUsername;
+    bool mBookable = false;
     int mConnCt = 0;
-    int mIdleCt = 0;
     int mBookCt = 0;
     int mPlayCt = 0;
     int mLastNonce = 0;

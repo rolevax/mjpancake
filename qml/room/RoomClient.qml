@@ -22,7 +22,7 @@ Room {
             anchors.horizontalCenter: parent.horizontalAlignment
             horizontalAlignment: Text.AlignHCenter
             width: parent.width
-            text: "在线：" + PClient.connCt + "      呆萌：" + PClient.idleCt
+            text: "在线：" + PClient.connCt
         }
 
         Item {  width:1; height: global.size.gap }
@@ -37,11 +37,13 @@ Room {
 
             Buzzon {
                 id: bookButton
+                property bool booking: false
+                enabled: !booking && PClient.bookable
                 anchors.verticalCenter: parent.verticalCenter
                 textLength: 4
                 text: "预约"
                 onClicked: {
-                    enabled = false;
+                    booking = true;
                     PClient.book();
                 }
             }
@@ -56,7 +58,7 @@ Room {
 
     function _closeTable() {
         loader.source = "";
-        bookButton.enabled = true;
+        bookButton.booking = false;
     }
 
     Loader {
