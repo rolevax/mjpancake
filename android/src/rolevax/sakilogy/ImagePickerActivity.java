@@ -8,6 +8,8 @@ import android.content.CursorLoader;
 import android.database.Cursor;
 import android.util.Log;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 
 public class ImagePickerActivity extends QtActivity {
@@ -15,19 +17,11 @@ public class ImagePickerActivity extends QtActivity {
 		m_instance = this;
 	}
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
-            // hide the soft key bar
-            getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+    public static Object forceImmersive() {
+        if (m_instance != null) {
+            m_instance.delayedHide(300);
         }
+        return null;
     }
 	
 	public static Intent createChoosePhotoIntent() {
@@ -48,4 +42,45 @@ public class ImagePickerActivity extends QtActivity {
 	}
 	
 	private static ImagePickerActivity m_instance;
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        // When the window loses focus (e.g. the action overflow is shown),
+        // cancel any pending hide action. When the window gains focus,
+        // hide the system UI.
+        if (hasFocus) {
+            delayedHide(300);
+        } else {
+            mHideHandler.removeMessages(0);
+        }
+    }
+
+    private void hideSystemUI() {
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LOW_PROFILE
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE);
+    }
+
+    private void showSystemUI() {
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+    }
+
+    private final Handler mHideHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            hideSystemUI();
+        }
+    };
+
+    private void delayedHide(int delayMillis) {
+        mHideHandler.removeMessages(0);
+        mHideHandler.sendEmptyMessageDelayed(0, delayMillis);
+    }
 }

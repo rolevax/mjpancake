@@ -27,6 +27,7 @@ public:
                NOTIFY savedPasswordChanged)
 
     Q_INVOKABLE void save();
+    Q_INVOKABLE static void forceImmersive();
 
     static QString version();
 

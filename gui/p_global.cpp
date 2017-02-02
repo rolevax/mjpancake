@@ -4,6 +4,8 @@
 #include <QFile>
 #include <QJsonArray>
 #include <QColor>
+#include <QAndroidJniObject>
+#include <QApplication> // temp
 
 #include <cassert>
 
@@ -40,6 +42,16 @@ void PGlobal::save()
 
     file.open(QIODevice::WriteOnly | QIODevice::Text);
     file.write(QJsonDocument(root).toJson());
+}
+
+void PGlobal::forceImmersive()
+{
+#ifdef Q_OS_ANDROID
+    QAndroidJniObject::callStaticObjectMethod(
+                "rolevax/sakilogy/ImagePickerActivity",
+                "forceImmersive",
+                "()Ljava/lang/Object;");
+#endif
 }
 
 QString PGlobal::version()

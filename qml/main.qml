@@ -135,6 +135,7 @@ Window {
         id: loader
         anchors.fill: parent
         onLoaded: {
+            PGlobal.forceImmersive();
             loader.focus = true;
             item.closed.connect(closeRoom);
         }

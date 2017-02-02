@@ -19,6 +19,7 @@ PClient::PClient(QObject *parent) : QObject(parent)
 
 void PClient::login(const QString &username, const QString &password)
 {
+    PGlobal::forceImmersive();
     mSocket.conn([=]() {
         QJsonObject req;
         req["Type"] = "login";
@@ -31,6 +32,7 @@ void PClient::login(const QString &username, const QString &password)
 
 void PClient::signUp(const QString &username, const QString &password)
 {
+    PGlobal::forceImmersive();
     mSocket.conn([=]() {
         QJsonObject req;
         req["Type"] = "sign-up";
