@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QtQml>
 #include <QQuickView>
+#include <QTextCodec>
 
 #include "gui/p_table.h"
 #include "gui/p_gen.h"
@@ -19,6 +20,9 @@ int main(int argc, char *argv[])
 
     QIcon icon(":/pic/icon/icon.ico");
     app.setWindowIcon(icon);
+
+    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+    QTextCodec::setCodecForLocale(codec);
 
     QQmlApplicationEngine engine;
 
