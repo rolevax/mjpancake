@@ -408,7 +408,7 @@ Item {
     ResultFinal {
         id: resultFinal
         visible: false
-        height: 0.55 * table.height
+        height: (global.mobile ? 0.65 : 0.55) * table.height
         onClosed: {
             pTable.saveRecord();
             table.closed();
