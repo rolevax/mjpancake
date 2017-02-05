@@ -11,7 +11,7 @@ SOURCES += main_test.cpp \
     libsaki/hand.cpp \
     libsaki/mount.cpp \
     libsaki/table.cpp \
-    libsaki/myrand.cpp \
+    libsaki/rand.cpp \
     libsaki/gen.cpp \
     libsaki/tilecount.cpp \
     libsaki/explain.cpp \
@@ -53,7 +53,7 @@ HEADERS += \
     libsaki/table.h \
     libsaki/tableobserver.h \
     libsaki/tile.h \
-    libsaki/myrand.h \
+    libsaki/rand.h \
     libsaki/gen.h \
     libsaki/tilecount.h \
     libsaki/explain.h \
