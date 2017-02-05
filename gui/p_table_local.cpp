@@ -172,7 +172,8 @@ void PTableLocal::onTableEnded(const std::array<saki::Who, 4> &rank,
 
 void PTableLocal::onPoppedUp(const saki::Table &table, saki::Who who)
 {
-    emit poppedUp(QString::fromStdString(table.getGirl(who).popUpStr()));
+    if (who == mSelf)
+        emit poppedUp(QString::fromStdString(table.getGirl(who).popUpStr()));
 }
 
 void PTableLocal::onActivated(saki::Table &table)
@@ -248,7 +249,7 @@ void PTableLocal::onActivated(saki::Table &table)
         if (view.iCan(code))
             map.insert(stringOf(code), true);
 
-    emit activated(QVariant::fromValue(map), focusWho, -1);
+    emit activated(QVariant::fromValue(map), focusWho, view.myTickets().forwardAll(), -1);
 }
 
 void PTableLocal::start(const QVariant &girlIdsVar, const QVariant &gameRule,

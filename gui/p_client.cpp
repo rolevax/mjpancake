@@ -165,7 +165,8 @@ void PClient::recvTableEvent(const QString &type, const QJsonObject &msg)
     if (type == "t-activated") {
         QJsonObject action = msg["Action"].toObject();
         int lastDiscarder = msg["LastDiscarder"].toInt();
-        emit activated(action.toVariantMap(), lastDiscarder, nonce);
+        bool green = msg["Green"].toBool(false);
+        emit activated(action.toVariantMap(), lastDiscarder, green, nonce);
     } else if (type == "t-first-dealer-choosen") {
         int initDealer = msg["InitDealer"].toInt();
         emit firstDealerChoosen(initDealer);

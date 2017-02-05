@@ -15,6 +15,7 @@ Item {
     property bool face: true // false when no-ten at ryuukyoku
     property var can: { "tsumokiri": false, "pass": false }
     property point outCoord
+    property bool green
 
     ActionButtonBar {
         id: actionButtons
@@ -36,7 +37,10 @@ Item {
         tileWidth: twb
         backColor: frame.backColor
         onClicked: {
-            outCoord = _spinOut();
+            if (green)
+                greenSpinAnim.start();
+            else
+                outCoord = _spinOut();
             frame.actionTriggered("SPIN_OUT", -1);
         }
         NumberAnimation {
@@ -64,6 +68,28 @@ Item {
                 }
             }
         }
+        SequentialAnimation {
+            id: greenSpinAnim
+            NumberAnimation {
+                target: drawn
+                property: "y"
+                duration: 150
+                from: 0
+                to: -twb * 0.5
+                easing.type: Easing.OutQuad
+            }
+            PauseAnimation {
+                duration: 400
+            }
+            NumberAnimation {
+                target: drawn
+                property: "y"
+                duration: 150
+                from: -twb * 0.5
+                to: 0
+                easing.type: Easing.Linear
+            }
+        }
 
         function activate() {
             drawn.dark = false;
@@ -84,11 +110,15 @@ Item {
         model: ListModel { id: handModel }
         orientation: Qt.Horizontal
         delegate: Tile {
+            id: handDele
             tileSet: frame.tileSet
             tileWidth: twb
             backColor: frame.backColor
             onClicked: {
-                outCoord = _swapOut(index)
+                if (green)
+                    greenSwapAnim.start();
+                else
+                    outCoord = _swapOut(index)
                 frame.actionTriggered("SWAP_OUT", tileStr);
             }
             tileStr: frame.face && modelTileStr ? modelTileStr : "back"
@@ -103,6 +133,29 @@ Item {
                 actStr: modelFloatAct
                 onButtonPressed: {
                     frame.actionTriggered(modelFloatAct, modelFloatArg);
+                }
+            }
+
+            SequentialAnimation {
+                id: greenSwapAnim
+                NumberAnimation {
+                    target: handDele
+                    property: "y"
+                    duration: 150
+                    from: 0
+                    to: -twb * 0.5
+                    easing.type: Easing.OutQuad
+                }
+                PauseAnimation {
+                    duration: 400
+                }
+                NumberAnimation {
+                    target: handDele
+                    property: "y"
+                    duration: 150
+                    from: -twb * 0.5
+                    to: 0
+                    easing.type: Easing.OutQuad
                 }
             }
         }

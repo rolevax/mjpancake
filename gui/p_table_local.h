@@ -50,7 +50,7 @@ signals:
     void diced(int die1, int die2);
     void dealt(const QVariant &init);
     void flipped(const QVariant &newIndic);
-    void activated(const QVariant &action, int lastDiscarder, int nonce);
+    void activated(const QVariant &action, int lastDiscarder, bool green, int nonce);
     void drawn(int who, const QVariant &tile, bool rinshan);
     void discarded(int who, const QVariant &tile, bool spin);
     void riichiCalled(int who);

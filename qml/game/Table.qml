@@ -265,6 +265,8 @@ Item {
                         return;
                 }
 
+                table.green.visible = green;
+
                 if (action.END_TABLE || action.NEXT_ROUND) {
                     resultWindow.activate(action);
                 } else if (action.DICE) {
@@ -288,11 +290,7 @@ Item {
 
         onPoppedUp: {
             function cb() {
-                if (str === "GREEN") {
-                    green.visible = !green.visible;
-                } else {
-                    logBox.log(str);
-                }
+                logBox.log(str);
             }
 
             animBuf.push({ callback: cb, duration: 0 });
@@ -486,6 +484,7 @@ Item {
         animEnabled: table.animEnabled
         tileSet: table.tileSet
         backColor: table.backColors[table.colorIndex]
+        green: table.green.visible
         tw: table.tw
         twb: table.twb
         x: (table.width - 13 * twb) / 2;
