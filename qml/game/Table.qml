@@ -130,7 +130,7 @@ Item {
                 var osc; // out-tile's scene coord
 
                 if (who === 0) {
-                    osc = spin ? playerControl.spinOut() : playerControl.swapOut();
+                    osc = playerControl.outCoord;
                     osc = mapFromItem(playerControl, osc.x, osc.y);
                     osc = mapToItem(rivers.itemAt(0), osc.x, osc.y);
                 } else {

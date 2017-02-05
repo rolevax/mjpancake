@@ -50,6 +50,7 @@ Column {
         enabled: !frozen && unInput.acceptableInput && pwInput.acceptableInput
         onClicked: {
             frozen = true;
+            loginErrorText.text = "";
             PClient.login(unInput.text.trim(), pwInput.text);
         }
     }
@@ -81,6 +82,8 @@ Column {
                 PGlobal.savedUsername = PClient.username;
                 if (PGlobal.savePassword)
                     PGlobal.savedPassword = pwInput.text;
+            } else {
+                frame.frozen = false;
             }
         }
     }

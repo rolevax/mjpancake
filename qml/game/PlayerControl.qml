@@ -14,7 +14,7 @@ Item {
     property color backColor
     property bool face: true // false when no-ten at ryuukyoku
     property var can: { "tsumokiri": false, "pass": false }
-    property int outPos
+    property point outCoord
 
     ActionButtonBar {
         id: actionButtons
@@ -35,7 +35,10 @@ Item {
         tileSet: frame.tileSet
         tileWidth: twb
         backColor: frame.backColor
-        onClicked: { frame.actionTriggered("SPIN_OUT", -1); }
+        onClicked: {
+            outCoord = _spinOut();
+            frame.actionTriggered("SPIN_OUT", -1);
+        }
         NumberAnimation {
             id: inAnim
             target: drawn
@@ -44,6 +47,22 @@ Item {
             to: 0
             duration: 200
             easing.type: Easing.OutQuad
+        }
+        SequentialAnimation {
+            id: outAnim
+            NumberAnimation {
+                target: drawn
+                property: "y"
+                duration: 100
+                from: 0
+                to: -twb
+                easing.type: Easing.Linear
+            }
+            ScriptAction {
+                script: {
+                    drawn.tileStr = "hide";
+                }
+            }
         }
 
         function activate() {
@@ -69,7 +88,7 @@ Item {
             tileWidth: twb
             backColor: frame.backColor
             onClicked: {
-                outPos = index;
+                outCoord = _swapOut(index)
                 frame.actionTriggered("SWAP_OUT", tileStr);
             }
             tileStr: frame.face && modelTileStr ? modelTileStr : "back"
@@ -95,6 +114,16 @@ Item {
                 from: -twb
                 duration: 200
                 easing.type: Easing.OutQuad
+            }
+        }
+
+        remove: Transition {
+            enabled: frame.animEnabled
+            NumberAnimation {
+                property: "y"
+                duration: 100
+                to: -twb
+                easing.type: Easing.Linear
             }
         }
 
@@ -280,7 +309,7 @@ Item {
             drawn.inAnim.start();
     }
 
-    function swapOut() {
+    function _swapOut(outPos) {
         var res = mapFromItem(frame, outPos * twb, 0);
         handModel.remove(outPos, 1);
         if (drawn.visible)
@@ -289,9 +318,9 @@ Item {
         return res;
     }
 
-    function spinOut() {
+    function _spinOut() {
         var res = mapFromItem(drawn, 0, 0);
-        drawn.tileStr = "hide";
+        outAnim.start();
         return res;
     }
 
@@ -409,10 +438,12 @@ Item {
     }
 
     function easyPass() {
-        if (frame.can.tsumokiri)
+        if (frame.can.tsumokiri) {
+            frame.outCoord = frame._spinOut();
             frame.actionTriggered("SPIN_OUT", -1);
-        else if (frame.can.pass)
+        } else if (frame.can.pass) {
             frame.actionTriggered("PASS", -765);
+        }
         // else do nothing
     }
 } // end of Item
