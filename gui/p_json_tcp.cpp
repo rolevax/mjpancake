@@ -3,6 +3,8 @@
 #include "libsaki/util.h"
 
 #include <QJsonDocument>
+#include <QNetworkReply>
+#include <QHostAddress>
 
 
 
@@ -18,6 +20,8 @@ const quint16 SRV_PORT = 6171;
 PJsonTcpSocket::PJsonTcpSocket(QObject *parent)
     : QObject(parent)
 {
+    connect(&mHttp, &QNetworkAccessManager::finished, this, &PJsonTcpSocket::onAddrReplied);
+
     using ErrorSignal = void (QAbstractSocket::*)(QAbstractSocket::SocketError);
     connect(&mSocket, static_cast<ErrorSignal>(&QTcpSocket::error),
             this, &PJsonTcpSocket::onError);
@@ -30,8 +34,7 @@ PJsonTcpSocket::PJsonTcpSocket(QObject *parent)
 void PJsonTcpSocket::conn(std::function<void()> callback)
 {
     mOnConn = callback;
-    mSocket.abort();
-    mSocket.connectToHost(SRV_ADDR, SRV_PORT);
+    mHttp.get(QNetworkRequest(QUrl("http://rolevax.github.io/sl-addr")));
 }
 
 void PJsonTcpSocket::send(const QJsonObject &msg)
@@ -82,3 +85,24 @@ void PJsonTcpSocket::onReadReady()
         emit recvJson(msg);
     }
 }
+
+void PJsonTcpSocket::onAddrReplied(QNetworkReply *reply)
+{
+    mSocket.abort();
+
+#ifdef NDEBUG
+    QString strAddr(reply->readAll().trimmed());
+    QHostAddress addr;
+    if (addr.setAddress(strAddr)) {
+        mSocket.connectToHost(addr, SRV_PORT);
+    } else {
+        mSocket.connectToHost(SRV_ADDR, SRV_PORT);
+    }
+#else
+    mSocket.connectToHost(SRV_ADDR, SRV_PORT);
+#endif
+
+    reply->deleteLater();
+}
+
+
