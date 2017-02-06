@@ -20,6 +20,7 @@ public:
 
 signals:
     void remoteClosed();
+    void connError();
     void recvJson(const QJsonObject &msg);
 
 private slots:

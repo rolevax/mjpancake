@@ -8,8 +8,12 @@
 
 
 
+const char *ADDR_HOSTER = "http://git.oschina.net/rolevax/sl-addr"
+                          "/raw/master/sl-addr?dir=0&filepath=sl-addr"
+                          "&oid=4582122773b1ec4fc3927d14e99f7066ee7b78b2"
+                          "&sha=7c4178c0c295b767243c846e4e033a83c0266797";
 #ifdef NDEBUG
-const char *SRV_ADDR = "138.197.35.203";
+const char *SRV_ADDR = "118.89.219.121";
 #else
 const char *SRV_ADDR = "127.0.0.1";
 #endif
@@ -34,7 +38,12 @@ PJsonTcpSocket::PJsonTcpSocket(QObject *parent)
 void PJsonTcpSocket::conn(std::function<void()> callback)
 {
     mOnConn = callback;
-    mHttp.get(QNetworkRequest(QUrl("http://rolevax.github.io/sl-addr")));
+
+    QNetworkRequest request;
+    request.setUrl(QUrl(ADDR_HOSTER));
+    request.setRawHeader("User-Agent", "Wget/1.18 (linux-gnu)");
+
+    mHttp.get(request);
 }
 
 void PJsonTcpSocket::send(const QJsonObject &msg)
@@ -54,12 +63,15 @@ void PJsonTcpSocket::onError(QAbstractSocket::SocketError socketError)
         break;
     case QAbstractSocket::HostNotFoundError:
         saki::util::p("E PJsonTcp: host not found");
+        emit connError();
         break;
     case QAbstractSocket::ConnectionRefusedError:
         saki::util::p("E PJsonTcp: connection refused");
+        emit connError();
         break;
     default:
         saki::util::p("E PJsonTcp: unknown conncetion error");
+        emit connError();
         break;
     }
 }
@@ -94,8 +106,10 @@ void PJsonTcpSocket::onAddrReplied(QNetworkReply *reply)
     QString strAddr(reply->readAll().trimmed());
     QHostAddress addr;
     if (addr.setAddress(strAddr)) {
+        saki::util::p("srv ++++", strAddr.toStdString());
         mSocket.connectToHost(addr, SRV_PORT);
     } else {
+        saki::util::p("srv ++++", SRV_ADDR, "(fetch)", strAddr.toStdString());
         mSocket.connectToHost(SRV_ADDR, SRV_PORT);
     }
 #else

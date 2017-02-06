@@ -14,6 +14,7 @@ PClient::PClient(QObject *parent) : QObject(parent)
 {
     connect(&mSocket, &PJsonTcpSocket::recvJson, this, &PClient::onJsonReceived);
     connect(&mSocket, &PJsonTcpSocket::remoteClosed, this, &PClient::remoteClosed);
+    connect(&mSocket, &PJsonTcpSocket::connError, this, &PClient::connError);
     connect(&mSocket, &PJsonTcpSocket::remoteClosed, this, &PClient::onRemoteClosed);
 }
 

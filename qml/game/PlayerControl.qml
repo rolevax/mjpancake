@@ -499,5 +499,11 @@ Item {
         }
         // else do nothing
     }
+
+    function spinIfAny() {
+        // passive tmkr after riichi, just for display, no action
+        if (drawn.visible)
+            frame.outCoord = frame._spinOut();
+    }
 } // end of Item
 

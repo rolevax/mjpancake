@@ -41,6 +41,7 @@ public:
 
 signals:
     void remoteClosed();
+    void connError();
     void authFailIn(const QString &reason);
     void startIn(const QVariantList &users, const QVariantList &girlIds, int tempDealer);
 

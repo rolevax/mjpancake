@@ -27,6 +27,7 @@ Item {
     // set by parent
     property var photos
     property Rectangle green
+    property Rectangle loadingRect
 
     property alias pTable: pTable
     property alias middle: middle // for temp-dealer showing
@@ -130,6 +131,8 @@ Item {
                 var osc; // out-tile's scene coord
 
                 if (who === 0) {
+                    if (spin)
+                        playerControl.spinIfAny();
                     osc = playerControl.outCoord;
                     osc = mapFromItem(playerControl, osc.x, osc.y);
                     osc = mapToItem(rivers.itemAt(0), osc.x, osc.y);
@@ -234,6 +237,7 @@ Item {
 
         onPointsChanged: {
             function cb() {
+                loadingRect.visible = false;
                 middle.setPoints(points);
                 pointBoard.points = points;
             }

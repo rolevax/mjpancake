@@ -77,6 +77,11 @@ Column {
             frame.frozen = false;
         }
 
+        onConnError: {
+            loginErrorText.text = "连接错误";
+            frame.frozen = false;
+        }
+
         onUsernameChanged: {
             if (PClient.loggedIn) {
                 PGlobal.savedUsername = PClient.username;
