@@ -194,7 +194,7 @@ Item {
             if (spin) {
                 randPos = Math.floor(Math.random() * (standModel.count - 2));
                 standModel.remove(randPos, 3);
-                drawnStand.tileStr = "hide";
+                drawnStand.visible = false;
             } else {
                 randPos = Math.floor(Math.random() * (standModel.count - 3));
                 standModel.remove(randPos, 4);

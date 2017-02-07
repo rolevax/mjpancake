@@ -8,14 +8,14 @@ Rectangle {
 
     property string name
     property string username: ""
-    property string title: "嘿嘿嘿嘿嘿"
+    property string title: "暂无称号"
 
     color: "#33AAAACC"
 
     Texd {
         color: "white"
         font.pixelSize: 0.6 * nameText.font.pixelSize
-        text: username === "" ? "" : title + "\n" + username + " X段 R1500"
+        text: username === "" ? "" : title + "\n" + username + " N段 R1500"
         horizontalAlignment: Text.AlignHCenter
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top

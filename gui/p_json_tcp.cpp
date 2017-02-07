@@ -9,9 +9,7 @@
 
 
 const char *ADDR_HOSTER = "http://git.oschina.net/rolevax/sl-addr"
-                          "/raw/master/sl-addr?dir=0&filepath=sl-addr"
-                          "&oid=4582122773b1ec4fc3927d14e99f7066ee7b78b2"
-                          "&sha=7c4178c0c295b767243c846e4e033a83c0266797";
+                          "/raw/master/sl-addr?dir=0&filepath=sl-addr";
 #ifdef NDEBUG
 const char *SRV_ADDR = "118.89.219.121";
 #else
