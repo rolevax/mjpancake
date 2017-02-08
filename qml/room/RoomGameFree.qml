@@ -62,12 +62,11 @@ Room {
             GomboToggle {
                 model: [ "随机选人" ]
                 onActivated: {
-                    do {
-                        girlBox0.chooseByAvalIndex(Names.genAvailIndex());
-                        girlBox1.chooseByAvalIndex(Names.genAvailIndex());
-                        girlBox2.chooseByAvalIndex(Names.genAvailIndex());
-                        girlBox3.chooseByAvalIndex(Names.genAvailIndex());
-                    } while (hasDupId());
+                    var indices = Names.genIndices();
+                    girlBox0.chooseByAvalIndex(indices[0]);
+                    girlBox1.chooseByAvalIndex(indices[1]);
+                    girlBox2.chooseByAvalIndex(indices[2]);
+                    girlBox3.chooseByAvalIndex(indices[3]);
                 }
             }
 

@@ -22,6 +22,21 @@ function genAvailIndex() {
     return Math.floor(Math.random() * availIds.length);
 }
 
+function genIndices() {
+    var res = [ 0, 0, 0, 0 ];
+    res[0] = genAvailIndex();
+    do {
+        res[1] = genAvailIndex();
+    } while (res[1] === res[0]);
+    do {
+        res[2] = genAvailIndex();
+    } while (res[2] === res[0] || res[2] === res[1]);
+    do {
+        res[3] = genAvailIndex();
+    } while (res[3] === res[0] || res[3] === res[1] || res[3] === res[2]);
+    return res;
+}
+
 var names = {
     // *** SYNC with libsaki/Girl.h enum 'Id'
     // *** SYNC with availIds
