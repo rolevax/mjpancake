@@ -26,7 +26,7 @@ Window {
     visible: true
     width: 1207; height: 679
     color: PGlobal.themeBack
-    title: (PClient.loggedIn ? PClient.username + "@" : "") + "Sakilogy " + global.version
+    title: (PClient.loggedIn ? PClient.user.Username + "@" : "") + "Sakilogy " + global.version
 
     Image {
         id: titleImage
@@ -91,7 +91,7 @@ Window {
         anchors.left: parent.left
         anchors.margins: parent.height / 9
         visible: PClient.loggedIn
-        text: PClient.username
+        text: !!PClient.user.Username ? PClient.user.Username : ""
         textLength: 8
     }
 
@@ -102,7 +102,7 @@ Window {
         spacing: global.size.space
 
         Buzzon {
-            text: "对局"
+            text: "段位"
             textLength: 8
             visible: PClient.loggedIn
             onClicked: { loader.source = "room/RoomClient.qml"; }
@@ -110,7 +110,7 @@ Window {
 
         Repeater {
             model: [
-                { text: "情报", load: "Help" },
+                { text: "文档", load: "Help" },
                 { text: "练习", load: "GameFree" },
                 { text: "牌谱", load: "Replay" },
                 { text: "设定", load: "Settings" }

@@ -15,26 +15,24 @@ class PClient : public QObject
 public:
     explicit PClient(QObject *parent = nullptr);
 
-    Q_PROPERTY(bool loggedIn READ loggedIn NOTIFY usernameChanged)
-    Q_PROPERTY(QString username READ username NOTIFY usernameChanged)
-    Q_PROPERTY(bool bookable READ bookable NOTIFY lookedAround)
+    Q_PROPERTY(bool loggedIn READ loggedIn NOTIFY userChanged)
+    Q_PROPERTY(QVariantMap user READ user NOTIFY userChanged)
+    Q_PROPERTY(int playCt READ playCt NOTIFY userChanged)
     Q_PROPERTY(int connCt READ connCt NOTIFY lookedAround)
-    Q_PROPERTY(int bookCt READ bookCt NOTIFY lookedAround)
-    Q_PROPERTY(int playCt READ playCt NOTIFY lookedAround)
+    Q_PROPERTY(QVariantMap books READ books NOTIFY lookedAround)
     Q_PROPERTY(int lastNonce READ lastNonce NOTIFY lastNonceChanged)
 
     Q_INVOKABLE void login(const QString &username, const QString &password);
     Q_INVOKABLE void signUp(const QString &username, const QString &password);
     Q_INVOKABLE void lookAround();
-    Q_INVOKABLE void book();
+    Q_INVOKABLE void book(const QString &bookType);
     Q_INVOKABLE void unbook();
 
-    QString username() const;
+    QVariantMap user() const;
     bool loggedIn() const;
-    bool bookable() const;
-    int connCt() const;
-    int bookCt() const;
     int playCt() const;
+    int connCt() const;
+    QVariantMap books() const;
     int lastNonce() const;
 
     void sendReady();
@@ -45,7 +43,7 @@ signals:
     void authFailIn(const QString &reason);
     void startIn(const QVariantList &users, const QVariantList &girlIds, int tempDealer);
 
-    void usernameChanged();
+    void userChanged();
     void lookedAround();
     void lastNonceChanged();
 
@@ -81,11 +79,9 @@ private:
 
 private:
     PJsonTcpSocket mSocket;
-    QString mUsername;
-    bool mBookable = false;
+    QVariantMap mUser;
     int mConnCt = 0;
-    int mBookCt = 0;
-    int mPlayCt = 0;
+    QVariantMap mBooks;
     int mLastNonce = 0;
 };
 

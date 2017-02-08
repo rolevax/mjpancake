@@ -125,7 +125,7 @@ Room {
             room.frozen = false;
         }
 
-        onUsernameChanged: {
+        onUserChanged: {
             if (PClient.loggedIn) {
                 authOkScreen.visible = true;
                 authOkTimer.start();

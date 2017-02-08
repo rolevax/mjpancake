@@ -12,6 +12,16 @@
 
 PClient::PClient(QObject *parent) : QObject(parent)
 {
+    QVariantMap bookEntry;
+    bookEntry["Bookable"] = false;
+    bookEntry["Play"] = 0;
+    bookEntry["Book"] = 0;
+
+    mBooks["DS71"] = bookEntry;
+    mBooks["CS71"] = bookEntry;
+    mBooks["BS71"] = bookEntry;
+    mBooks["AS71"] = bookEntry;
+
     connect(&mSocket, &PJsonTcpSocket::recvJson, this, &PClient::onJsonReceived);
     connect(&mSocket, &PJsonTcpSocket::remoteClosed, this, &PClient::remoteClosed);
     connect(&mSocket, &PJsonTcpSocket::connError, this, &PClient::connError);
@@ -51,10 +61,11 @@ void PClient::lookAround()
     mSocket.send(req);
 }
 
-void PClient::book()
+void PClient::book(const QString &bookType)
 {
     QJsonObject req;
     req["Type"] = "book";
+    req["BookType"] = bookType;
     mSocket.send(req);
 }
 
@@ -65,19 +76,27 @@ void PClient::unbook()
     mSocket.send(req);
 }
 
-QString PClient::username() const
+QVariantMap PClient::user() const
 {
-    return mUsername;
+    return mUser;
 }
 
 bool PClient::loggedIn() const
 {
-    return mUsername != "";
+    return mUser.contains("Username") && mUser["Username"].toString() != "";
 }
 
-bool PClient::bookable() const
+int PClient::playCt() const
 {
-    return mBookable;
+    if (mUser.contains("Ranks")) {
+        const auto &ranks = mUser["Ranks"].toList();
+        int sum = 0;
+        for (int i = 0; i < 4; i++)
+            sum += ranks.at(i).toInt();
+        return sum;
+    } else {
+        return 0;
+    }
 }
 
 int PClient::connCt() const
@@ -85,14 +104,9 @@ int PClient::connCt() const
     return mConnCt;
 }
 
-int PClient::bookCt() const
+QVariantMap PClient::books() const
 {
-    return mBookCt;
-}
-
-int PClient::playCt() const
-{
-    return mPlayCt;
+    return mBooks;
 }
 
 int PClient::lastNonce() const
@@ -119,8 +133,8 @@ void PClient::action(QString actStr, const QVariant &actArg)
 
 void PClient::onRemoteClosed()
 {
-    mUsername = "";
-    emit usernameChanged();
+    mUser.clear();
+    emit userChanged();
 }
 
 void PClient::onJsonReceived(const QJsonObject &msg)
@@ -129,18 +143,16 @@ void PClient::onJsonReceived(const QJsonObject &msg)
     if (type == "auth") {
         bool ok = msg["Ok"].toBool(false);
         if (ok) {
-            mUsername = msg["User"].toObject()["Username"].toString();
-            emit usernameChanged();
+            mUser = msg["User"].toObject().toVariantMap();
+            emit userChanged();
         } else {
-            mUsername = "";
-            emit usernameChanged();
+            mUser.clear();
+            emit userChanged();
             emit authFailIn(msg["Reason"].toString());
         }
     } else if (type == "look-around") {
-        mBookable = msg["Bookable"].toBool(false);
         mConnCt = msg["Conn"].toInt();
-        mBookCt = msg["Book"].toInt();
-        mPlayCt = msg["Play"].toInt();
+        mBooks = msg["Books"].toObject().toVariantMap();
         emit lookedAround();
     } else if (type == "start") {
         mLastNonce = 0;
@@ -151,6 +163,9 @@ void PClient::onJsonReceived(const QJsonObject &msg)
         emit startIn(users.toVariantList(), girlIds.toVariantList(), tempDealer);
     } else if (type.startsWith("t-")) {
         recvTableEvent(type, msg);
+    } else if (type == "update-user") {
+        mUser = msg["User"].toObject().toVariantMap();
+        emit userChanged();
     }
 }
 

@@ -556,7 +556,7 @@ Item {
 
     function setUsers(users) {
         for (var i = 0; i < 4; i++)
-            photos[i].username = users[i].Username;
+            photos[i].user = users[i];
     }
 
     function easyPass() {

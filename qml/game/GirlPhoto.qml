@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import "../js/nettrans.js" as NetTrans
 import "../widget"
 
 Rectangle {
@@ -7,15 +8,17 @@ Rectangle {
     signal rivalShotted
 
     property string name
-    property string username: ""
-    property string title: "暂无称号"
+    property var user: null
+    property string title: ""
 
     color: "#33AAAACC"
 
     Texd {
         color: "white"
         font.pixelSize: 0.6 * nameText.font.pixelSize
-        text: username === "" ? "" : title + "\n" + username + " N段 R1500"
+        text: user == null ? ""
+                           : "暂无称号\n" + user.Username + " "
+                             + NetTrans.level(user.Level) + " " + NetTrans.rating(user.Rating)
         horizontalAlignment: Text.AlignHCenter
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top

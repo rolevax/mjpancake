@@ -82,9 +82,9 @@ Column {
             frame.frozen = false;
         }
 
-        onUsernameChanged: {
+        onUserChanged: {
             if (PClient.loggedIn) {
-                PGlobal.savedUsername = PClient.username;
+                PGlobal.savedUsername = PClient.user.Username;
                 if (PGlobal.savePassword)
                     PGlobal.savedPassword = pwInput.text;
             } else {

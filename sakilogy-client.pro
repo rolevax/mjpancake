@@ -94,6 +94,7 @@ HEADERS += \
     libsaki/mount.h \
     libsaki/pointinfo.h \
     libsaki/princess.h \
+    libsaki/rand.h \
     libsaki/replay.h \
     libsaki/string_enum.h \
     libsaki/tablefocus.h \
@@ -111,13 +112,12 @@ HEADERS += \
     gui/p_gen.h \
     gui/p_global.h \
     gui/p_image_provider.h \
+    gui/p_image_settings.h \
+    gui/p_json_tcp.h \
     gui/p_port.h \
     gui/p_replay.h \
     gui/p_table.h \
-    gui/p_table_local.h \
-    gui/p_json_tcp.h \
-    libsaki/rand.h \
-    gui/p_image_settings.h
+    gui/p_table_local.h
 
 
 
@@ -129,8 +129,7 @@ DISTFILES += \
     android/build.gradle \
     android/gradle/wrapper/gradle-wrapper.properties \
     android/gradlew.bat \
-    android/src/rolevax/sakilogy/ImagePickerActivity.java \
-    qml/room/RoomSignUp.qml
+    android/src/rolevax/sakilogy/ImagePickerActivity.java
 
 OTHER_FILES += \
     qml/*.qml \
