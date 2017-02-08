@@ -131,8 +131,7 @@ Item {
                 var osc; // out-tile's scene coord
 
                 if (who === 0) {
-                    if (spin)
-                        playerControl.spinIfAny();
+                    playerControl.fixSyncError(tile.modelTileStr);
                     osc = playerControl.outCoord;
                     osc = mapFromItem(playerControl, osc.x, osc.y);
                     osc = mapToItem(rivers.itemAt(0), osc.x, osc.y);

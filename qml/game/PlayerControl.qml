@@ -16,6 +16,7 @@ Item {
     property var can: { "tsumokiri": false, "pass": false }
     property point outCoord
     property bool green
+    property string _lastDiscardStr: ""
 
     ActionButtonBar {
         id: actionButtons
@@ -363,6 +364,7 @@ Item {
     }
 
     function _swapOut(outPos) {
+        _lastDiscardStr = handModel.get(outPos).modelTileStr;
         var res = mapFromItem(frame, outPos * twb, 0);
         handModel.remove(outPos, 1);
         if (drawn.visible)
@@ -372,6 +374,7 @@ Item {
     }
 
     function _spinOut() {
+        _lastDiscardStr = drawn.tileStr;
         var res = mapFromItem(drawn, 0, 0);
         outAnim.start();
         return res;
@@ -500,10 +503,32 @@ Item {
         // else do nothing
     }
 
-    function spinIfAny() {
-        // passive tmkr after riichi, just for display, no action
-        if (drawn.visible)
-            frame.outCoord = frame._spinOut();
+    function fixSyncError(tileStr) {
+        function searchAndSwapOut() {
+            for (var outPos = 0; outPos < handModel.count; outPos++) {
+                if (handModel.get(outPos).modelTileStr === tileStr) {
+                    outCoord = _swapOut(outPos);
+                    break;
+                }
+            }
+        }
+
+        if (drawn.visible) {
+            // if drawn.visible, user didn't do anything, or spin-out anim playing
+            // (all actions set drawn invisible)
+            // case 1: auto-move after riichi
+            // case 2: server sweep-one and local timeout
+            // case 3: spin-out anim playing
+            outCoord = _spinOut();
+        } else if (handModel.count % 3 === 2) {
+            // case: server sweep-one, local timeout after bark
+            searchAndSwapOut();
+        } else if (_lastDiscardStr !== tileStr) {
+            // case: server sweep-one intersects local discard
+            // simply fix by picking-back and re-discard
+            drawn.tileStr = _lastDiscardStr;
+            searchAndSwapOut();
+        }
     }
 } // end of Item
 
