@@ -53,5 +53,7 @@
         <file>qml/area/AreaBookRow.qml</file>
         <file>qml/js/nettrans.js</file>
         <file>qml/area/AreaStage.qml</file>
+        <file>qml/area/AreaStats.qml</file>
+        <file>qml/area/AreaOp.qml</file>
     </qresource>
 </RCC>

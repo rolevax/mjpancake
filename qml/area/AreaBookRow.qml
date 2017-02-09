@@ -26,7 +26,7 @@ Row {
         enabled: !booking && PClient.books[bookType].Bookable
         anchors.verticalCenter: parent.verticalCenter
         textLength: 4
-        text: booking ? "待齐" : "预约"
+        text: "预约"
         onClicked: {
             booking = true;
             PClient.book(bookType);
