@@ -57,7 +57,7 @@ void PGlobal::forceImmersive()
 
 QString PGlobal::version()
 {
-    return QString("0.6.7");
+    return QString("0.6.8");
 }
 
 QVariant PGlobal::backColors() const
