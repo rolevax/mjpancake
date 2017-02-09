@@ -103,7 +103,6 @@ Image {
             width: parent.width - 4 * photoGap - 2 * photoWidth
             photos: [ photo0, photo1, photo2, photo3 ]
             green: greenWorld
-            loadingRect: loadingWorld
         }
 
         Rectangle {
@@ -111,23 +110,6 @@ Image {
             color: "#4400FF00"
             anchors.fill: parent
             visible: false
-        }
-
-        Rectangle {
-            id: loadingWorld
-            color: PGlobal.themeBack
-            anchors.fill: parent
-            Texd {
-                anchors.centerIn: parent
-                font.pixelSize: global.size.middleFont
-                text: "解说吹水中"
-                SequentialAnimation on opacity {
-                    PropertyAnimation { to: 0.2; duration: 500 }
-                    PropertyAnimation { to: 1.0; duration: 500 }
-                    loops: Animation.Infinite
-                    running: loadingWorld.visible
-                }
-            }
         }
     }
 

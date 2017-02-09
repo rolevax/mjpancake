@@ -4,6 +4,7 @@ import "../js/girlnames.js" as Names
 import "../js/nettrans.js" as NetTrans
 import "../widget"
 import "../area"
+import "../game"
 
 Room {
     id: room
@@ -117,11 +118,21 @@ Room {
         }
     }
 
+    AreaStage {
+        id: areaStage
+        users: room.users
+        names: room.displayedNames
+        onReadyClicked: {
+            PClient.sendReady();
+        }
+    }
+
     Timer {
         id: startTimer
         interval: 17
         onTriggered: {
             loader.item.startOnline(PClient);
+            areaStage.showReady = true;
         }
     }
 
@@ -144,11 +155,21 @@ Room {
                 room.displayedNames[i] = Names.names[girlIds[i]];
                 room.users[i] = users[i];
             }
+
+            // somehow variants are not binded... fuck qml
+            areaStage.names = room.displayedNames;
+            areaStage.users = room.users;
+            areaStage.splash();
+
             loader.source = "../game/Game.qml";
         }
 
         onRemoteClosed: {
             closed();
+        }
+
+        onPointsChanged: {
+            areaStage.visible = false;
         }
     }
 

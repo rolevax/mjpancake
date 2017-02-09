@@ -76,6 +76,13 @@ void PClient::unbook()
     mSocket.send(req);
 }
 
+void PClient::sendReady()
+{
+    QJsonObject req;
+    req["Type"] = "ready";
+    mSocket.send(req);
+}
+
 QVariantMap PClient::user() const
 {
     return mUser;
@@ -112,13 +119,6 @@ QVariantMap PClient::books() const
 int PClient::lastNonce() const
 {
     return mLastNonce;
-}
-
-void PClient::sendReady()
-{
-    QJsonObject req;
-    req["Type"] = "ready";
-    mSocket.send(req);
 }
 
 void PClient::action(QString actStr, const QVariant &actArg)

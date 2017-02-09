@@ -41,7 +41,7 @@ Item {
             if (green)
                 greenSpinAnim.start();
             else
-                outCoord = _spinOut();
+                _spinOut();
             frame.actionTriggered("SPIN_OUT", -1);
         }
         NumberAnimation {
@@ -119,7 +119,7 @@ Item {
                 if (green)
                     greenSwapAnim.start();
                 else
-                    outCoord = _swapOut(index)
+                    swapOut(index)
                 frame.actionTriggered("SWAP_OUT", tileStr);
             }
             tileStr: frame.face && modelTileStr ? modelTileStr : "back"
@@ -363,21 +363,19 @@ Item {
             drawn.inAnim.start();
     }
 
-    function _swapOut(outPos) {
+    // called only by self and set-background-demo
+    function swapOut(outPos) {
         _lastDiscardStr = handModel.get(outPos).modelTileStr;
-        var res = mapFromItem(frame, outPos * twb, 0);
+        outCoord = mapFromItem(frame, outPos * twb, 0);
         handModel.remove(outPos, 1);
         if (drawn.visible)
             insertDrawn();
-
-        return res;
     }
 
     function _spinOut() {
         _lastDiscardStr = drawn.tileStr;
-        var res = mapFromItem(drawn, 0, 0);
+        outCoord = mapFromItem(drawn, 0, 0);
         outAnim.start();
-        return res;
     }
 
     function _offIndexInHand34(tileStr, off) {
@@ -495,7 +493,7 @@ Item {
 
     function easyPass() {
         if (frame.can.tsumokiri) {
-            frame.outCoord = frame._spinOut();
+            frame._spinOut();
             frame.actionTriggered("SPIN_OUT", -1);
         } else if (frame.can.pass) {
             frame.actionTriggered("PASS", -765);
@@ -507,7 +505,7 @@ Item {
         function searchAndSwapOut() {
             for (var outPos = 0; outPos < handModel.count; outPos++) {
                 if (handModel.get(outPos).modelTileStr === tileStr) {
-                    outCoord = _swapOut(outPos);
+                    swapOut(outPos);
                     break;
                 }
             }
@@ -519,7 +517,7 @@ Item {
             // case 1: auto-move after riichi
             // case 2: server sweep-one and local timeout
             // case 3: spin-out anim playing
-            outCoord = _spinOut();
+            _spinOut();
         } else if (handModel.count % 3 === 2) {
             // case: server sweep-one, local timeout after bark
             searchAndSwapOut();

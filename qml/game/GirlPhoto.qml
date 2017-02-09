@@ -2,19 +2,28 @@ import QtQuick 2.0
 import "../js/nettrans.js" as NetTrans
 import "../widget"
 
-Rectangle {
+Item {
     id: frame
 
     signal rivalShotted
 
     property string name
     property var user: null
-    property string title: ""
 
-    color: "#33AAAACC"
+    Rectangle {
+        anchors.fill: parent
+        color: "#33AAAACC"
+    }
+
+    Image {
+        source: "/pic/girl/default.png"
+        anchors.fill: parent
+    }
 
     Texd {
         color: "white"
+        style: Text.Outline
+        styleColor: "black"
         font.pixelSize: 0.6 * nameText.font.pixelSize
         text: user == null ? ""
                            : "暂无称号\n" + user.Username + " "
@@ -28,6 +37,8 @@ Rectangle {
     Texd {
         id: nameText
         color: "white"
+        style: Text.Outline
+        styleColor: "black"
         font.pixelSize: frame.height / 13
         text: frame.name
         anchors.horizontalCenter: parent.horizontalCenter

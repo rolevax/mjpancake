@@ -76,8 +76,6 @@ void PTable::startOnline(PClient *client)
     connect(client, &PClient::poppedUp, this, &PTable::poppedUp);
     connect(client, &PClient::activated, this, &PTable::activated);
     connect(client, &PClient::deactivated, this, &PTable::deactivated);
-
-    client->sendReady();
 }
 
 void PTable::startSample()

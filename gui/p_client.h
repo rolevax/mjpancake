@@ -27,6 +27,7 @@ public:
     Q_INVOKABLE void lookAround();
     Q_INVOKABLE void book(const QString &bookType);
     Q_INVOKABLE void unbook();
+    Q_INVOKABLE void sendReady();
 
     QVariantMap user() const;
     bool loggedIn() const;
@@ -35,7 +36,6 @@ public:
     QVariantMap books() const;
     int lastNonce() const;
 
-    void sendReady();
 
 signals:
     void remoteClosed();

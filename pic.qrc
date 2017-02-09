@@ -94,5 +94,6 @@
         <file>pic/dice/dice5.png</file>
         <file>pic/dice/dice6.png</file>
         <file>pic/title_en.png</file>
+        <file>pic/girl/default.png</file>
     </qresource>
 </RCC>

@@ -27,7 +27,6 @@ Item {
     // set by parent
     property var photos
     property Rectangle green
-    property Rectangle loadingRect
 
     property alias pTable: pTable
     property alias middle: middle // for temp-dealer showing
@@ -236,7 +235,6 @@ Item {
 
         onPointsChanged: {
             function cb() {
-                loadingRect.visible = false;
                 middle.setPoints(points);
                 pointBoard.points = points;
             }
@@ -313,7 +311,7 @@ Item {
 
         onJustSetOutPos: {
             function cb() {
-                playerControl.outPos = outPos;
+                playerControl.swapOut(outPos);
             }
 
             animBuf.push({ callback: cb, duration: 0 });
