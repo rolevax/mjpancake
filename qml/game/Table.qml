@@ -266,6 +266,7 @@ Item {
                         return;
                 }
 
+                PGlobal.forceImmersive();
                 table.green.visible = green;
 
                 if (action.END_TABLE || action.NEXT_ROUND) {
