@@ -221,8 +221,11 @@ Item {
 
                     playerControl.face = whoReady[0] || result === "SCRC";
                     for (i = 0; i < 3; i++) {
-                        var face = whoReady[i + 1] || result == "SCRC";
-                        oppoControls.itemAt(i).pushDown(face);
+                        var face = whoReady[i + 1] || result === "SCRC";
+                        if (result === "KSKP")
+                            oppoControls.itemAt(i).pushDown(face, hands[0].pick);
+                        else
+                            oppoControls.itemAt(i).pushDown(face);
                     }
 
                     resultWindow.ryuukyoku(result);

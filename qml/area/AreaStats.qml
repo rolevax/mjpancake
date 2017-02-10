@@ -29,23 +29,22 @@ Column {
         text: PClient.playCt + " 战"
     }
 
-    Texd {
-        anchors.horizontalCenter: parent.horizontalCenter
-        text: "1位 " + _rankPercent(0);
-    }
+    Repeater {
+        model: 4
+        delegate: Item {
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: 5.3 * global.size.defaultFont
+            height: global.size.defaultFont
 
-    Texd {
-        anchors.horizontalCenter: parent.horizontalCenter
-        text: "2位 " + _rankPercent(1);
-    }
+            Texd {
+                anchors.left: parent.left
+                text: (index + 1) + "位"
+            }
 
-    Texd {
-        anchors.horizontalCenter: parent.horizontalCenter
-        text: "3位 " + _rankPercent(2);
-    }
-
-    Texd {
-        anchors.horizontalCenter: parent.horizontalCenter
-        text: "4位 " + _rankPercent(3);
+            Texd {
+                anchors.right: parent.right
+                text: _rankPercent(index);
+            }
+        }
     }
 }

@@ -126,7 +126,7 @@ void PTableLocal::onRoundEnded(const saki::Table &table, saki::RoundResult resul
         handMap.insert("closed", createTilesVar(hand.closed()));
         handMap.insert("barks", createBarksVar(hand.barks()));
 
-        if (result == RR::TSUMO)
+        if (result == RR::TSUMO || result == RR::KSKP)
             handMap.insert("pick", createTileVar(hand.drawn(), true));
         else if (result == RR::RON || result == RR::SCHR)
             handMap.insert("pick", createTileVar(table.getFocusTile(), true));
