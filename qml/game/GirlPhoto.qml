@@ -24,9 +24,9 @@ Item {
         color: "white"
         style: Text.Outline
         styleColor: "black"
-        font.pixelSize: 0.6 * nameText.font.pixelSize
+        font.pixelSize: 0.65 * nameText.font.pixelSize
         text: user == null ? ""
-                           : "暂无称号\n" + user.Username + " "
+                           : user.Username + "\n"
                              + NetTrans.level(user.Level) + " " + NetTrans.rating(user.Rating)
         horizontalAlignment: Text.AlignHCenter
         anchors.horizontalCenter: parent.horizontalCenter

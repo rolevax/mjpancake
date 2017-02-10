@@ -6,11 +6,22 @@ import "../widget"
 Column {
     spacing: global.size.space
 
-    Texd {
+
+    Column {
         anchors.horizontalCenter: parent.horizontalCenter
-        horizontalAlignment: Text.AlignHCenter
-        font.pixelSize: global.size.middleFont
-        text: PClient.user.Username
+
+        Texd {
+            anchors.horizontalCenter: parent.horizontalCenter
+            font.pixelSize: 1.1 * global.size.middleFont
+            text: PClient.user.Username
+        }
+
+        Texd {
+            anchors.horizontalCenter: parent.horizontalCenter
+            font.pixelSize: global.size.smallFont
+            opacity: 0.8
+            text: "ID " + PClient.user.Id
+        }
     }
 
     Texd {
@@ -33,7 +44,7 @@ Column {
         model: 4
         delegate: Item {
             anchors.horizontalCenter: parent.horizontalCenter
-            width: 5.3 * global.size.defaultFont
+            width: 6 * global.size.defaultFont
             height: global.size.defaultFont
 
             Texd {

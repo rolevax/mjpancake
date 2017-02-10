@@ -7,10 +7,7 @@ Row {
     property bool booking: false
 
     property var _ruleNames: {
-       "S71": "东南 IH71",
-       "S71": "东南 IH71",
-       "S71": "东南 IH71",
-       "S71": "东南 IH71",
+       "S71": "东南 IH71"
     }
 
     spacing: global.size.gap
@@ -26,7 +23,7 @@ Row {
         enabled: !booking && PClient.books[bookType].Bookable
         anchors.verticalCenter: parent.verticalCenter
         textLength: 4
-        text: booking ? "待齐" : "预约"
+        text: booking ? "待开" : "预约"
         onClicked: {
             booking = true;
             PClient.book(bookType);
