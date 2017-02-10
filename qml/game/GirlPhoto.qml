@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.7
 import "../js/nettrans.js" as NetTrans
 import "../widget"
 
@@ -56,8 +56,9 @@ Item {
         delegate: Image {
             id: barImage
             width: 0.8 * frame.width
+            height: 0.1 * width
             anchors.horizontalCenter: parent.horizontalCenter
-            fillMode: Image.PreserveAspectFit
+            fillMode: Image.Stretch
             source: "/pic/bar/bar" + (depoBar ? "1000" : "100") + ".png"
         }
     }

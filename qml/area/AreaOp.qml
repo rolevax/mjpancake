@@ -6,6 +6,9 @@ Column {
     id: opArea
     spacing: global.size.space
 
+    property var _gradeNames: [ "应援", "替补", "正选", "ＡＣＥ" ]
+    property int _currGrade: 0
+
     Texd {
         anchors.horizontalCenter: parent.horizontalCenter
         text: "在线：" + PClient.connCt
@@ -17,49 +20,25 @@ Column {
         anchors.horizontalCenter: parent.horizontalCenter
         spacing: global.size.space
 
-        Buzzon {
-            id: dButton
-            text: "应援"
-            onClicked: {
-                selectBar.x = x;
-                selectBar.width = width;
-                bookS71.bookType = "DS71";
-            }
-        }
-
-        Buzzon {
-            text: "替补"
-            onClicked: {
-                selectBar.x = x;
-                selectBar.width = width;
-                bookS71.bookType = "CS71";
-            }
-        }
-
-        Buzzon {
-            text: "正选"
-            onClicked: {
-                selectBar.x = x;
-                selectBar.width = width;
-                bookS71.bookType = "BS71";
-            }
-        }
-
-        Buzzon {
-            text: "ＡＣＥ"
-            onClicked: {
-                selectBar.x = x;
-                selectBar.width = width;
-                bookS71.bookType = "AS71";
+        Repeater {
+            id: repSelect
+            model: 4
+            delegate: Buzzon {
+                id: dButton
+                text: _gradeNames[index]
+                onClicked: {
+                    selectBar.x = x;
+                    selectBar.width = width;
+                    _currGrade = index;
+                }
             }
         }
     }
 
     Rectangle {
         id: selectBar
-        width: dButton.width
+        // size set by Component.onCompleted
         radius: 0.5 * height
-        height: 0.15 * dButton.height
         color: PGlobal.themeText
         opacity: 0.5
 
@@ -73,9 +52,26 @@ Column {
 
     Item { width:1; height: global.size.gap }
 
-    AreaBookRow {
-        id: bookS71
-        anchors.horizontalCenter: parent.horizontalCenter
-        bookType: "DS71"
+    Repeater {
+        id: repBooks
+        model: 4
+        delegate: AreaBookRow {
+            visible: index === _currGrade
+            bookType: [ "D", "C", "B", "A" ][index] + "S71"
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+    }
+
+    function popBookButtons() {
+        for (var i = 0; i < 4; i++) {
+            repBooks.itemAt(i).booking = false;
+        }
+    }
+
+    Component.onCompleted: {
+        // TODO use user's highest grade
+        var dButton = repSelect.itemAt(0);
+        selectBar.width = dButton.width;
+        selectBar.height = 0.15 * dButton.height;
     }
 }

@@ -340,8 +340,9 @@ saki::Action PTableLocal::makeAction(const QString &actStr, const QVariant &actA
     case ActCode::PON:
     case ActCode::KAKAN:
     case ActCode::IRS_CHECK:
-    case ActCode::IRS_RIVAL:
         return saki::Action(act, actArg.toInt());
+    case ActCode::IRS_RIVAL:
+        return saki::Action(act, saki::Who(actArg.toInt()));
     default:
         return saki::Action(act);
     }

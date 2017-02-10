@@ -29,13 +29,14 @@ Room {
         }
 
         AreaOp {
+            id: areaOp
             anchors.verticalCenter: parent.verticalCenter
         }
     }
 
     function _closeTable() {
         loader.source = "";
-        bookS71.booking = false;
+        areaOp.popBookButtons();
     }
 
     Loader {

@@ -4,7 +4,7 @@ Item {
     property bool animEnabled: true
     property string tileSet: "std"
     property int tw
-    readonly property int maxExtra: 4 // TODO: think about max extra
+    readonly property int maxExtra: 4
 
     id: river
     width: tw * 6 + tw * maxExtra

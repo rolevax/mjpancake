@@ -131,7 +131,7 @@ void PGlobal::setSavedPassword(const QString &password)
 
 void PGlobal::regulateRoot()
 {
-    if (!root["backColors"].isArray()) // TODO check inside array, see if all QColor str
+    if (!root["backColors"].isArray())
         root["backColors"] = QJsonArray{ "#DD9900", "#111166" };
 
     if (!root["nightMode"].isBool())
