@@ -55,5 +55,7 @@
         <file>qml/area/AreaStage.qml</file>
         <file>qml/area/AreaStats.qml</file>
         <file>qml/area/AreaOp.qml</file>
+        <file>qml/room/RoomPrac.qml</file>
+        <file>qml/room/RoomEff.qml</file>
     </qresource>
 </RCC>

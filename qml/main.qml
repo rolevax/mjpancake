@@ -111,7 +111,7 @@ Window {
         Repeater {
             model: [
                 { text: "文档", load: "Help" },
-                { text: "练习", load: "GameFree" },
+                { text: "练习", load: "Prac" },
                 { text: "牌谱", load: "Replay" },
                 { text: "设定", load: "Settings" }
             ]

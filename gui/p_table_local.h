@@ -48,7 +48,7 @@ signals:
     void roundStarted(int round, int extra, int dealer, bool allLast, int deposit);
     void cleaned();
     void diced(int die1, int die2);
-    void dealt(const QVariant &init);
+    void dealt(const QVariantList &init);
     void flipped(const QVariant &newIndic);
     void activated(const QVariant &action, int lastDiscarder, bool green, int nonce);
     void drawn(int who, const QVariant &tile, bool rinshan);

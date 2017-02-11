@@ -19,7 +19,7 @@ QVariant createTileVar(const saki::T37 &t, bool lay)
     return QVariant::fromValue(map);
 }
 
-QVariant createTilesVar(const saki::TileCount &count)
+QVariantList createTilesVar(const saki::TileCount &count)
 {
     QVariantList list;
     for (int ti = 0; ti < 34; ti++) {
@@ -38,17 +38,17 @@ QVariant createTilesVar(const saki::TileCount &count)
         }
     }
 
-    return QVariant::fromValue(list);
+    return list;
 }
 
-QVariant createTilesVar(const std::vector<saki::T37> &tiles)
+QVariantList createTilesVar(const std::vector<saki::T37> &tiles)
 {
     QVariantList list;
 
     for (const saki::T37 &t : tiles)
         list << createTileVar(t, false);
 
-    return QVariant::fromValue(list);
+    return list;
 }
 
 QVariant createTileStrsVar(const std::vector<saki::T34> &tiles)

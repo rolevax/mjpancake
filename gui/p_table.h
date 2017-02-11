@@ -33,7 +33,7 @@ signals:
     void roundStarted(int round, int extra, int dealer, bool allLast, int deposit);
     void cleaned();
     void diced(int die1, int die2);
-    void dealt(const QVariant &init);
+    void dealt(const QVariantList &init);
     void flipped(const QVariant &newIndic);
     void drawn(int who, const QVariant &tile, bool rinshan);
     void discarded(int who, const QVariant &tile, bool spin);

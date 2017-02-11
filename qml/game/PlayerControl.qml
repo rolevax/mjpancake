@@ -15,7 +15,7 @@ Item {
     property bool face: true // false when no-ten at ryuukyoku
     property var can: { "tsumokiri": false, "pass": false }
     property point outCoord
-    property bool green
+    property bool green: false
     property string _lastDiscardStr: ""
 
     ActionButtonBar {

@@ -43,6 +43,7 @@ SOURCES += main.cpp \
     libsaki/ticketfolder.cpp \
     libsaki/tilecount.cpp \
     gui/p_client.cpp \
+    gui/p_eff.cpp \
     gui/p_gen.cpp \
     gui/p_global.cpp \
     gui/p_image_provider.cpp \
@@ -111,6 +112,7 @@ HEADERS += \
     libsaki/util.h \
     libsaki/who.h \
     gui/p_client.h \
+    gui/p_eff.h \
     gui/p_gen.h \
     gui/p_global.h \
     gui/p_image_provider.h \
