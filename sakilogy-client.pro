@@ -26,6 +26,7 @@ SOURCES += main.cpp \
     libsaki/girls_kiyosumi.cpp \
     libsaki/girls_miyamori.cpp \
     libsaki/girls_other.cpp \
+    libsaki/girls_rinkai.cpp \
     libsaki/girls_senriyama.cpp \
     libsaki/girls_shiraitodai.cpp \
     libsaki/girls_usuzan.cpp \
@@ -33,6 +34,7 @@ SOURCES += main.cpp \
     libsaki/hand.cpp \
     libsaki/mount.cpp \
     libsaki/princess.cpp \
+    libsaki/rand.cpp \
     libsaki/replay.cpp \
     libsaki/string_enum.cpp \
     libsaki/table.cpp \
@@ -49,7 +51,6 @@ SOURCES += main.cpp \
     gui/p_table.cpp \
     gui/p_table_local.cpp \
     gui/p_json_tcp.cpp \
-    libsaki/rand.cpp \
     gui/p_image_settings.cpp
 
 
@@ -85,6 +86,7 @@ HEADERS += \
     libsaki/girls_kiyosumi.h \
     libsaki/girls_miyamori.h \
     libsaki/girls_other.h \
+    libsaki/girls_rinkai.h \
     libsaki/girls_senriyama.h \
     libsaki/girls_shiraitodai.h \
     libsaki/girls_usuzan.h \
