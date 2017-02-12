@@ -57,5 +57,6 @@
         <file>qml/area/AreaOp.qml</file>
         <file>qml/room/RoomPrac.qml</file>
         <file>qml/room/RoomEff.qml</file>
+        <file>qml/room/RoomEffGB.qml</file>
     </qresource>
 </RCC>

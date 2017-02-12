@@ -12,6 +12,7 @@
 #include "gui/p_global.h"
 #include "gui/p_client.h"
 #include "gui/p_eff.h"
+#include "gui/p_eff_gb.h"
 
 
 
@@ -34,6 +35,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<PReplay>("rolevax.sakilogy", 1, 0, "PReplay");
     qmlRegisterType<PImageSettings>("rolevax.sakilogy", 1, 0, "PImageSettings");
     qmlRegisterType<PEff>("rolevax.sakilogy", 1, 0, "PEff");
+    qmlRegisterType<PEffGb>("rolevax.sakilogy", 1, 0, "PEffGb");
 
     qmlRegisterSingletonType<PGlobal>("rolevax.sakilogy", 1, 0, "PGlobal",
                                       pGlobalSingletonProvider);

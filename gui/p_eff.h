@@ -21,6 +21,8 @@ public:
     Q_PROPERTY(int akadora READ akadora WRITE setAkadora NOTIFY akadoraChanged)
     Q_PROPERTY(bool ippatsu READ ippatsu WRITE setIppatsu NOTIFY ippatsuChanged)
 
+    static QVariantList nanikiru(const saki::Hand &hand, const saki::Mount &mount);
+
     Q_INVOKABLE void deal();
     Q_INVOKABLE void action(const QString &actStr, const QString &actArg);
     Q_INVOKABLE QVariantList answer();

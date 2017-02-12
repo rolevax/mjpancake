@@ -7,6 +7,7 @@ SOURCES += main_test.cpp \
     libsaki/action.cpp \
     libsaki/ai.cpp \
     libsaki/form.cpp \
+    libsaki/form_gb.cpp \
     libsaki/girl.cpp \
     libsaki/hand.cpp \
     libsaki/mount.cpp \
@@ -27,6 +28,7 @@ SOURCES += main_test.cpp \
     libsaki/ai_shiraitodai.cpp \
     libsaki/girls_other.cpp \
     libsaki/girls_usuzan.cpp \
+    libsaki/girls_rinkai.cpp \
     libsaki/ai_usuzan.cpp \
     libsaki/replay.cpp \
     libsaki/girls_eisui.cpp \
@@ -45,6 +47,7 @@ HEADERS += \
     libsaki/action.h \
     libsaki/ai.h \
     libsaki/form.h \
+    libsaki/form_gb.h \
     libsaki/girl.h \
     libsaki/hand.h \
     libsaki/meld.h \
@@ -64,6 +67,7 @@ HEADERS += \
     libsaki/girls_achiga.h \
     libsaki/girls_senriyama.h \
     libsaki/girls_himematsu.h \
+    libsaki/girls_rinkai.h \
     libsaki/ai_senriyama.h \
     libsaki/ai_achiga.h \
     libsaki/ai_shiraitodai.h \

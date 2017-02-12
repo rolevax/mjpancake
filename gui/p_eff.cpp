@@ -14,6 +14,56 @@ PEff::PEff(QObject *parent)
     mInfo.selfWind = 2;
 }
 
+QVariantList PEff::nanikiru(const saki::Hand &hand, const saki::Mount &mount)
+{
+    using namespace saki;
+
+    std::vector<T34> choices;
+    std::vector<std::vector<T34>> waits;
+    std::vector<int> remains;
+    int minStep = 13;
+
+    auto update = [&](const HandDream &dream, T34 t) {
+        int step = dream.step();
+
+        if (step < minStep) {
+            minStep = step;
+            choices.clear();
+            waits.clear();
+            remains.clear();
+        }
+
+        if (step == minStep && !util::has(choices, T34(t))) { // dup by aka5
+            auto wait = dream.effA();
+            auto aux = [&](int s, T34 t) { return s + mount.remainA(t); };
+            int remain = std::accumulate(wait.begin(), wait.end(), 0, aux);
+            size_t pos = 0;
+            while (pos < remains.size() && remain <= remains[pos])
+                pos++;
+            remains.insert(remains.begin() + pos, remain);
+            choices.insert(choices.begin() + pos, t);
+            waits.emplace(waits.begin() + pos, wait);
+        }
+    };
+
+    for (const T37 &t : hand.closed().t37s())
+        update(hand.withSwap(t), t);
+    update(hand.withSpin(), hand.drawn());
+
+    QVariantList list;
+    for (size_t i = 0; i < choices.size(); i++) {
+        QVariantMap map;
+        map["out"] = choices[i].str();
+        std::stringstream ss;
+        ss << waits[i];
+        map["waits"] = ss.str().c_str();
+        map["remain"] = remains[i];
+        list << map;
+    }
+
+    return list;
+}
+
 void PEff::deal()
 {
     using namespace saki;
@@ -65,52 +115,7 @@ void PEff::action(const QString &actStr, const QString &actArg)
 
 QVariantList PEff::answer()
 {
-    using namespace saki;
-
-    std::vector<T34> choices;
-    std::vector<std::vector<T34>> waits;
-    std::vector<int> remains;
-    int minStep = 13;
-
-    auto update = [&](const HandDream &dream, T34 t) {
-        int step = dream.step();
-
-        if (step < minStep) {
-            minStep = step;
-            choices.clear();
-            waits.clear();
-            remains.clear();
-        }
-
-        if (step == minStep && !util::has(choices, T34(t))) { // dup by aka5
-            auto wait = dream.effA();
-            auto aux = [this](int s, T34 t) { return s + mMount.remainA(t); };
-            int remain = std::accumulate(wait.begin(), wait.end(), 0, aux);
-            size_t pos = 0;
-            while (pos < remains.size() && remain <= remains[pos])
-                pos++;
-            remains.insert(remains.begin() + pos, remain);
-            choices.insert(choices.begin() + pos, t);
-            waits.emplace(waits.begin() + pos, wait);
-        }
-    };
-
-    for (const T37 &t : mHand.closed().t37s())
-        update(mHand.withSwap(t), t);
-    update(mHand.withSpin(), mHand.drawn());
-
-    QVariantList list;
-    for (size_t i = 0; i < choices.size(); i++) {
-        QVariantMap map;
-        map["out"] = choices[i].str();
-        std::stringstream ss;
-        ss << waits[i];
-        map["waits"] = ss.str().c_str();
-        map["remain"] = remains[i];
-        list << map;
-    }
-
-    return list;
+    return nanikiru(mHand, mMount);
 }
 
 bool PEff::uradora() const

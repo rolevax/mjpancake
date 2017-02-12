@@ -44,6 +44,7 @@ SOURCES += main.cpp \
     libsaki/tilecount.cpp \
     gui/p_client.cpp \
     gui/p_eff.cpp \
+    gui/p_eff_gb.cpp \
     gui/p_gen.cpp \
     gui/p_global.cpp \
     gui/p_image_provider.cpp \
@@ -52,7 +53,8 @@ SOURCES += main.cpp \
     gui/p_table.cpp \
     gui/p_table_local.cpp \
     gui/p_json_tcp.cpp \
-    gui/p_image_settings.cpp
+    gui/p_image_settings.cpp \
+    libsaki/form_gb.cpp
 
 
 
@@ -113,6 +115,7 @@ HEADERS += \
     libsaki/who.h \
     gui/p_client.h \
     gui/p_eff.h \
+    gui/p_eff_gb.h \
     gui/p_gen.h \
     gui/p_global.h \
     gui/p_image_provider.h \
@@ -121,7 +124,8 @@ HEADERS += \
     gui/p_port.h \
     gui/p_replay.h \
     gui/p_table.h \
-    gui/p_table_local.h
+    gui/p_table_local.h \
+    libsaki/form_gb.h
 
 
 

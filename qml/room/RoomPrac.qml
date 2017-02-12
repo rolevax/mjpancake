@@ -19,6 +19,13 @@ Room {
             onClicked: { loader.source = "RoomEff.qml"; }
             anchors.horizontalCenter: parent.horizontalCenter
         }
+
+        Buzzon {
+            text: "国标"
+            textLength: 8
+            onClicked: { loader.source = "RoomEffGB.qml"; }
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
     }
 
     Loader {
