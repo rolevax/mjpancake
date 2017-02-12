@@ -70,9 +70,6 @@ public slots:
     void saveRecord();
 
 private:
-    saki::Action makeAction(const QString &actStr, const QVariant &actArg);
-
-private:
     std::unique_ptr<saki::Table> mTable;
     std::array<std::unique_ptr<saki::Ai>, 3> mAis;
     saki::Replay mReplay;

@@ -47,6 +47,8 @@ saki::RuleInfo readRuleJson(const QJsonObject &obj);
 saki::Replay::Round readRoundJson(const QJsonObject &obj);
 saki::Replay::Track readTrackJson(const QJsonObject &obj);
 
+saki::Action readAction(const QString &actStr, const QVariant &actArg);
+
 template<typename T>
 QJsonArray std2json(const T &arr);
 

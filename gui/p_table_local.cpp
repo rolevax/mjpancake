@@ -291,7 +291,7 @@ void PTableLocal::start(const QVariant &girlIdsVar, const QVariant &gameRule,
 
 void PTableLocal::action(QString actStr, const QVariant &actArg)
 {
-    saki::Action action = makeAction(actStr, actArg);
+    saki::Action action = readAction(actStr, actArg);
     mTable->action(saki::Who(0), action);
 }
 
@@ -323,29 +323,6 @@ void PTableLocal::saveRecord()
     file.write(doc.toJson(QJsonDocument::Compact));
 
     file.close();
-}
-
-saki::Action PTableLocal::makeAction(const QString &actStr, const QVariant &actArg)
-{
-    using ActCode = saki::ActCode;
-
-    ActCode act = saki::actCodeOf(actStr.toStdString().c_str());
-    switch (act) {
-    case ActCode::SWAP_OUT:
-    case ActCode::ANKAN:
-        return saki::Action(act, saki::T37(actArg.toString().toLatin1().data()));
-    case ActCode::CHII_AS_LEFT:
-    case ActCode::CHII_AS_MIDDLE:
-    case ActCode::CHII_AS_RIGHT:
-    case ActCode::PON:
-    case ActCode::KAKAN:
-    case ActCode::IRS_CHECK:
-        return saki::Action(act, actArg.toInt());
-    case ActCode::IRS_RIVAL:
-        return saki::Action(act, saki::Who(actArg.toInt()));
-    default:
-        return saki::Action(act);
-    }
 }
 
 

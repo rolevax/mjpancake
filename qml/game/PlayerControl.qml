@@ -16,6 +16,7 @@ Item {
     property var can: { "tsumokiri": false, "pass": false }
     property point outCoord
     property bool green: false
+    property alias drawnStr: drawn.tileStr
     property string _lastDiscardStr: ""
 
     ActionButtonBar {
@@ -245,9 +246,9 @@ Item {
             meld: modelMeld
             anchors.bottom: parent.bottom
             FloatButton {
-                width: table.th - 4
-                height: table.tw
-                y: -(table.tw / 2)
+                width: 1.35 * frame.th - 4
+                height: frame.tw
+                y: -(frame.tw / 2)
                 x:  meld.open === 0 ? 2 : (meld.open === 1 ? tw + 2 : tw * 2 + 2);
                 actStr: modelFloatAct
                 onButtonPressed: {

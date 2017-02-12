@@ -539,4 +539,27 @@ QJsonArray std2json(const T &arr) {
     return QJsonArray::fromVariantList(list);
 }
 
+saki::Action readAction(const QString &actStr, const QVariant &actArg)
+{
+    using ActCode = saki::ActCode;
+
+    ActCode act = saki::actCodeOf(actStr.toStdString().c_str());
+    switch (act) {
+    case ActCode::SWAP_OUT:
+    case ActCode::ANKAN:
+        return saki::Action(act, saki::T37(actArg.toString().toLatin1().data()));
+    case ActCode::CHII_AS_LEFT:
+    case ActCode::CHII_AS_MIDDLE:
+    case ActCode::CHII_AS_RIGHT:
+    case ActCode::PON:
+    case ActCode::KAKAN:
+    case ActCode::IRS_CHECK:
+        return saki::Action(act, actArg.toInt());
+    case ActCode::IRS_RIVAL:
+        return saki::Action(act, saki::Who(actArg.toInt()));
+    default:
+        return saki::Action(act);
+    }
+}
+
 

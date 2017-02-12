@@ -92,6 +92,7 @@ function logtr(str) {
 
     var lookF = false, posF;
     var lookY = false, posY;
+    str = "$" + str; // temp terminater
     for (var i = str.length - 1; i >= 0; i--) {
         var c = str[i], zstr;
 
@@ -126,6 +127,7 @@ function logtr(str) {
             }
         }
     }
+    str = str.substring(1); // remove temp terminater
 
     return str;
 }
