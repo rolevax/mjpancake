@@ -2,6 +2,7 @@
 #include "p_port.h"
 
 #include "libsaki/form_gb.h"
+#include "libsaki/girls_rinkai.h"
 #include "libsaki/util.h"
 
 
@@ -58,18 +59,21 @@ void PEffGb::action(const QString &actStr, const QString &actArg)
 
 void PEffGb::draw()
 {
+    using namespace saki;
+
     if (mTurn++ == 27) {
         emit exhausted();
         return;
     }
 
+    Huiyu::skill(mMount, mHand);
     mHand.draw(mMount.wallPop(mRand));
     emit drawn(createTileVar(mHand.drawn()));
 
     mInfo.emptyMount = mTurn == 27;
 
     QVariantMap actions;
-    std::vector<saki::T34> ankanables;
+    std::vector<T34> ankanables;
     bool canTsumo = mHand.stepGb() == -1;
     bool canAnkan = mHand.canAnkan(ankanables, false);
     if (canTsumo)
