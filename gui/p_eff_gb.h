@@ -17,14 +17,13 @@ public:
 
     Q_INVOKABLE void deal();
     Q_INVOKABLE void action(const QString &actStr, const QString &actArg);
-    Q_INVOKABLE QVariantList answer();
 
 signals:
     void dealt(const QVariantList &init);
     void drawn(const QVariant &tile);
     void anganged(const QVariant &bark, bool spin);
     void activated(const QVariantMap &actions);
-    void finished(const QVariant &form, int gain, int turn);
+    void finished(const QVariantList &fans, int fan, int turn);
     void exhausted();
 
 private:

@@ -18,7 +18,7 @@ Room {
     property int _round: 0
     property int _roundLimit: 10
 
-    property var _gains: []
+    property var _fanValues: []
     property var _finishTurns: []
 
     PEffGb {
@@ -69,11 +69,10 @@ Room {
 
         onFinished: {
             function cb() {
-                _gains.push(gain);
+                _fanValues.push(fan);
                 _finishTurns.push(turn);
-                formText.text = turn + "巡\n" +
-                        Spell.spell(form.spell) + "\n" +
-                        Spell.charge(form.charge);
+                formText.text = turn + "巡\n" + Spell.fantr(fans) + "\n" +
+                        fan + "番" + (fan < 8 ? "错和" : "");
                 resultRect.visible = true;
             }
 
@@ -90,7 +89,7 @@ Room {
 
         Texd {
             font.pixelSize: global.size.middleFont
-            text: "圈风东 自风南\n仅限四面子型、七对子型、十三么型"
+            text: "圈风东 门风南\n仅限四面子型、七对型、十三么型"
             horizontalAlignment: Text.AlignHCenter
             anchors.horizontalCenter: parent.horizontalCenter
         }
@@ -105,7 +104,7 @@ Room {
     }
 
     Column {
-        visible: _round > 0 && !resultRect.visible && !statRect.visible && !rectAnswer.visible
+        visible: _round > 0 && !resultRect.visible && !statRect.visible
         spacing: global.size.space
         anchors.centerIn: parent
 
@@ -120,14 +119,6 @@ Room {
             font.pixelSize: thb
             anchors.horizontalCenter: parent.horizontalCenter
         }
-
-        Buzzon {
-            text: "求解"
-            onClicked: {
-                repAnswer.model = pEffGb.answer();
-                rectAnswer.visible = true;
-            }
-        }
     }
 
     Column {
@@ -138,6 +129,7 @@ Room {
 
         Texd {
             id: formText
+            width: 0.8 * room.width
             font.pixelSize: 1.3 * global.size.middleFont
             anchors.horizontalCenter: parent.horizontalCenter
             horizontalAlignment: Text.AlignHCenter
@@ -169,9 +161,10 @@ Room {
 
                 Repeater {
                     model: [
-                        "和了率",
-                        "平均和了巡目",
-                        "平均和了分数"
+                        "和牌率",
+                        "平均和牌巡目",
+                        "平均和牌番数",
+                        "错和率"
                     ]
                     delegate: Texd {
                         font.pixelSize: global.size.middleFont
@@ -184,7 +177,7 @@ Room {
                 spacing: global.size.space
                 Repeater {
                     id: repStat
-                    model: 3
+                    model: 4
                     delegate: Texd {
                         font.pixelSize: global.size.middleFont
                         anchors.right: parent.right
@@ -202,38 +195,6 @@ Room {
                 statRect.visible = false;
                 pc.clear();
                 river.model.clear();
-            }
-        }
-    }
-
-    Column {
-        id: rectAnswer
-        visible: false
-        anchors.centerIn: parent
-        anchors.verticalCenterOffset: -1 * th
-        spacing: global.size.space
-
-        Repeater {
-            id: repAnswer
-            delegate: Row {
-                spacing: global.size.space
-
-                Texd {
-                    width: 3 * font.pixelSize
-                    font.pixelSize: global.size.middleFont
-                    text: "打" + Spell.logtr(modelData.out)
-                }
-
-                Texd {
-                    width: 3 * font.pixelSize
-                    font.pixelSize: global.size.middleFont
-                    text: modelData.remain + "张"
-                }
-
-                Texd {
-                    font.pixelSize: global.size.middleFont
-                    text: Spell.logtr(modelData.waits)
-                }
             }
         }
     }
@@ -265,7 +226,6 @@ Room {
         height: room.thb
 
         onActionTriggered: {
-            rectAnswer.visible = false;
             pc.deactivate();
             if (actStr === "SWAP_OUT")
                 river.model.append({ modelTileStr: actArg });
@@ -283,13 +243,26 @@ Room {
             remainText.text = 27;
         } else {
             _round = 0;
-            var ct = _gains.length;
-            var rate = ((ct / _roundLimit) * 100).toFixed(1) + "%";
-            var avgTurn = (_finishTurns.reduce(function(s,a){return s+a;}, 0) / ct).toFixed(1);
-            var avgPoint = (_gains.reduce(function(s,a){return s+a;}, 0) / ct).toFixed(1);
-            repStat.itemAt(0).text = rate;
+            var ct = _fanValues.length;
+            var rightCt = 0;
+            var rightFanSum = 0;
+            var rightTurnSum = 0;
+            for (var i = 0; i < ct; i++) {
+                if (_fanValues[i] >= 8) {
+                    rightFanSum += _fanValues[i];
+                    rightTurnSum += _finishTurns[i];
+                    rightCt++;
+                }
+            }
+
+            var rightRate = ((rightCt / _roundLimit) * 100).toFixed(1) + "%";
+            var avgTurn = (rightTurnSum / rightCt).toFixed(1);
+            var avgFan = (rightFanSum / ct).toFixed(1);
+            var wrongRate = (((ct - rightCt) / ct) * 100).toFixed(1) + "%";
+            repStat.itemAt(0).text = rightRate;
             repStat.itemAt(1).text = avgTurn;
-            repStat.itemAt(2).text = avgPoint;
+            repStat.itemAt(2).text = avgFan;
+            repStat.itemAt(3).text = wrongRate;
             statRect.visible = true;
         }
     }

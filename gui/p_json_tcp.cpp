@@ -11,7 +11,7 @@
 const char *ADDR_HOSTER = "http://git.oschina.net/rolevax/sl-addr"
                           "/raw/master/sl-addr?dir=0&filepath=sl-addr";
 #ifdef NDEBUG
-const char *SRV_ADDR = "118.89.219.121";
+const char *SRV_ADDR = "118.89.219.207";
 #else
 const char *SRV_ADDR = "127.0.0.1";
 #endif

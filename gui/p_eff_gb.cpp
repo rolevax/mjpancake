@@ -1,6 +1,8 @@
 #include "p_eff_gb.h"
 #include "p_port.h"
-#include "p_eff.h"
+
+#include "libsaki/form_gb.h"
+#include "libsaki/util.h"
 
 
 
@@ -8,7 +10,8 @@ PEffGb::PEffGb(QObject *parent)
     : QObject(parent)
     , mMount(saki::TileCount::AKADORA0)
 {
-
+    mInfo.roundWind = 1;
+    mInfo.selfWind = 2;
 }
 
 void PEffGb::deal()
@@ -53,11 +56,6 @@ void PEffGb::action(const QString &actStr, const QString &actArg)
     }
 }
 
-QVariantList PEffGb::answer()
-{
-    return PEff::nanikiru(mHand, mMount);
-}
-
 void PEffGb::draw()
 {
     if (mTurn++ == 27) {
@@ -72,7 +70,7 @@ void PEffGb::draw()
 
     QVariantMap actions;
     std::vector<saki::T34> ankanables;
-    bool canTsumo = mHand.canTsumo(mInfo, saki::RuleInfo());
+    bool canTsumo = mHand.stepGb() == -1;
     bool canAnkan = mHand.canAnkan(ankanables, false);
     if (canTsumo)
         actions["TSUMO"] = true;
@@ -98,9 +96,11 @@ void PEffGb::angang(saki::T34 t)
 
 void PEffGb::zimo()
 {
-    /* FUCK use GB form
-    Form form(mHand, mInfo, mRule, drids, urids);
-    emit finished(createFormVar(form.spell().c_str(), form.charge().c_str()),
-                  form.gain(), mTurn);
-                  */
+    using namespace saki;
+    bool juezhang = mMount.remainA(mHand.drawn()) == 0 && mHand.ct(mHand.drawn()) == 1;
+    FormGb form(mHand, mInfo, juezhang);
+    QVariantList fans;
+    for (Fan f : form.fans())
+        fans << static_cast<int>(f);
+    emit finished(fans, form.fan(), mTurn);
 }
