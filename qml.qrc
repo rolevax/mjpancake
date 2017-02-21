@@ -58,5 +58,6 @@
         <file>qml/room/RoomPrac.qml</file>
         <file>qml/room/RoomEff.qml</file>
         <file>qml/room/RoomEffGB.qml</file>
+        <file>qml/widget/Fligable.qml</file>
     </qresource>
 </RCC>

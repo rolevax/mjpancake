@@ -107,23 +107,19 @@ Room {
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: "<h3>入坑须知</h3>" +
                       "<br/><ol>" +
-                      "<li>本作与绝大多数网游不同，属于学习交流性质。<ul>" +
-                          "<li>主旨在于大家一起实验并讨论saki系列作品的设定及内涵。</li>" +
-                          "<li><b>你不是\"顾客\"</b>，" +
-                          "不要对\"服务\"和\"质量\"有任何期待。</li></ul></li>" +
-                      "<li>本制作组毫无节操，对因使用本作产生的任何损失不负任何责任。<ul>" +
-                          "<li>\"损失\”包括但不限于数据丢失/错乱/泄露、崩溃、卡死、掉线。</li>" +
-                          "<li>你的索赔（诸如加pt）通常不会被接受。</li></ul></li>" +
-                      "<li>不保证长期维护。<ul>" +
-                          "<li>制作组可随时无理由停机或删除任何数据。</li>" +
-                          "<li>玩着开心就好，认真你就输了" + huaji + "</li></ul></li>" +
+                      "<li>本作属非商业性质，制作组无义务提供任何服务与质量担保</li>" +
+                      "<li>因使用本作产生的一切损失由使用者本人承担</li>" +
+                      "<li>制作组保留一切权利</li>" +
                       "</ol>"
             }
 
             Row {
                 spacing: global.size.space
                 anchors.horizontalCenter: parent.horizontalCenter
-                Buzzon { text: "继续入坑"; textLength: 8; onClicked: { license.visible = false; } }
+                Buzzon {
+                    text: "同意，继续入坑"; textLength: 10;
+                    onClicked: { license.visible = false;  }
+                }
                 Buzzon { text: "弃坑"; onClicked: { closed(); } }
             }
         }

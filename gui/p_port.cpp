@@ -5,23 +5,24 @@
 #include "libsaki/string_enum.h"
 #include "libsaki/util.h"
 
+#include <bitset>
 #include <sstream>
 #include <cassert>
 #include <cstdlib>
 
 
 
-QVariant createTileVar(const saki::T37 &t, bool lay)
+QString createTileVar(const saki::T37 &t, bool lay)
 {
-    QVariantMap map;
-    map.insert("modelTileStr", QString(t.str()));
-    map.insert("modelLay", lay);
-    return QVariant::fromValue(map);
+    QString res(t.str());
+    if (lay)
+        res += "_";
+    return res;
 }
 
-QVariantList createTilesVar(const saki::TileCount &count)
+QStringList createTilesVar(const saki::TileCount &count)
 {
-    QVariantList list;
+    QStringList list;
     for (int ti = 0; ti < 34; ti++) {
         saki::T37 tile(ti);
         if (tile.val() == 5) {
@@ -61,11 +62,12 @@ QVariant createTileStrsVar(const std::vector<saki::T34> &tiles)
     return QVariant::fromValue(list);
 }
 
-QVariant createSwapMask(const saki::TileCount &count,
+unsigned createSwapMask(const saki::TileCount &count,
                         const std::vector<saki::T37> &choices)
 {
     // assume 'choices' is 34-sorted
-    QVariantList list;
+    std::bitset<13> mask;
+    int i = 0; // next bit to write
 
     auto it = choices.begin();
     for (const saki::T37 &t : saki::tiles37::ORDER37) {
@@ -75,12 +77,12 @@ QVariant createSwapMask(const saki::TileCount &count,
         if (ct > 0) {
             bool val = t.looksSame(*it);
             while (ct --> 0)
-                list << val;
+                mask[i++] = val;
             it += val; // consume choice if matched
         }
     }
 
-    return QVariant::fromValue(list);
+    return mask.to_ulong();
 }
 
 QVariant createBarkVar(const saki::M37 &m)

@@ -1,16 +1,25 @@
 #ifndef P_TABLE_H
 #define P_TABLE_H
 
-#include "gui/p_table_local.h"
-#include "gui/p_client.h"
-
 #include <QObject>
 #include <QThread>
+
+class PClient;
 
 class PTable : public QObject
 {
     Q_OBJECT
 public:
+    enum Event
+    {
+        FirstDealerChoosen, RoundStarted, Cleaned, Diced, Dealt,
+        Flipped, Drawn, Discarded, RiichiCalled, RiichiEstablished,
+        Barked, RoundEnded, PointsChanged, TableEnded, PoppedUp,
+        Activated, Deactivated, JustPause, JustSetOutPos, Resume
+    };
+
+    Q_ENUM(Event)
+
     explicit PTable(QObject *parent = 0);
     ~PTable();
 
@@ -25,31 +34,9 @@ public:
 
 signals:
     void onlineChanged();
-
     void action(QString actStr, const QVariant &actArg);
     void saveRecord();
-
-    void firstDealerChoosen(int dealer);
-    void roundStarted(int round, int extra, int dealer, bool allLast, int deposit);
-    void cleaned();
-    void diced(int die1, int die2);
-    void dealt(const QVariantList &init);
-    void flipped(const QVariant &newIndic);
-    void drawn(int who, const QVariant &tile, bool rinshan);
-    void discarded(int who, const QVariant &tile, bool spin);
-    void riichiCalled(int who);
-    void riichiEstablished(int who);
-    void barked(int who, int fromWhom, QString actStr, const QVariant &bark, bool spin);
-    void roundEnded(QString result, const QVariant &openers, int gunner,
-                    const QVariant &hands, const QVariant &forms, const QVariant &urids);
-    void pointsChanged(const QVariant &points);
-    void tableEnded(const QVariant &rank, const QVariant &scores);
-    void poppedUp(QString str);
-    void activated(const QVariant &action, int lastDiscarder, bool green, int nonce);
-    void deactivated();
-
-    void justPause(int ms);
-    void justSetOutPos(int outPos);
+    void tableEvent(Event type, const QVariantMap &args);
 
 public slots:
 

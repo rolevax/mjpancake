@@ -1,6 +1,7 @@
 import QtQuick 2.7
 import rolevax.sakilogy 1.0
 import "../widget"
+import "../js/girlnames.js" as Names
 
 Item {
     id: table
@@ -14,12 +15,13 @@ Item {
     property string tileSet: "std"
 
     // small tile width, height, and thickness
-    property int tw: table.height / 20
-    property int th: 1.35 * tw
+    property real tw: table.height / 20
+    property real th: 1.35 * tw
 
     // big tile width and height
-    property int twb: table.height / (global.mobile ? 13 : 17)
-    property int thb: 1.35 * twb
+    property real _prevTwb
+    property real twb: table.height / 17
+    property real thb: 1.35 * twb
 
     property var backColors: PGlobal.backColors
     property int colorIndex: 1 // will be updated to 0
@@ -36,289 +38,169 @@ Item {
 
     PTable {
         id: pTable
-        onFirstDealerChoosen: {
-            function cb() {
-                middle.setDealer(dealer)
-                pointBoard.initDealer = dealer;
-            }
 
-            animBuf.push({ callback: cb, duration: 0 });
-        }
+        onTableEvent: {
+            var cb;
+            var duration = 0;
+            var prelude = 0;
 
-        onRoundStarted: {
-            function cb() {
-                middle.setRound(round, extra);
-                middle.setDealer(dealer);
-                middle.wallRemain = 122;
-                for (var i = 0; i < 4; i++) {
-                    if (i === dealer)
-                        photos[i].setBars(extra, deposit);
-                    else
-                        photos[i].removeBars();
-                }
-
-                colorIndex = (colorIndex + 1) % backColors.length;
-            }
-
-            animBuf.push({ callback: cb, duration: 0 });
-        }
-
-        onCleaned: {
-            function cb() {
-                playerControl.clear();
-                logBox.clear();
-                doraIndic.doraIndic = [];
-                var i;
-                for (i = 0; i < 3; i++)
-                    oppoControls.itemAt(i).clear();
-                for (i = 0; i < 4; i++)
-                    rivers.itemAt(i).clear();
-            }
-
-            animBuf.push({ callback: cb, duration: 0 });
-        }
-
-        onDiced: {
-            function cb() {
-                middle.setDice(die1, die2);
-            }
-
-            animBuf.push({ callback: cb, duration: 1600 });
-        }
-
-        onDealt: {
-            function cb() {
-                playerControl.deal(init);
-                oppoControls.itemAt(0).deal();
-                oppoControls.itemAt(1).deal();
-                oppoControls.itemAt(2).deal();
-            }
-
-            function wr() {
-                middle.wallRemain = 70;
-            }
-
-            animBuf.push({ callback: cb, duration: 1600 });
-            animBuf.push({ callback: wr, duration: 0 });
-        }
-
-        onFlipped: {
-            function cb() {
-                doraIndic.doraIndic.push(newIndic);
-                doraIndic.doraIndicChanged();
-                resultWindow.doraIndic.doraIndic = doraIndic.doraIndic;
-            }
-
-            animBuf.push({ callback: cb, duration: 0 });
-        }
-
-        onDrawn: {
-            function cb() {
-                middle.wallRemain--;
-                if (who === 0)
-                    playerControl.draw(tile);
-                else
-                    oppoControls.itemAt(who - 1).draw();
-            }
-
-            var delay = rinshan ? 500 : 0;
-            animBuf.push({ callback: cb, duration: 100, prelude: delay });
-        }
-
-        onDiscarded: {
-            function cb() {
-                var osc; // out-tile's scene coord
-
-                if (who === 0) {
-                    playerControl.fixSyncError(tile.modelTileStr);
-                    osc = playerControl.outCoord;
-                    osc = mapFromItem(playerControl, osc.x, osc.y);
-                    osc = mapToItem(rivers.itemAt(0), osc.x, osc.y);
-                } else {
-                    var oppo = oppoControls.itemAt(who - 1);
-                    osc = spin ? oppo.spinOut() : oppo.swapOut();
-                    osc = mapFromItem(playerControl, osc.x, osc.y);
-                    osc = mapToItem(rivers.itemAt(0), osc.x, osc.y);
-                }
-
-                rivers.itemAt(who).add(tile, osc);
-                _lastDiscardStr = tile.modelTileStr;
-            }
-
-            animBuf.push({ callback: cb, duration: 200 });
-        }
-
-        onRiichiCalled: {
-            function cb() {
-                shockers.itemAt(who).shock("RIICHI");
-            }
-
-            animBuf.push({ callback: cb, duration: 0 });
-        }
-
-        onRiichiEstablished: {
-            function cb() {
-                middle.addBar(who);
-            }
-
-            animBuf.push({ callback: cb, duration: 100 });
-        }
-
-        onBarked: {
-            function cb() {
-                shockers.itemAt(who).shock(actStr);
-                if (who === 0)
-                    playerControl.bark(bark, spin);
-                else
-                    oppoControls.itemAt(who - 1).bark(bark, spin);
-                if (fromWhom >= 0)
-                    rivers.itemAt(fromWhom).sub();
-            }
-
-            animBuf.push({ callback: cb, duration: 0 });
-        }
-
-        onRoundEnded: {
-            function cb() {
-                var i;
-                for (i = 0; i < openers.length; i++) {
-                    if (openers[i] === 0)
-                        continue;
-                    oppoControls.itemAt(openers[i] - 1).setHand(hands[i].closed);
-                }
-
-                logBox.clear();
-                middle.removeBars();
-
-                if (result === "TSUMO") {
-                    shockers.itemAt(openers[0]).shock(result);
-                    if (openers[0] !== 0)
-                        oppoControls.itemAt(openers[0] - 1).pushDown(true, hands[0].pick);
-
-                    resultWindow.uraIndic.doraIndic = urids;
-                    resultWindow.agari(openers, -1, hands, forms);
-                } else if (result === "RON") {
-                    for (i = 0; i < openers.length; i++) {
-                        var who = openers[i];
-                        shockers.itemAt(who).shock(result);
-                        if (who !== 0)
-                            oppoControls.itemAt(who - 1).pushDown(true);
-                    }
-
-                    rivers.itemAt(gunner).showCircle(false);
-                    resultWindow.uraIndic.doraIndic = urids;
-
-                    // array 'openers' may be longer than actual winners
-                    // since it contains jumpees
-                    resultWindow.agari(openers, gunner, hands, forms);
-                } else {
-                    var whoReady = [ false, false, false, false ];
-                    for (var j = 0; j < openers.length; j++) {
-                        if (result === "SCHR")
-                            shockers.itemAt(openers[j]).shock("RON");
-                        whoReady[openers[j]] = true;
-                    }
-
-                    playerControl.face = whoReady[0] || result === "SCRC";
-                    for (i = 0; i < 3; i++) {
-                        var face = whoReady[i + 1] || result === "SCRC";
-                        if (result === "KSKP")
-                            oppoControls.itemAt(i).pushDown(face, hands[0].pick);
+            switch (type) {
+            case PTable.FirstDealerChoosen:
+                cb = function() {
+                    middle.setDealer(args.dealer)
+                    pointBoard.initDealer = args.dealer;
+                };
+                break;
+            case PTable.RoundStarted:
+                cb = function() {
+                    middle.setRound(args.round, args.extra);
+                    middle.setDealer(args.dealer);
+                    middle.wallRemain = 122;
+                    for (var i = 0; i < 4; i++) {
+                        if (i === args.dealer)
+                            photos[i].setBars(args.extra, args.deposit);
                         else
-                            oppoControls.itemAt(i).pushDown(face);
+                            photos[i].removeBars();
                     }
 
-                    resultWindow.ryuukyoku(result);
-                }
-            }
-
-            // extra duration to delay point change animation
-            animBuf.push({ callback: cb, duration: 200 });
-        }
-
-        onPointsChanged: {
-            function cb() {
-                middle.setPoints(points);
-                pointBoard.points = points;
-            }
-
-            animBuf.push({ callback: cb, duration: 0 });
-        }
-
-        onTableEnded: {
-            function cb() {
-                resultFinal.names = [ resultWindow.names[rank[0]],
-                                      resultWindow.names[rank[1]],
-                                      resultWindow.names[rank[2]],
-                                      resultWindow.names[rank[3]] ];
-                resultFinal.points = [ scores[rank[0]],
-                                       scores[rank[1]],
-                                       scores[rank[2]],
-                                       scores[rank[3]] ];
-                resultFinal.visible = true;
-            }
-
-            animBuf.push({ callback: cb, duration: 0 });
-        }
-
-        onActivated: {
-            function cb() {
-                if (nonce >= 0) {
-                    table._nonce = nonce;
-                    if (nonce !== PClient.lastNonce)
-                        return;
-                }
-
-                PGlobal.forceImmersive();
-                table.green.visible = green;
-
-                if (action.END_TABLE || action.NEXT_ROUND) {
-                    resultWindow.activate(action);
-                } else if (action.DICE) {
-                    middle.activateDice();
-                } else if (action.IRS_CHECK) {
-                    irsCheckBox.activate(action);
-                } else if (action.IRS_RIVAL) {
-                    for (var i = 0; i < action.IRS_RIVAL.length; i++)
-                        photos[action.IRS_RIVAL[i]].activateIrsRival();
-                } else {
-                    if (action.CHII_AS_LEFT || action.CHII_AS_MIDDLE || action.CHII_AS_RIGHT
-                            || action.PON || action.DAIMINKAN || action.RON) {
-                        rivers.itemAt(lastDiscarder).showCircle(true);
+                    colorIndex = (colorIndex + 1) % backColors.length;
+                };
+                break;
+            case PTable.Cleaned:
+                cb = function() {
+                    playerControl.clear();
+                    logBox.clear();
+                    doraIndic.doraIndic = [];
+                    var i;
+                    for (i = 0; i < 3; i++)
+                        oppoControls.itemAt(i).clear();
+                    for (i = 0; i < 4; i++)
+                        rivers.itemAt(i).clear();
+                };
+                break;
+            case PTable.Diced:
+                cb = function() { middle.setDice(args.die1, args.die2); };
+                duration = 1600;
+                break;
+            case PTable.Dealt:
+                var preCb = function() {
+                    playerControl.deal(args.init);
+                    oppoControls.itemAt(0).deal();
+                    oppoControls.itemAt(1).deal();
+                    oppoControls.itemAt(2).deal();
+                };
+                animBuf.push({ callback: preCb, duration: 1600 });
+                cb =  function() { middle.wallRemain = 70; };
+                break;
+            case PTable.Flipped:
+                cb = function() {
+                    doraIndic.doraIndic.push(args.newIndic);
+                    doraIndic.doraIndicChanged();
+                    resultWindow.doraIndic.doraIndic = doraIndic.doraIndic;
+                };
+                break;
+            case PTable.Drawn:
+                cb = function() {
+                    middle.wallRemain--;
+                    if (args.who === 0)
+                        playerControl.draw(args.tile);
+                    else
+                        oppoControls.itemAt(args.who - 1).draw();
+                };
+                duration = 100;
+                prelude = args.rinshan ? 300 : 0;
+                break;
+            case PTable.Discarded:
+                cb = function() {
+                    var osc; // out-tile's scene coord
+                    if (args.who === 0) {
+                        playerControl.fixSyncError(args.tile.substr(0, 2));
+                        osc = playerControl.outCoord;
+                        osc = mapFromItem(playerControl, osc.x, osc.y);
+                        osc = mapToItem(rivers.itemAt(0), osc.x, osc.y);
+                    } else {
+                        var oppo = oppoControls.itemAt(args.who - 1);
+                        osc = args.spin ? oppo.spinOut() : oppo.swapOut();
+                        osc = mapFromItem(playerControl, osc.x, osc.y);
+                        osc = mapToItem(rivers.itemAt(0), osc.x, osc.y);
                     }
-                    playerControl.activate(action, _lastDiscardStr);
-                }
+
+                    rivers.itemAt(args.who).add(args.tile, osc);
+                    _lastDiscardStr = args.tile.substr(0, 2);
+                };
+                duration = 200;
+                break;
+            case PTable.RiichiCalled:
+                cb = function() { shockers.itemAt(args.who).shock("RIICHI"); };
+                break;
+            case PTable.RiichiEstablished:
+                cb = function() { middle.addBar(args.who); };
+                duration = 100;
+                break;
+            case PTable.Barked:
+                cb = function() {
+                    shockers.itemAt(args.who).shock(args.actStr);
+                    if (args.who === 0)
+                        playerControl.bark(args.bark, args.spin);
+                    else
+                        oppoControls.itemAt(args.who - 1).bark(args.bark, args.spin);
+                    if (args.fromWhom >= 0)
+                        rivers.itemAt(args.fromWhom).sub();
+                };
+                break;
+            case PTable.RoundEnded:
+                cb = function() {
+                    endRound(args.result, args.openers, args.gunner,
+                             args.hands, args.forms, args.urids);
+                };
+                // extra duration to delay point change animation
+                duration = 200;
+                break;
+            case PTable.PointsChanged:
+                cb = function() {
+                    middle.setPoints(args.points);
+                    pointBoard.points = args.points;
+                };
+                break;
+            case PTable.TableEnded:
+                cb = function() {
+                    resultFinal.names = [ resultWindow.names[args.rank[0]],
+                                          resultWindow.names[args.rank[1]],
+                                          resultWindow.names[args.rank[2]],
+                                          resultWindow.names[args.rank[3]] ];
+                    resultFinal.points = [ args.scores[args.rank[0]],
+                                           args.scores[args.rank[1]],
+                                           args.scores[args.rank[2]],
+                                           args.scores[args.rank[3]] ];
+                    resultFinal.visible = true;
+                };
+                break;
+            case PTable.PoppedUp:
+                cb = function() { logBox.log(args.str); };
+                break;
+            case PTable.Activated:
+                cb = function() {
+                    activate(args.action, args.lastDiscarder, !!args.green, args.nonce);
+                };
+                break;
+            case PTable.Deactivated:
+                cb = function() { table.deactivate(); };
+                break;
+            case PTable.JustPause:
+                cb = function() { };
+                duration = args.ms;
+                break;
+            case PTable.JustSetOutPos:
+                cb = function() { playerControl.swapOut(args.outPos); };
+                break;
+            case PTable.Resume:
+                cb = function() { resume(args); };
+                break;
+            default:
+                throw "PTable::onTableEvent: unkown event type " + type;
             }
 
-            animBuf.push({ callback: cb, duration: 0 });
-        }
-
-        onPoppedUp: {
-            function cb() {
-                logBox.log(str);
-            }
-
-            animBuf.push({ callback: cb, duration: 0 });
-        }
-
-        onDeactivated: {
-            function cb() {
-                table.deactivate();
-            }
-
-            animBuf.push({ callback: cb, duration: 0 });
-        }
-
-        onJustPause: {
-            animBuf.push({ callback: function() { }, duration: ms });
-        }
-
-        onJustSetOutPos: {
-            function cb() {
-                playerControl.swapOut(outPos);
-            }
-
-            animBuf.push({ callback: cb, duration: 0 });
+            animBuf.push({ callback: cb, duration: duration, prelude: prelude });
         }
     }
 
@@ -444,8 +326,10 @@ Item {
         tileSet: table.tileSet
         backColor: table.backColors[table.colorIndex]
         tw: table.tw
-        x: 1.7 * table.th;
-        y: 2 * tw + table.th
+        anchors.right: middle.left
+        anchors.rightMargin: 0.6 * tw
+        anchors.bottom: middle.top
+        anchors.bottomMargin: 1.2 * th
     }
 
     Repeater {
@@ -493,7 +377,7 @@ Item {
         tw: table.tw
         twb: table.twb
         x: (table.width - 13 * twb) / 2;
-        y: table.height - table.thb - (table.thb / 5);
+        y: table.height - table.thb - 0.02 * table.height;
         z: 3
         width: (table.width + 13 * twb) / 2;
         height: table.thb
@@ -564,6 +448,132 @@ Item {
         playerControl.easyPass();
     }
 
+    function activate(action, lastDiscarder, green, nonce) {
+        if (nonce >= 0) {
+            table._nonce = nonce;
+            if (nonce !== PClient.lastNonce)
+                return;
+        }
+
+        PGlobal.forceImmersive();
+        table.green.visible = green;
+
+        if (action.END_TABLE || action.NEXT_ROUND) {
+            resultWindow.activate(action);
+        } else if (action.DICE) {
+            middle.activateDice();
+        } else if (action.IRS_CHECK) {
+            irsCheckBox.activate(action);
+        } else if (action.IRS_RIVAL) {
+            for (var i = 0; i < action.IRS_RIVAL.length; i++)
+                photos[action.IRS_RIVAL[i]].activateIrsRival();
+        } else {
+            if (action.CHII_AS_LEFT || action.CHII_AS_MIDDLE || action.CHII_AS_RIGHT
+                    || action.PON || action.DAIMINKAN || action.RON) {
+                rivers.itemAt(lastDiscarder).showCircle(true);
+            }
+            playerControl.activate(action, _lastDiscardStr);
+        }
+    }
+
+    function endRound(result, openers, gunner, hands, forms, urids) {
+        var i;
+        for (i = 0; i < openers.length; i++) {
+            if (openers[i] === 0)
+                continue;
+            oppoControls.itemAt(openers[i] - 1).setHand(hands[i].closed);
+        }
+
+        logBox.clear();
+        middle.removeBars();
+
+        if (result === "TSUMO") {
+            shockers.itemAt(openers[0]).shock(result);
+            if (openers[0] !== 0)
+                oppoControls.itemAt(openers[0] - 1).pushDown(true, hands[0].pick);
+
+            resultWindow.uraIndic.doraIndic = urids;
+            resultWindow.agari(openers, -1, hands, forms);
+        } else if (result === "RON") {
+            for (i = 0; i < openers.length; i++) {
+                var who = openers[i];
+                shockers.itemAt(who).shock(result);
+                if (who !== 0)
+                    oppoControls.itemAt(who - 1).pushDown(true);
+            }
+
+            rivers.itemAt(gunner).showCircle(false);
+            resultWindow.uraIndic.doraIndic = urids;
+
+            // array 'openers' may be longer than actual winners
+            // since it contains jumpees
+            resultWindow.agari(openers, gunner, hands, forms);
+        } else {
+            var whoReady = [ false, false, false, false ];
+            for (var j = 0; j < openers.length; j++) {
+                if (result === "SCHR")
+                    shockers.itemAt(openers[j]).shock("RON");
+                whoReady[openers[j]] = true;
+            }
+
+            playerControl.face = whoReady[0] || result === "SCRC";
+            for (i = 0; i < 3; i++) {
+                var face = whoReady[i + 1] || result === "SCRC";
+                if (result === "KSKP")
+                    oppoControls.itemAt(i).pushDown(face, hands[0].pick);
+                else
+                    oppoControls.itemAt(i).pushDown(face);
+            }
+
+            resultWindow.ryuukyoku(result);
+        }
+    }
+
+    function resume(snap) {
+        var i;
+
+        var names = [ "", "", "", "" ];
+        for (i = 0; i < 4; i++)
+            names[i] = Names.names[snap.girlIds[i]];
+        setNames(names);
+        setUsers(snap.users);
+
+        pointBoard.points = snap.points;
+        if (snap.dice > 0)
+            doraIndic.doraIndic = snap.drids;
+
+        middle.setRound(snap.round, snap.extraRound);
+        middle.setPoints(snap.points);
+        if (snap.dice > 0)
+            middle.setDice(1, snap.dice - 1);
+        middle.setDealer(snap.dealer);
+        middle.wallRemain = 0; // force change signal
+        middle.wallRemain = snap.wallRemain;
+        middle.removeBars();
+
+        playerControl.clear();
+        if (snap.dice > 0) {
+            playerControl.deal(snap.myHand);
+            playerControl.setBarks(snap.barkss[0])
+            for (i = 0; i < 3; i++) {
+                oppoControls.itemAt(i).clear();
+                oppoControls.itemAt(i).setStand(13 - 3 * snap.barkss[i + 1].length);
+                oppoControls.itemAt(i).setBarks(snap.barkss[i + 1]);
+            }
+
+            for (i = 0; i < 4; i++) {
+                rivers.itemAt(i).set(snap.rivers[i]);
+                if (snap.riichiBars[i])
+                    middle.addBar(i);
+            }
+
+            if (snap.whoDrawn === 0)
+                playerControl.draw(snap.drawn);
+            else if (snap.whoDrawn > 0)
+                oppoControls.itemAt(snap.whoDrawn - 1).setStandDrawn();
+        }
+    }
+
     function showSnap(snap) {
         var i;
 
@@ -624,6 +634,17 @@ Item {
                 resultWindow.ryuukyoku(snap.result);
             }
         }
+    }
+
+    function handlePinchStarted() {
+        _prevTwb = twb;
+    }
+
+    function handlePinchUpdated(scale) {
+        var next = scale * _prevTwb;
+        if (next < tw || next > table.height * 1.6 / 14)
+            return;
+        twb = next;
     }
 }
 

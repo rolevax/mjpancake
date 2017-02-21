@@ -1,8 +1,8 @@
-import QtQuick 2.0
+import QtQuick 2.7
 import rolevax.sakilogy 1.0
 import "../widget"
 
-Image {
+PinchArea {
     id: frame
 
     property alias table: table
@@ -14,7 +14,12 @@ Image {
     property int photoGap: 0.02 * height
 
     anchors.fill: parent
-    source: "image://impro/user/background"
+
+    Image{
+        id: background
+        anchors.fill: parent
+        source: "image://impro/user/background"
+    }
 
     MouseArea { // right/double-click to pass/tsumokiri
         anchors.fill: parent
@@ -113,6 +118,18 @@ Image {
         }
     }
 
+    onPinchStarted: {
+        table.handlePinchStarted();
+    }
+
+    onPinchUpdated: {
+        table.handlePinchUpdated(pinch.scale);
+    }
+
+    onPinchFinished: {
+        PGlobal.forceImmersive();
+    }
+
     function startLocal(girlIds, gameRule, tempDealer) {
         table.pTable.startLocal(girlIds, gameRule, tempDealer);
     }
@@ -124,7 +141,7 @@ Image {
     function startSample() {
         // one uncahed image client to affect the image provider
         // across the whole program
-        frame.cache = false;
+        background.cache = false;
         table.setNames(["宮永咲", "加治木ゆみ", "池田華菜", "天江衣"]);
         table.pTable.startSample();
     }

@@ -71,7 +71,10 @@ Room {
         interval: 17
         onTriggered: {
             loader.item.startOnline(PClient);
-            areaStage.showReady = true;
+            if (areaStage.visible)
+                areaStage.showReady = true;
+            else
+                PClient.sendResume();
         }
     }
 
@@ -87,6 +90,7 @@ Room {
 
     Connections {
         target: PClient
+
         onStartIn: {
             room.tempDealer = tempDealer;
             room.girlIds = girlIds;
@@ -103,11 +107,15 @@ Room {
             loader.source = "../game/Game.qml";
         }
 
+        onResumeIn: {
+            loader.source = "../game/Game.qml";
+        }
+
         onRemoteClosed: {
             closed();
         }
 
-        onPointsChanged: {
+        onTableEvent: {
             areaStage.visible = false;
         }
     }

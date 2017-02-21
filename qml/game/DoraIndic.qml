@@ -3,10 +3,10 @@ import QtQuick 2.0
 Item {
     id: frame
 
-    property var doraIndic
+    property var doraIndic: []
     property string tileSet: "std"
     property color backColor
-    property int tw
+    property real tw
 
     width: 5 * tw
     height: 1.35 * tw
@@ -25,9 +25,14 @@ Item {
     }
 
     onDoraIndicChanged: {
-        for (var i = 0; i < 5; i++)
-            rep.itemAt(4 - i).tileStr = doraIndic && i < doraIndic.length ?
-                        doraIndic[i].modelTileStr : "back";
+        var i;
+        if (doraIndic && doraIndic.length) { // sometimes not a array, don't know why...
+            for (i = 0; i < 5; i++)
+                rep.itemAt(4 - i).tileStr = i < doraIndic.length ? doraIndic[i] : "back";
+        } else {
+            for (i = 0; i < 5; i++)
+                rep.itemAt(i).tileStr = "back";
+        }
     }
 }
 

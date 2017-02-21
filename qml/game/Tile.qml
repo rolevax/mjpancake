@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.7
 
 Item {
     id: frame
@@ -6,13 +6,15 @@ Item {
     signal clicked
 
     property string tileSet: "std"
-    property int tileWidth
-    property int tileHeight: tileWidth * 1.35
+    property real tileWidth
+    property real tileHeight: tileWidth * 1.35
     property string tileStr
     property color backColor: "#DD9900"
     property bool clickable: false
     property bool dark: false
     property bool lay: false
+    property bool _light: clickable &&
+                          (global.mobile ? mouseArea.containsPress : mouseArea.containsMouse)
 
     // make item square when lay for ease of anchoring
     width: lay ? tileHeight : tileWidth
@@ -25,7 +27,7 @@ Item {
         width: tileWidth
         height: tileWidth * 1.35
         color: frame.tileStr === "back" ? backColor
-                                        : frame.dark ? "#888899" : "#E8E9DB"
+                                        : frame.dark ? "#888899" : (_light ? "#FFFFFF" : "#E8E9DB")
 
         Image {
             id: image
@@ -38,6 +40,7 @@ Item {
         MouseArea {
             id: mouseArea
             anchors.fill: parent
+            hoverEnabled: true
             propagateComposedEvents: !frame.clickable
             onClicked: {
                 if (frame.clickable)

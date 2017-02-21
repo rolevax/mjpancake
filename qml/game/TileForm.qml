@@ -54,8 +54,13 @@ Item {
     }
 
     function addHand(hand) {
-        for (var i in hand)
-            handModel.append(hand[i]);
+        for (var i in hand) {
+            var model = {
+                modelTileStr: hand[i].substr(0, 2),
+                modelLay: hand[i][2] === "_"
+            };
+            handModel.append(model);
+        }
 
         form.width += hand.length * tw;
     }
@@ -80,9 +85,8 @@ Item {
     }
 
     function addPick(pick) {
-        pick.modelLay = true;
-        handModel.append(pick);
-
+        var model = { modelTileStr: pick.substr(0, 2), modelLay: true };
+        handModel.append(model);
         form.width += 1.35 * tw;
     }
 }

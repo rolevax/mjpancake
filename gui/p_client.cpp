@@ -10,6 +10,10 @@
 #include <QCryptographicHash>
 #include <QDebug>
 
+#include <cassert>
+
+
+
 PClient::PClient(QObject *parent) : QObject(parent)
 {
     QVariantMap bookEntry;
@@ -83,6 +87,16 @@ void PClient::sendReady()
     mSocket.send(req);
 }
 
+void PClient::sendResume()
+{
+    QJsonObject req;
+    req["Type"] = "t-action";
+    req["ActStr"] = "RESUME";
+    req["ActArg"] = "-1";
+    req["Nonce"] = 0;
+    mSocket.send(req);
+}
+
 QVariantMap PClient::user() const
 {
     return mUser;
@@ -131,6 +145,52 @@ void PClient::action(QString actStr, const QVariant &actArg)
     mSocket.send(req);
 }
 
+PTable::Event PClient::eventOf(const QString &event)
+{
+    PTable::Event type;
+
+    if (event == "first-dealer-choosen")
+        type = PTable::FirstDealerChoosen;
+    else if (event == "round-started")
+        type = PTable::RoundStarted;
+    else if (event == "cleaned")
+        type = PTable::Cleaned;
+    else if (event == "diced")
+        type = PTable::Diced;
+    else if (event == "dealt")
+        type = PTable::Dealt;
+    else if (event == "flipped")
+        type = PTable::Flipped;
+    else if (event == "drawn")
+        type = PTable::Drawn;
+    else if (event == "discarded")
+        type = PTable::Discarded;
+    else if (event == "riichi-called")
+        type = PTable::RiichiCalled;
+    else if (event == "riichi-established")
+        type = PTable::RiichiEstablished;
+    else if (event == "barked")
+        type = PTable::Barked;
+    else if (event == "round-ended")
+        type = PTable::RoundEnded;
+    else if (event == "points-changed")
+        type = PTable::PointsChanged;
+    else if (event == "table-ended")
+        type = PTable::TableEnded;
+    else if (event == "popped-up")
+        type = PTable::PoppedUp;
+    else if (event == "activated")
+        type = PTable::Activated;
+    else if (event == "deactivated")
+        type = PTable::Deactivated;
+    else if (event == "resume")
+        type = PTable::Resume;
+    else
+        assert(false && "PClient: unknown table event type");
+
+    return type;
+}
+
 void PClient::onRemoteClosed()
 {
     mUser.clear();
@@ -161,96 +221,32 @@ void PClient::onJsonReceived(const QJsonObject &msg)
         QJsonArray girlIds = msg["GirlIds"].toArray();
         int tempDealer = msg["TempDealer"].toInt();
         emit startIn(users.toVariantList(), girlIds.toVariantList(), tempDealer);
-    } else if (type.startsWith("t-")) {
-        recvTableEvent(type, msg);
+    } else if (type == "resume") {
+        mLastNonce = 0;
+        emit lastNonceChanged();
+        emit resumeIn();
+    } else if (type == "table") {
+        recvTableEvent(msg);
     } else if (type == "update-user") {
         mUser = msg["User"].toObject().toVariantMap();
         emit userChanged();
     }
 }
 
-void PClient::recvTableEvent(const QString &type, const QJsonObject &msg)
+void PClient::recvTableEvent(const QJsonObject &msg)
 {
     int nonce = msg["Nonce"].toInt();
     if (nonce > mLastNonce) {
         mLastNonce = nonce;
         emit lastNonceChanged();
-        emit deactivated();
+        emit tableEvent(PTable::Deactivated, QVariantMap());
     }
 
-    if (type == "t-activated") {
-        QJsonObject action = msg["Action"].toObject();
-        int lastDiscarder = msg["LastDiscarder"].toInt();
-        bool green = msg["Green"].toBool(false);
-        emit activated(action.toVariantMap(), lastDiscarder, green, nonce);
-    } else if (type == "t-first-dealer-choosen") {
-        int initDealer = msg["InitDealer"].toInt();
-        emit firstDealerChoosen(initDealer);
-    } else if (type == "t-round-started") {
-        int round = msg["Round"].toInt();
-        int extra = msg["ExtraRound"].toInt();
-        int dealer = msg["Dealer"].toInt();
-        bool allLast = msg["AllLast"].toBool();
-        int deposit = msg["Deposit"].toInt();
-        emit roundStarted(round, extra, dealer, allLast, deposit);
-    } else if (type == "t-cleaned") {
-        emit cleaned();
-    } else if (type == "t-diced") {
-        int die1 = msg["Die1"].toInt();
-        int die2 = msg["Die2"].toInt();
-        emit diced(die1, die2);
-    } else if (type == "t-dealt") {
-        QJsonArray init = msg["Init"].toArray();
-        emit dealt(init.toVariantList());
-    } else if (type == "t-flipped") {
-        QJsonObject tile = msg["NewIndic"].toObject();
-        emit flipped(tile.toVariantMap());
-    } else if (type == "t-drawn") {
-        int w = msg["Who"].toInt();
-        bool rinshan = msg["Rinshan"].toBool();
-        QJsonObject tile;
-        if (w == 0)
-            tile = msg["Tile"].toObject();
-        emit drawn(w, tile.toVariantMap(), rinshan);
-    } else if (type == "t-discarded") {
-        int w = msg["Who"].toInt();
-        QJsonObject tile = msg["Tile"].toObject();
-        bool spin = msg["Spin"].toBool();
-        emit discarded(w, tile.toVariantMap(), spin);
-    } else if (type == "t-riichi-called") {
-        int w = msg["Who"].toInt();
-        emit riichiCalled(w);
-    } else if (type == "t-riichi-established") {
-        int w = msg["Who"].toInt();
-        emit riichiEstablished(w);
-    } else if (type == "t-barked") {
-        int w = msg["Who"].toInt();
-        int from = msg["FromWhom"].toInt();
-        QString actStr = msg["ActStr"].toString();
-        QJsonObject bark = msg["Bark"].toObject();
-        bool spin = msg["Spin"].toBool();
-        emit barked(w, from, actStr, bark.toVariantMap(), spin);
-    } else if (type == "t-round-ended") {
-        QString result = msg["Result"].toString();
-        QJsonArray openers = msg["Openers"].toArray();
-        int gunner = msg["Gunner"].toInt();
-        QJsonArray hands = msg["Hands"].toArray();
-        QJsonArray forms = msg["Forms"].toArray();
-        QJsonArray urids = msg["Urids"].toArray();
-        emit roundEnded(result, openers, gunner, hands, forms, urids);
-    } else if (type == "t-points-changed") {
-        QJsonArray points = msg["Points"].toArray();
-        emit pointsChanged(points.toVariantList());
-    } else if (type == "t-table-ended") {
-        QJsonArray rank = msg["Rank"].toArray();
-        QJsonArray scores = msg["Scores"].toArray();
-        emit tableEnded(rank, scores);
-    } else if (type == "t-popped-up") {
-        QString str = msg["Str"].toString();
-        emit poppedUp(str);
-    } else {
-        saki::util::p("WTF unkown recv type", type.toStdString());
-    }
+    PTable::Event event = eventOf(msg["Event"].toString());
+    QVariantMap args = msg["Args"].toObject().toVariantMap();
+    if (event == PTable::Activated)
+        args["nonce"] = nonce;
+    emit tableEvent(event, args);
 }
 
 QString PClient::hash(const QString &password) const

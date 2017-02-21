@@ -167,7 +167,7 @@ Item {
         frame.stand = true;
     }
 
-    function draw(tile) {
+    function draw() {
         drawnStand.visible = true;
 
         if (frame.animEnabled)
@@ -202,8 +202,7 @@ Item {
             }
         } else if (bark.isKakan) {
             for (var i = 0; i < barksModel.count; i++) {
-                if (barksModel.get(i).modelMeld[0].modelTileStr ===
-                        bark[0].modelTileStr) {
+                if (barksModel.get(i).modelMeld[0].substr(0, 2) === bark[0].substr(0, 2)) {
                     barksModel.set(i, { modelMeld: bark });
                     break;
                 }
@@ -226,13 +225,25 @@ Item {
     function setHand(hand, show) {
         handModel.clear();
         for (var i in hand)
-            handModel.append(hand[i]);
+            handModel.append({ modelTileStr: hand[i] });
+    }
+
+    function setStand(count) {
+        stand.model = [];
+        for (var i = 0; i < count; i++)
+            standModel.append({});
+        stand.model = standModel;
+        frame.stand = true;
     }
 
     function setDrawn(tile) {
-        drawnTile.tileStr = tile.modelTileStr;
+        drawnTile.tileStr = tile;
         drawnStand.visible = true; // for anchoring
         drawnTile.visible = true;
+    }
+
+    function setStandDrawn() {
+        drawnStand.visible = true;
     }
 
     function setBarks(barks) {
@@ -248,19 +259,14 @@ Item {
 
     function pushDown(show, tsumoTile) {
         while (handModel.count < standModel.count) {
-            var dummyModel = {
-                modelTileStr: "back",
-                modelLay: false,
-                modelDark: false,
-                modelClickable: false,
-            };
+            var dummyModel = { modelTileStr: "back" };
             handModel.append(dummyModel);
         }
 
         frame.stand = false;
         frame.show = show;
         if (show && tsumoTile) {
-            drawnTile.tileStr = tsumoTile.modelTileStr;
+            drawnTile.tileStr = tsumoTile;
         }
     }
 }

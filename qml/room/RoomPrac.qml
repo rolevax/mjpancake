@@ -2,6 +2,8 @@ import QtQuick 2.7
 import "../widget"
 
 Room {
+    id: room
+
     Column {
         anchors.centerIn: parent
         spacing: global.size.space
@@ -32,6 +34,8 @@ Room {
         id: loader
         anchors.fill: parent
         onLoaded: {
+            room.focus = false;
+            loader.focus = true;
             item.closed.connect(closeRoom);
         }
     }

@@ -33,7 +33,9 @@ void PTableLocal::onTableStarted(const saki::Table &table, uint32_t seed)
 
 void PTableLocal::onFirstDealerChoosen(saki::Who initDealer)
 {
-    emit firstDealerChoosen(initDealer.index());
+    QVariantMap args;
+    args["dealer"] = initDealer.index();
+    emit tableEvent(PTable::FirstDealerChoosen, args);
 }
 
 void PTableLocal::onRoundStarted(int round, int extra, saki::Who dealer,
@@ -43,35 +45,52 @@ void PTableLocal::onRoundStarted(int round, int extra, saki::Who dealer,
               << " al" << al << " dp" << deposit
               << ' ' << seed << std::endl;
 
-    emit roundStarted(round, extra, dealer.index(), al, deposit);
+    QVariantMap args;
+    args["round"] = round;
+    args["extra"] = extra;
+    args["dealer"] = dealer.index();
+    args["allLast"] = al;
+    args["deposit"] = deposit;
+    emit tableEvent(PTable::RoundStarted, args);
 }
 
 void PTableLocal::onCleaned()
 {
-    emit cleaned();
+    emit tableEvent(PTable::Cleaned, QVariantMap());
 }
 
 void PTableLocal::onDiced(const saki::Table &table, int die1, int die2)
 {
     if (!table.getDealer().human())
-        emit justPause(700);
-    emit diced(die1, die2);
+        emitJustPause(700);
+
+    QVariantMap args;
+    args["die1"] = die1;
+    args["die2"] = die2;
+    emit tableEvent(PTable::Diced, args);
 }
 
 void PTableLocal::onDealt(const saki::Table &table)
 {
-    emit dealt(createTilesVar(table.getHand(mSelf).closed()));
+    QVariantMap args;
+    args["init"] = createTilesVar(table.getHand(mSelf).closed());
+    emit tableEvent(PTable::Dealt, args);
 }
 
 void PTableLocal::onFlipped(const saki::Table &table)
 {
-    emit flipped(createTileVar(table.getMount().getDrids().back()));
+    QVariantMap args;
+    args["newIndic"] = createTileVar(table.getMount().getDrids().back());
+    emit tableEvent(PTable::Flipped, args);
 }
 
 void PTableLocal::onDrawn(const saki::Table &table, saki::Who who)
 {
-    const saki::T37 &in = table.getHand(who).drawn();
-    emit drawn(who.index(), createTileVar(in), table.duringKan());
+    QVariantMap args;
+    args["who"] = who.index();
+    args["tile"] = createTileVar(table.getHand(who).drawn());
+    args["rinshan"] = table.duringKan();
+    emit tableEvent(PTable::Drawn, args);
 }
 
 void PTableLocal::onDiscarded(const saki::Table &table, bool spin)
@@ -81,20 +100,30 @@ void PTableLocal::onDiscarded(const saki::Table &table, bool spin)
     bool lay = table.lastDiscardLay();
 
     if (!who.human())
-        emit justPause(500);
-    emit discarded(who.index(), createTileVar(outTile, lay), spin);
+        emitJustPause(300);
+
+    QVariantMap args;
+    args["who"] = who.index();
+    args["tile"] = createTileVar(outTile, lay);
+    args["spin"] = spin;
+    emit tableEvent(PTable::Discarded, args);
 }
 
 void PTableLocal::onRiichiCalled(saki::Who who)
 {
     if (!who.human())
-        emit justPause(500);
-    emit riichiCalled(who.index());
+        emitJustPause(300);
+
+    QVariantMap args;
+    args["who"] = who.index();
+    emit tableEvent(PTable::RiichiCalled, args);
 }
 
 void PTableLocal::onRiichiEstablished(saki::Who who)
 {
-    emit riichiEstablished(who.index());
+    QVariantMap args;
+    args["who"] = who.index();
+    emit tableEvent(PTable::RiichiEstablished, args);
 }
 
 void PTableLocal::onBarked(const saki::Table &table, saki::Who who,
@@ -102,9 +131,15 @@ void PTableLocal::onBarked(const saki::Table &table, saki::Who who,
 {
     int fromWhom = bark.isCpdmk() ? table.getFocus().who().index() : -1;
     if (!who.human())
-        emit justPause(500);
-    emit barked(who.index(), fromWhom, QString(stringOf(bark.type())),
-                createBarkVar(bark), spin);
+        emitJustPause(500);
+
+    QVariantMap args;
+    args["who"] = who.index();
+    args["fromWhom"] = fromWhom;
+    args["actStr"] = QString(stringOf(bark.type()));
+    args["bark"] = createBarkVar(bark);
+    args["spin"] = spin;
+    emit tableEvent(PTable::Barked, args);
 }
 
 void PTableLocal::onRoundEnded(const saki::Table &table, saki::RoundResult result,
@@ -127,9 +162,9 @@ void PTableLocal::onRoundEnded(const saki::Table &table, saki::RoundResult resul
         handMap.insert("barks", createBarksVar(hand.barks()));
 
         if (result == RR::TSUMO || result == RR::KSKP)
-            handMap.insert("pick", createTileVar(hand.drawn(), true));
+            handMap.insert("pick", createTileVar(hand.drawn()));
         else if (result == RR::RON || result == RR::SCHR)
-            handMap.insert("pick", createTileVar(table.getFocusTile(), true));
+            handMap.insert("pick", createTileVar(table.getFocusTile()));
 
         handsList << handMap;
     }
@@ -141,13 +176,18 @@ void PTableLocal::onRoundEnded(const saki::Table &table, saki::RoundResult resul
 
     if ((result == RR::TSUMO || result == RR::RON || result == RR::SCHR)
             && (openers.size() > 1 || !openers[0].human())) {
-        emit justPause(700);
+        emitJustPause(700);
     }
 
-    emit roundEnded(QString(stringOf(result)),
-                    openersList, gunner.nobody() ? -1 : gunner.index(),
-                    handsList, formsList,
-                    createTilesVar(table.getMount().getUrids()));
+
+    QVariantMap args;
+    args["result"] = QString(stringOf(result));
+    args["openers"] = openersList;
+    args["gunner"] = gunner.nobody() ? -1 : gunner.index();
+    args["hands"] = handsList;
+    args["forms"] = formsList;
+    args["urids"] = createTilesVar(table.getMount().getUrids());
+    emit tableEvent(PTable::RoundEnded, args);
 }
 
 void PTableLocal::onPointsChanged(const saki::Table &table)
@@ -156,24 +196,34 @@ void PTableLocal::onPointsChanged(const saki::Table &table)
     QVariantList list;
     for (int i = 0; i < 4; i++)
         list << points[i];
-    emit pointsChanged(QVariant::fromValue(list));
+
+    QVariantMap args;
+    args["points"] = list;
+    emit tableEvent(PTable::PointsChanged, args);
 }
 
 void PTableLocal::onTableEnded(const std::array<saki::Who, 4> &rank,
                           const std::array<int, 4> &scores)
 {
-    QVariantList rankList, pointsList;
+    QVariantList rankList, scoresList;
     for (int i = 0; i < 4; i++) {
         rankList << rank[i].index();
-        pointsList << scores[i];
+        scoresList << scores[i];
     }
-    emit tableEnded(rankList, pointsList);
+
+    QVariantMap args;
+    args["rank"] = rankList;
+    args["scores"] = scoresList;
+    emit tableEvent(PTable::TableEnded, args);
 }
 
 void PTableLocal::onPoppedUp(const saki::Table &table, saki::Who who)
 {
-    if (who == mSelf)
-        emit poppedUp(QString::fromStdString(table.getGirl(who).popUpStr()));
+    if (who == mSelf) {
+        QVariantMap args;
+        args["str"] = QString::fromStdString(table.getGirl(who).popUpStr());
+        emit tableEvent(PTable::PoppedUp, args);
+    }
 }
 
 void PTableLocal::onActivated(saki::Table &table)
@@ -183,11 +233,10 @@ void PTableLocal::onActivated(saki::Table &table)
     const saki::TableView view = table.getView(mSelf);
 
     if (table.riichiEstablished(mSelf) && view.iCanOnlySpin()) {
-        emit justPause(500); // a little pause
+        emitJustPause(300); // a little pause
         table.action(mSelf, saki::Action(AC::SPIN_OUT));
         return;
     }
-
 
     int focusWho;
     if (view.iCan(AC::CHII_AS_LEFT)
@@ -249,11 +298,15 @@ void PTableLocal::onActivated(saki::Table &table)
         if (view.iCan(code))
             map.insert(stringOf(code), true);
 
-    emit activated(QVariant::fromValue(map), focusWho, view.iForwardAll(), -1);
+    QVariantMap args;
+    args["action"] = map;
+    args["lastDiscarder"] = focusWho;
+    args["green"] = view.iForwardAll();
+    args["nonce"] = -1;
+    emit tableEvent(PTable::Activated, args);
 }
 
-void PTableLocal::start(const QVariant &girlIdsVar, const QVariant &gameRule,
-                   int tempDelaer)
+void PTableLocal::start(const QVariant &girlIdsVar, const QVariant &gameRule, int tempDelaer)
 {
     QVariantList list = girlIdsVar.toList();
     std::array<int, 4> girlIds {
@@ -323,6 +376,13 @@ void PTableLocal::saveRecord()
     file.write(doc.toJson(QJsonDocument::Compact));
 
     file.close();
+}
+
+void PTableLocal::emitJustPause(int ms)
+{
+    QVariantMap args;
+    args["ms"] = ms;
+    emit tableEvent(PTable::JustPause, args);
 }
 
 

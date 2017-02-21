@@ -37,7 +37,7 @@ public:
     void setIppatsu(bool v);
 
 signals:
-    void dealt(const QVariantList &init);
+    void dealt(const QStringList &init);
     void drawn(const QVariant &tile);
     void ankaned(const QVariant &bark, bool spin);
     void activated(const QVariantMap &actions);

@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.7
 import rolevax.sakilogy 1.0
 import "../widget"
 
@@ -9,8 +9,8 @@ Item {
 
     property bool animEnabled: true
     property string tileSet: "std"
-    property int tw
-    property int twb
+    property real tw
+    property real twb
     property color backColor
     property bool face: true // false when no-ten at ryuukyoku
     property var can: { "tsumokiri": false, "pass": false }
@@ -39,11 +39,7 @@ Item {
         tileWidth: twb
         backColor: frame.backColor
         onClicked: {
-            if (green)
-                greenSpinAnim.start();
-            else
-                _spinOut();
-            frame.actionTriggered("SPIN_OUT", -1);
+            _handleDrawnClicked();
         }
         NumberAnimation {
             id: inAnim
@@ -124,7 +120,6 @@ Item {
                 frame.actionTriggered("SWAP_OUT", tileStr);
             }
             tileStr: frame.face && modelTileStr ? modelTileStr : "back"
-            lay: modelLay
             dark: modelDark
             clickable: modelClickable
 
@@ -215,8 +210,8 @@ Item {
 
         function activate(mask) {
             for (var i = 0; i < handModel.count; i++) {
-                handModel.set(i, {modelDark: !mask[i],
-                                  modelClickable: mask[i]});
+                var ok = !!(mask & (1 << i));
+                handModel.set(i, { modelDark: !ok, modelClickable: ok });
             }
         }
 
@@ -246,7 +241,7 @@ Item {
             meld: modelMeld
             anchors.bottom: parent.bottom
             FloatButton {
-                width: 1.35 * frame.th - 4
+                width: 1.35 * frame.tw - 4
                 height: frame.tw
                 y: -(frame.tw / 2)
                 x:  meld.open === 0 ? 2 : (meld.open === 1 ? tw + 2 : tw * 2 + 2);
@@ -267,11 +262,14 @@ Item {
     function deal(init) {
         hand.model = []; // to trigger populate transition
         for (var i in init) {
-            init[i].modelDark = false;
-            init[i].modelClickable = false;
-            init[i].modelFloatAct = "";
-            init[i].modelFloatArg = "-1";
-            handModel.append(init[i]);
+            var model = {
+                modelDark: false,
+                modelClickable: false,
+                modelFloatAct: "",
+                modelFloatArg: "-1",
+                modelTileStr: init[i],
+            };
+            handModel.append(model);
         }
         hand.model = handModel;
         drawn.tileStr = "hide";
@@ -354,14 +352,21 @@ Item {
     }
 
     function draw(t) {
-        drawn.lay = t.modelLay;
-        drawn.tileStr = t.modelTileStr;
+        drawn.tileStr = t;
         // dark and clickable are initially set false
         drawn.dark = false;
         drawn.clickable = false;
 
         if (frame.animEnabled)
             drawn.inAnim.start();
+    }
+
+    function _handleDrawnClicked() {
+        if (green)
+            greenSpinAnim.start();
+        else
+            _spinOut();
+        frame.actionTriggered("SPIN_OUT", -1);
     }
 
     // called only by self and set-background-demo
@@ -410,16 +415,15 @@ Item {
         var ti;
         if (bark.isAnkan) {
             if (spin) {
-                handModel.remove(_indexInHand34(bark[0].modelTileStr), 3);
+                handModel.remove(_indexInHand34(bark[0].substr(0, 2)), 3);
                 drawn.tileStr = "hide";
             } else {
-                handModel.remove(_indexInHand34(bark[0].modelTileStr), 4);
+                handModel.remove(_indexInHand34(bark[0].substr(0, 2)), 4);
                 insertDrawn();
             }
         } else if (bark.isKakan) {
             for (var i = 0; i < barksModel.count; i++) {
-                if (barksModel.get(i).modelMeld[0].modelTileStr ===
-                        bark[0].modelTileStr) {
+                if (barksModel.get(i).modelMeld[0].substr(0, 2) === bark[0].substr(0, 2)) {
                     barksModel.set(i, { modelMeld: bark });
                     break;
                 }
@@ -428,7 +432,7 @@ Item {
             if (spin) {
                 drawn.tileStr = "hide";
             } else {
-                handModel.remove(_indexInHand34(bark[3].modelTileStr), 1);
+                handModel.remove(_indexInHand34(bark[3].substr(0, 2)), 1);
                 insertDrawn();
             }
         } else { // chii, pon, daiminkan
@@ -436,7 +440,7 @@ Item {
             for (ti = 0; ti < size; ti++) {
                 if (ti === bark.open)
                     continue;
-                handModel.remove(_indexInHand37(bark[ti].modelTileStr), 1);
+                handModel.remove(_indexInHand37(bark[ti].substr(0, 2)), 1);
             }
         }
 
@@ -477,15 +481,15 @@ Item {
     function insertDrawn() {
         var inPos = 0;
         var ndl = order37(drawn.tileStr)
-        while (inPos < handModel.count
-               && ndl > order37(handModel.get(inPos).modelTileStr))
+        while (inPos < handModel.count && ndl > order37(handModel.get(inPos).modelTileStr))
             inPos++;
 
         var drawnModel = {
             modelTileStr: drawn.tileStr,
-            modelLay: false, modelDark: drawn.dark,
+            modelDark: drawn.dark,
             modelClickable: drawn.clickable,
-            modelFloatAct: "", modelFloatArg: "-1"
+            modelFloatAct: "",
+            modelFloatArg: "-1"
         };
 
         handModel.insert(inPos, drawnModel);
@@ -494,8 +498,7 @@ Item {
 
     function easyPass() {
         if (frame.can.tsumokiri) {
-            frame._spinOut();
-            frame.actionTriggered("SPIN_OUT", -1);
+            _handleDrawnClicked();
         } else if (frame.can.pass) {
             frame.actionTriggered("PASS", -765);
         }

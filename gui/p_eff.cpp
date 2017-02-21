@@ -193,11 +193,8 @@ void PEff::draw()
             draw();
         }
     } else {
-        QVariantList mask;
-        for (int i = 0; i < 13; i++)
-            mask << true;
-        actions["SWAP_OUT"] = mask;
-        if (mHand.canRiichi())
+        actions["SWAP_OUT"] = 8191; // 0111_1111_1111
+        if (!mInfo.emptyMount && mHand.canRiichi())
             actions["RIICHI"] = true;
         emit activated(actions);
     }

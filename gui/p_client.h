@@ -2,10 +2,12 @@
 #define P_CLIENT_H
 
 #include "p_json_tcp.h"
+#include "p_table.h"
 
 #include <QObject>
 #include <QQmlEngine>
 #include <QJSEngine>
+#include <QVariantMap>
 
 
 
@@ -28,6 +30,7 @@ public:
     Q_INVOKABLE void book(const QString &bookType);
     Q_INVOKABLE void unbook();
     Q_INVOKABLE void sendReady();
+    Q_INVOKABLE void sendResume();
 
     QVariantMap user() const;
     bool loggedIn() const;
@@ -36,44 +39,28 @@ public:
     QVariantMap books() const;
     int lastNonce() const;
 
-
 signals:
     void remoteClosed();
     void connError();
     void authFailIn(const QString &reason);
     void startIn(const QVariantList &users, const QVariantList &girlIds, int tempDealer);
+    void resumeIn();
 
     void userChanged();
     void lookedAround();
     void lastNonceChanged();
 
-    void firstDealerChoosen(int dealer);
-    void roundStarted(int round, int extra, int dealer, bool allLast, int deposit);
-    void cleaned();
-    void diced(int die1, int die2);
-    void dealt(const QVariantList &init);
-    void flipped(const QVariant &newIndic);
-    void drawn(int who, const QVariant &tile, bool rinshan);
-    void discarded(int who, const QVariant &tile, bool spin);
-    void riichiCalled(int who);
-    void riichiEstablished(int who);
-    void barked(int who, int fromWhom, QString actStr, const QVariant &bark, bool spin);
-    void roundEnded(QString result, const QVariant &openers, int gunner,
-                    const QVariant &hands, const QVariant &forms, const QVariant &urids);
-    void pointsChanged(const QVariant &points);
-    void tableEnded(const QVariant &rank, const QVariant &scores);
-    void poppedUp(QString str);
-    void activated(const QVariant &action, int lastDiscarder, bool green, int nonce);
-    void deactivated();
+    void tableEvent(PTable::Event type, const QVariantMap &args);
 
 public slots:
     void action(QString actStr, const QVariant &actArg);
 
 private:
+    static PTable::Event eventOf(const QString &event);
     void onRemoteClosed();
     void send(const QJsonObject &obj);
     void onJsonReceived(const QJsonObject &msg);
-    void recvTableEvent(const QString &type, const QJsonObject &msg);
+    void recvTableEvent(const QJsonObject &msg);
 
     QString hash(const QString &password) const;
 

@@ -52,25 +52,22 @@ Item {
     onMeldChanged: {
         if (meld) {
             var lt = meld.type === 1 ? meld[meld.open] : meld[0];
-            var mt = meld.type === 1 && 0 !== meld.open ? meld[0]
-                                                             : meld[1];
-            var rt = meld.type === 1 && 2 === meld.open ? meld[1]
-                                                            : meld[2];
+            var mt = meld.type === 1 && 0 !== meld.open ? meld[0] : meld[1];
+            var rt = meld.type === 1 && 2 === meld.open ? meld[1] : meld[2];
             var et = meld[3] ? meld[3] : "hide";
 
-            left.tileStr = lt.modelTileStr;
-            middle.tileStr = mt.modelTileStr;
-            right.tileStr = rt.modelTileStr;
+            left.tileStr = lt.substring(0, 2);
+            middle.tileStr = mt.substring(0, 2);
+            right.tileStr = rt.substring(0, 2);
 
-            left.lay = lt.modelLay;
-            middle.lay = mt.modelLay;
-            right.lay = rt.modelLay;
+            left.lay = lt[2] === "_";
+            middle.lay = mt[2] === "_";
+            right.lay = rt[2] === "_";
 
             if (meld.type === 4) {
-                extra.tileStr = et.modelTileStr;
-                extra.lay = et.modelLay;
+                extra.tileStr = et.substring(0, 2);
+                extra.lay = et[2] === "_";
             }
-
 
             if (meld.isDaiminkan) {
                 extra.anchors.left = middle.right;
@@ -78,9 +75,7 @@ Item {
                 right.anchors.left = extra.right;
                 frame.width = 3 * tw + 1.35 * tw;
             } else if (meld.isKakan) {
-                var base = meld.open === 0 ? left
-                                           : (meld.open === 1) ? middle
-                                                               : right;
+                var base = meld.open === 0 ? left : (meld.open === 1) ? middle : right;
                 extra.anchors.left = base.left;
                 extra.y = -tw;
             } else if (meld.isAnkan) {

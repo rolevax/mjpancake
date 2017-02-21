@@ -2,30 +2,13 @@ import QtQuick 2.0
 import "../widget"
 
 Room {
-    Flickable {
-        id: flick
-        width: 0.75 * parent.width
-        height: 0.8 * parent.height
-        contentWidth: width
-        contentHeight: text.height
-        anchors.centerIn: parent
-        clip: true
-
-        Texd {
-            id: text
-            lineHeight: 1.5
-            width: parent.width
-            wrapMode: Text.WrapAnywhere
-            horizontalAlignment: Text.AlignLeft
-            text: blabla
-        }
-    }
-
-    Texd {
-        anchors.right: flick.right
-        anchors.top: flick.bottom
-        font.pixelSize: global.size.smallFont
-        text: "页面可以上下滚动"
+    Fligable {
+        anchors.fill: parent
+        anchors.leftMargin: 0.05 * parent.width
+        anchors.rightMargin: 0.05 * parent.width
+        anchors.topMargin: 0.1 * parent.height
+        anchors.bottomMargin: 0.1 * parent.height
+        blaText: blabla
     }
 
     readonly property string blabla:

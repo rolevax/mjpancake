@@ -58,8 +58,14 @@ Item {
             width: 0.8 * frame.width
             height: 0.1 * width
             anchors.horizontalCenter: parent.horizontalCenter
+            visible: !barMouseArea.containsPress
             fillMode: Image.Stretch
             source: "/pic/bar/bar" + (depoBar ? "1000" : "100") + ".png"
+        }
+        MouseArea {
+            id: barMouseArea
+            anchors.fill: parent
+            propagateComposedEvents: true
         }
     }
 

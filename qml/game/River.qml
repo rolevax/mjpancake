@@ -57,11 +57,11 @@ Item {
         clear();
 
         for (i = 0; i < tiles.length && i < 6; i++)
-            model1.append(tiles[i]);
+            model1.append({ modelTileStr: tiles[i].substr(0, 2), modelLay: tiles[i][2] === "_" });
         for (i = 6; i < tiles.length && i < 12; i++)
-            model2.append(tiles[i]);
+            model2.append({ modelTileStr: tiles[i].substr(0, 2), modelLay: tiles[i][2] === "_" });
         for (i = 12; i < tiles.length; i++)
-            model3.append(tiles[i]);
+            model3.append({ modelTileStr: tiles[i].substr(0, 2), modelLay: tiles[i][2] === "_" });
 
         count = tiles.length;
     }
@@ -69,13 +69,13 @@ Item {
     function add(tile, outCoord) {
         if (count < 6) {
             row1.outCoord = mapToItem(row1, outCoord.x, outCoord.y);
-            model1.append(tile);
+            model1.append({ modelTileStr: tile.substr(0, 2), modelLay: tile[2] === "_" });
         } else if (count < 12) {
             row2.outCoord = mapToItem(row2, outCoord.x, outCoord.y);
-            model2.append(tile);
+            model2.append({ modelTileStr: tile.substr(0, 2), modelLay: tile[2] === "_" });
         } else {
             row3.outCoord = mapToItem(row3, outCoord.x, outCoord.y);
-            model3.append(tile);
+            model3.append({ modelTileStr: tile.substr(0, 2), modelLay: tile[2] === "_" });
         }
         count++;
     }

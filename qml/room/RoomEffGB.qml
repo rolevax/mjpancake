@@ -8,18 +8,21 @@ Room {
     id: room
 
     // small tile width, height
-    property int tw: height / 20
-    property int th: 1.35 * tw
+    property real tw: height / 20
+    property real th: 1.35 * tw
 
     // big tile width and height
-    property int twb: height / 13
-    property int thb: 1.35 * twb
+    property real _prevTwb
+    property real twb: height / 13
+    property real thb: 1.35 * twb
 
     property int _round: 0
     property int _roundLimit: 10
 
     property var _fanValues: []
     property var _finishTurns: []
+
+    backButtonZ: 1
 
     PEffGb {
         id: pEffGb
@@ -82,10 +85,32 @@ Room {
 
     AnimadionBuffer { id: animBuf }
 
+    PinchArea {
+        anchors.fill: parent
+
+        onPinchStarted: {
+            room._prevTwb = room.twb;
+        }
+
+        onPinchUpdated: {
+            var next = pinch.scale * room._prevTwb;
+            if (next < room.tw || next > room.height * 1.6 / 14)
+                return;
+            room.twb = next;
+        }
+    }
+
     Column {
         visible: _round === 0 && !statRect.visible
         anchors.centerIn: parent
         spacing: global.size.gap
+
+        GomboToggle {
+            anchors.horizontalCenter: parent.horizontalCenter
+            model: ["能力 X", "能力 O"]
+            onActivated: { pEffGb.skill = index }
+            Component.onCompleted: { currentIndex = pEffGb.skill; }
+        }
 
         Texd {
             font.pixelSize: global.size.middleFont
@@ -116,7 +141,7 @@ Room {
 
         Texd {
             id: remainText
-            font.pixelSize: thb
+            font.pixelSize: 0.08 * room.height
             anchors.horizontalCenter: parent.horizontalCenter
         }
     }
@@ -218,10 +243,11 @@ Room {
         id: pc
         animEnabled: true
         backColor: PGlobal.backColors[0]
-        tw: room.height / 20
-        twb: room.height / 13
+        tw: room.tw
+        twb: room.twb
         x: (room.width - 13 * twb) / 2;
-        y: room.height - room.thb - (room.thb / 5);
+        y: room.height - room.thb - 0.02 * room.height;
+        z: 2
         width: (room.width + 13 * twb) / 2;
         height: room.thb
 
@@ -257,7 +283,7 @@ Room {
 
             var rightRate = ((rightCt / _roundLimit) * 100).toFixed(1) + "%";
             var avgTurn = (rightTurnSum / rightCt).toFixed(1);
-            var avgFan = (rightFanSum / ct).toFixed(1);
+            var avgFan = (rightFanSum / rightCt).toFixed(1);
             var wrongRate = (((ct - rightCt) / ct) * 100).toFixed(1) + "%";
             repStat.itemAt(0).text = rightRate;
             repStat.itemAt(1).text = avgTurn;

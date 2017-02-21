@@ -1,5 +1,7 @@
-#include "gui/p_table.h"
-#include "gui/p_port.h"
+#include "p_table.h"
+#include "p_table_local.h"
+#include "p_client.h"
+#include "p_port.h"
 
 #include "libsaki/string_enum.h"
 #include "libsaki/util.h"
@@ -28,25 +30,7 @@ void PTable::startLocal(const QVariant &girlIdsVar, const QVariant &gameRule,
 
     connect(this, &PTable::action, table, &PTableLocal::action);
     connect(this, &PTable::saveRecord, table, &PTableLocal::saveRecord);
-
-    connect(table, &PTableLocal::firstDealerChoosen,
-            this, &PTable::firstDealerChoosen);
-    connect(table, &PTableLocal::roundStarted, this, &PTable::roundStarted);
-    connect(table, &PTableLocal::cleaned, this, &PTable::cleaned);
-    connect(table, &PTableLocal::diced, this, &PTable::diced);
-    connect(table, &PTableLocal::dealt, this, &PTable::dealt);
-    connect(table, &PTableLocal::flipped, this, &PTable::flipped);
-    connect(table, &PTableLocal::drawn, this, &PTable::drawn);
-    connect(table, &PTableLocal::discarded, this, &PTable::discarded);
-    connect(table, &PTableLocal::riichiCalled, this, &PTable::riichiCalled);
-    connect(table, &PTableLocal::riichiEstablished, this, &PTable::riichiEstablished);
-    connect(table, &PTableLocal::barked, this, &PTable::barked);
-    connect(table, &PTableLocal::roundEnded, this, &PTable::roundEnded);
-    connect(table, &PTableLocal::pointsChanged, this, &PTable::pointsChanged);
-    connect(table, &PTableLocal::tableEnded, this, &PTable::tableEnded);
-    connect(table, &PTableLocal::poppedUp, this, &PTable::poppedUp);
-    connect(table, &PTableLocal::justPause, this, &PTable::justPause);
-    connect(table, &PTableLocal::activated, this, &PTable::activated);
+    connect(table, &PTableLocal::tableEvent, this, &PTable::tableEvent);
 
     table->start(girlIdsVar, gameRule, tempDealer);
 }
@@ -58,55 +42,42 @@ void PTable::startOnline(PClient *client)
     mOnline = true;
 
     connect(this, &PTable::action, client, &PClient::action);
-
-    connect(client, &PClient::firstDealerChoosen, this, &PTable::firstDealerChoosen);
-    connect(client, &PClient::roundStarted, this, &PTable::roundStarted);
-    connect(client, &PClient::cleaned, this, &PTable::cleaned);
-    connect(client, &PClient::diced, this, &PTable::diced);
-    connect(client, &PClient::dealt, this, &PTable::dealt);
-    connect(client, &PClient::flipped, this, &PTable::flipped);
-    connect(client, &PClient::drawn, this, &PTable::drawn);
-    connect(client, &PClient::discarded, this, &PTable::discarded);
-    connect(client, &PClient::riichiCalled, this, &PTable::riichiCalled);
-    connect(client, &PClient::riichiEstablished, this, &PTable::riichiEstablished);
-    connect(client, &PClient::barked, this, &PTable::barked);
-    connect(client, &PClient::roundEnded, this, &PTable::roundEnded);
-    connect(client, &PClient::pointsChanged, this, &PTable::pointsChanged);
-    connect(client, &PClient::tableEnded, this, &PTable::tableEnded);
-    connect(client, &PClient::poppedUp, this, &PTable::poppedUp);
-    connect(client, &PClient::activated, this, &PTable::activated);
-    connect(client, &PClient::deactivated, this, &PTable::deactivated);
+    connect(client, &PClient::tableEvent, this, &PTable::tableEvent);
 }
 
 void PTable::startSample()
 {
-    using namespace saki::tiles37;
-
-    QVariantList list;
-    list << 105700 << 90300 << 35800 << 168200;
-    emit pointsChanged(list);
-    emit cleaned();
-    emit roundStarted(7, 0, 1, true, 0);
-    emit justPause(1600);
-    emit diced(1, 1);
-    std::vector<saki::T37> init {
-        1_p, 2_p, 2_p, 2_p, 3_p, 5_p, 2_f, 2_y, 3_y, 3_s, 9_s, 1_m, 4_m
+    std::vector<std::pair<Event, const char*>> scene {
+        { PointsChanged, R"({"points":[105700,90300,35800,168200]})" },
+        { Cleaned, "" },
+        { RoundStarted, R"({"round":7,"extra":0,"dealer":1,"allLast":true,"deposit":0})" },
+        { JustPause, R"({"ms":1600})" },
+        { Diced, R"({"die1":1,"die2":1})" },
+        { Dealt, R"({"init":["1p","2p","2p","2p","3p","5p","2f","2y","3y","3s","9s","1m","4m"]})" },
+        { Flipped, R"({"newIndic":"1f"})" },
     };
-    emit dealt(createTilesVar(init));
-    emit flipped(createTileVar(1_f));
+
+    for (const auto &pair : scene) {
+        QJsonDocument doc = QJsonDocument::fromJson(QString(pair.second).toUtf8());
+        QVariantMap args = doc.object().toVariantMap();
+        emit tableEvent(pair.first, args);
+    }
 
     auto myInOut = [this](const saki::T37 &tin, const saki::T37 &tout, int outPos) {
-        emit drawn(0, createTileVar(tin), false);
-        emit justPause(500);
-        emit justSetOutPos(outPos);
-        emit discarded(0, createTileVar(tout), false);
+        emit tableEvent(Drawn, QVariantMap { { "who", 0 }, { "tile", tin.str() } });
+        emit tableEvent(JustPause, QVariantMap { { "ms", 300 } });
+        emit tableEvent(JustSetOutPos, QVariantMap { { "outPos", outPos } });
+        emit tableEvent(Discarded, QVariantMap { {"who", 0 }, { "tile", tout.str() } });
     };
 
     auto oppoOut = [this](int w, const saki::T37 &tout, bool spin) {
-        emit drawn(w, QVariant(), false);
-        emit justPause(500);
-        emit discarded(w, createTileVar(tout), spin);
+        emit tableEvent(Drawn, QVariantMap { { "who", w } });
+        emit tableEvent(JustPause, QVariantMap { { "ms", 300 } });
+        QVariantMap args { {"who", w }, { "tile", tout.str() }, { "spin", spin } };
+        emit tableEvent(Discarded, args);
     };
+
+    using namespace saki::tiles37;
 
     oppoOut(1, 3_f, false);
     oppoOut(2, 4_f, false);
@@ -151,20 +122,38 @@ void PTable::startSample()
     saki::M37 kan2 = saki::M37::ankan(2_p, 2_p, 2_p, 2_p);
     saki::M37 kan3 = saki::M37::ankan(3_p, 3_p, 3_p, 3_p);
 
-    emit justPause(700);
-    emit barked(0, 3, QString(saki::stringOf(kan1.type())), createBarkVar(kan1), false);
-    emit drawn(0, createTileVar(4_p), true);
+    emit tableEvent(JustPause, QVariantMap { { "ms", 500 } });
+    QVariantMap args1 {
+        { "who", 0 },
+        { "fromWhom", 3 },
+        { "actStr", QString(saki::stringOf(kan1.type())) },
+        { "bark", createBarkVar(kan1) }
+    };
+    emit tableEvent(Barked, args1);
+    emit tableEvent(Drawn, QVariantMap { { "who", 0 }, { "tile", "4p" }, { "rinshan", true } });
 
-    emit justPause(700);
-    emit barked(0, -1, QString(saki::stringOf(kan2.type())), createBarkVar(kan2), false);
-    emit flipped(createTileVar(8_s));
-    emit flipped(createTileVar(3_y));
-    emit drawn(0, createTileVar(4_p), true);
+    emit tableEvent(JustPause, QVariantMap { { "ms", 500 } });
+    QVariantMap args2 {
+        { "who", 0 },
+        { "fromWhom", -1 },
+        { "actStr", QString(saki::stringOf(kan2.type())) },
+        { "bark", createBarkVar(kan2) }
+    };
+    emit tableEvent(Barked, args2);
+    emit tableEvent(Flipped, QVariantMap { { "newIndic", "8s" } });
+    emit tableEvent(Flipped, QVariantMap { { "newIndic", "3y" } });
+    emit tableEvent(Drawn, QVariantMap { { "who", 0 }, { "tile", "4p" }, { "rinshan", true } });
 
-    emit justPause(700);
-    emit barked(0, -1, QString(saki::stringOf(kan3.type())), createBarkVar(kan3), false);
-    emit flipped(createTileVar(2_f));
-    emit drawn(0, createTileVar(0_p), true);
+    emit tableEvent(JustPause, QVariantMap { { "ms", 500 } });
+    QVariantMap args3 {
+        { "who", 0 },
+        { "fromWhom", -1 },
+        { "actStr", QString(saki::stringOf(kan3.type())) },
+        { "bark", createBarkVar(kan3) }
+    };
+    emit tableEvent(Barked, args3);
+    emit tableEvent(Flipped, QVariantMap { { "newIndic", "2f" } });
+    emit tableEvent(Drawn, QVariantMap { { "who", 0 }, { "tile", "0p" }, { "rinshan", true } });
 }
 
 bool PTable::online() const

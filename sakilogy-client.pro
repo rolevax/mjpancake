@@ -80,6 +80,7 @@ HEADERS += \
     libsaki/debug_cheat.h \
     libsaki/explain.h \
     libsaki/form.h \
+    libsaki/form_gb.h \
     libsaki/gen.h \
     libsaki/girl.h \
     libsaki/girls_achiga.h \
@@ -124,8 +125,7 @@ HEADERS += \
     gui/p_port.h \
     gui/p_replay.h \
     gui/p_table.h \
-    gui/p_table_local.h \
-    libsaki/form_gb.h
+    gui/p_table_local.h
 
 
 

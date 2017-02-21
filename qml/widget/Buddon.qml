@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.7
 
 Rectangle {
     id: buddon
@@ -23,7 +23,7 @@ Rectangle {
         anchors.fill: parent
         color: buddon.lightColor
         radius: parent.radius
-        visible: mouseArea.containsMouse
+        visible: global.mobile ? mouseArea.containsPress : mouseArea.containsMouse
     }
 
     MouseArea {

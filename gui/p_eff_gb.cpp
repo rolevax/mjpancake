@@ -57,6 +57,17 @@ void PEffGb::action(const QString &actStr, const QString &actArg)
     }
 }
 
+bool PEffGb::skill() const
+{
+    return mSkill;
+}
+
+void PEffGb::setSkill(bool v)
+{
+    mSkill = v;
+    emit skillChanged();
+}
+
 void PEffGb::draw()
 {
     using namespace saki;
@@ -66,7 +77,9 @@ void PEffGb::draw()
         return;
     }
 
-    Huiyu::skill(mMount, mHand);
+    if (mSkill)
+        Huiyu::skill(mMount, mHand);
+
     mHand.draw(mMount.wallPop(mRand));
     emit drawn(createTileVar(mHand.drawn()));
 
@@ -81,11 +94,7 @@ void PEffGb::draw()
     if (canAnkan)
         actions["ANKAN"] = createTileStrsVar(ankanables);
     actions["SPIN_OUT"] = true;
-
-    QVariantList mask;
-    for (int i = 0; i < 13; i++)
-        mask << true;
-    actions["SWAP_OUT"] = mask;
+    actions["SWAP_OUT"] = 8191; // 0111_1111_1111
     emit activated(actions);
 }
 

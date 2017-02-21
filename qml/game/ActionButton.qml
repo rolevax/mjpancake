@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.7
 import "../widget"
 
 Rectangle {
@@ -6,10 +6,11 @@ Rectangle {
 
     property string act
     property alias mouseArea: mouseArea
+    property bool _light: global.mobile ? mouseArea.containsPress : mouseArea.containsMouse
 
     width: 2.67 * height
     height: global.size.middleFont
-    color: mouseArea.containsMouse ? "#FFFF00" : "#99FFFF00"
+    color: _light ? "#FFFF00" : "#99FFFF00"
 
     function _actionText(act) {
         var val = {

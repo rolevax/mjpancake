@@ -15,16 +15,23 @@ class PEffGb : public QObject
 public:
     explicit PEffGb(QObject *parent = nullptr);
 
+    Q_PROPERTY(bool skill READ skill WRITE setSkill NOTIFY skillChanged)
+
     Q_INVOKABLE void deal();
     Q_INVOKABLE void action(const QString &actStr, const QString &actArg);
 
+    bool skill() const;
+    void setSkill(bool v);
+
 signals:
-    void dealt(const QVariantList &init);
+    void dealt(const QStringList &init);
     void drawn(const QVariant &tile);
     void anganged(const QVariant &bark, bool spin);
     void activated(const QVariantMap &actions);
     void finished(const QVariantList &fans, int fan, int turn);
     void exhausted();
+
+    void skillChanged();
 
 private:
     void draw();
@@ -37,6 +44,7 @@ private:
     saki::Hand mHand;
     saki::PointInfo mInfo;
     int mTurn;
+    bool mSkill = false;
 };
 
 

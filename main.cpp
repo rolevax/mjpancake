@@ -26,8 +26,9 @@ int main(int argc, char *argv[])
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
     QTextCodec::setCodecForLocale(codec);
 
-    QQmlApplicationEngine engine;
+    qRegisterMetaType<PTable::Event>();
 
+    QQmlApplicationEngine engine;
     engine.addImageProvider(QString("impro"), new PImageProvider);
 
     qmlRegisterType<PTable>("rolevax.sakilogy", 1, 0, "PTable");
