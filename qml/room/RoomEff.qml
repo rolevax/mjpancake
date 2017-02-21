@@ -13,7 +13,7 @@ Room {
 
     // big tile width and height
     property real _prevTwb
-    property real twb: height / 13
+    property real twb: height / 17
     property real thb: 1.35 * twb
 
     property int _round: 0

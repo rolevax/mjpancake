@@ -108,9 +108,15 @@ Window {
             onClicked: { loader.source = "room/RoomClient.qml"; }
         }
 
+        Buzzon {
+            text: "文档"
+            textLength: 8
+            redDot: !PGlobal.redDots.every(function(b) { return !b; })
+            onClicked: { loader.source = "room/RoomHelp.qml"; }
+        }
+
         Repeater {
             model: [
-                { text: "文档", load: "Help" },
                 { text: "练习", load: "Prac" },
                 { text: "牌谱", load: "Replay" },
                 { text: "设定", load: "Settings" }

@@ -1,37 +1,29 @@
 import QtQuick 2.0
+import rolevax.sakilogy 1.0
 import "../widget"
 
 Room {
+    property var _loadTars: [ "Faq", "Op", "Rules", "Girls" ]
+    property var _names: [ "常见问题", "操作说明", "麻将规则", "角色能力" ]
+
     Column {
         anchors.centerIn: parent
         spacing: global.size.space
 
-        Buzzon {
-            text: "常见问题"
-            textLength: 8
-            onClicked: { loader.source = "RoomHelpFaq.qml"; }
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
-
-        Buzzon {
-            text: "操作说明"
-            textLength: 8
-            onClicked: { loader.source = "RoomHelpOp.qml"; }
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
-
-        Buzzon {
-            text: "麻将规则"
-            textLength: 8
-            onClicked: { loader.source = "RoomHelpRules.qml"; }
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
-
-        Buzzon {
-            text: "角色能力"
-            textLength: 8
-            onClicked: { loader.source = "RoomHelpGirls.qml"; }
-            anchors.horizontalCenter: parent.horizontalCenter
+        Repeater {
+            model: 4
+            delegate: Buzzon {
+                text: _names[index]
+                textLength: 8
+                redDot: PGlobal.redDots[index]
+                onClicked: {
+                    loader.source = "RoomHelp" + _loadTars[index]  + ".qml";
+                    var copy = PGlobal.redDots; // trigger signal
+                    copy[index] = false;
+                    PGlobal.redDots = copy;
+                }
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
         }
     }
 
@@ -45,5 +37,9 @@ Room {
         onLoaded: {
             item.closed.connect(closeRoom);
         }
+    }
+
+    onClosed: {
+        PGlobal.save();
     }
 }

@@ -25,6 +25,7 @@ public:
     Q_PROPERTY(bool savePassword READ savePassword WRITE setSavePassword NOTIFY savePasswordChanged)
     Q_PROPERTY(QString savedPassword READ savedPassword WRITE setSavedPassword\
                NOTIFY savedPasswordChanged)
+    Q_PROPERTY(QVariantList redDots READ redDots WRITE setRedDots NOTIFY redDotsChanged)
 
     Q_INVOKABLE void save();
     Q_INVOKABLE static void forceImmersive();
@@ -48,6 +49,9 @@ public:
     QString savedPassword() const;
     void setSavedPassword(const QString &password);
 
+    QVariantList redDots() const;
+    void setRedDots(const QVariantList &v);
+
 signals:
     void versionChanged(); // placeholder
     void backColorsChanged();
@@ -57,6 +61,7 @@ signals:
     void savedUsernameChanged();
     void savePasswordChanged();
     void savedPasswordChanged();
+    void redDotsChanged();
 
 public slots:
 

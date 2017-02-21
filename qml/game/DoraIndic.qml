@@ -17,21 +17,10 @@ Item {
             model: 5
             Tile {
                 tileSet: frame.tileSet
-                tileStr: "back"
+                tileStr: doraIndic && doraIndic[4 - index] ? doraIndic[4 - index] : "back"
                 tileWidth: tw
                 backColor: frame.backColor
             }
-        }
-    }
-
-    onDoraIndicChanged: {
-        var i;
-        if (doraIndic && doraIndic.length) { // sometimes not a array, don't know why...
-            for (i = 0; i < 5; i++)
-                rep.itemAt(4 - i).tileStr = i < doraIndic.length ? doraIndic[i] : "back";
-        } else {
-            for (i = 0; i < 5; i++)
-                rep.itemAt(i).tileStr = "back";
         }
     }
 }

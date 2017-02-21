@@ -129,6 +129,17 @@ void PGlobal::setSavedPassword(const QString &password)
     emit savedPasswordChanged();
 }
 
+QVariantList PGlobal::redDots() const
+{
+    return root["redDots"].toArray().toVariantList();
+}
+
+void PGlobal::setRedDots(const QVariantList &v)
+{
+    root["redDots"] = QJsonArray::fromVariantList(v);
+    emit redDotsChanged();
+}
+
 void PGlobal::regulateRoot()
 {
     if (!root["backColors"].isArray())
@@ -145,6 +156,9 @@ void PGlobal::regulateRoot()
 
     if (!root["savedPassword"].isString())
         root["savedPassword"] = QString();
+
+    if (!root["redDots"].isArray())
+        root["redDots"] = QJsonArray{ true, true, false, true };
 }
 
 QObject *pGlobalSingletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine)
