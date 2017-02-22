@@ -157,8 +157,8 @@ void PGlobal::regulateRoot()
     if (!root["savedPassword"].isString())
         root["savedPassword"] = QString();
 
-    if (!root["redDots"].isArray())
-        root["redDots"] = QJsonArray{ true, true, false, true };
+    if (!(root["redDots"].isArray() && root["redDots"].toArray().size() == 5))
+        root["redDots"] = QJsonArray{ true, true, false, true, true };
 }
 
 QObject *pGlobalSingletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine)

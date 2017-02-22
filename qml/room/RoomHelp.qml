@@ -3,15 +3,15 @@ import rolevax.sakilogy 1.0
 import "../widget"
 
 Room {
-    property var _loadTars: [ "Faq", "Op", "Rules", "Girls" ]
-    property var _names: [ "常见问题", "操作说明", "麻将规则", "角色能力" ]
+    property var _loadTars: [ "Faq", "Op", "Rules", "Girls", "Adv" ]
+    property var _names: [ "常见问题", "操作说明", "麻将规则", "角色能力", "打法建议" ]
 
     Column {
         anchors.centerIn: parent
         spacing: global.size.space
 
         Repeater {
-            model: 4
+            model: 5
             delegate: Buzzon {
                 text: _names[index]
                 textLength: 8

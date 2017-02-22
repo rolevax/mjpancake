@@ -92,39 +92,6 @@ Room {
         }
     }
 
-    readonly property string huaji:
-        "<img width=\"28\" height=\"28\" src=\"qrc:///pic/icon/huaji.png\"/>"
-
-    Rectangle {
-        id: license
-        anchors.fill: parent
-        color: PGlobal.themeBack
-        Column {
-            anchors.centerIn: parent
-            spacing: global.size.gap
-
-            Texd {
-                anchors.horizontalCenter: parent.horizontalCenter
-                text: "<h3>入坑须知</h3>" +
-                      "<br/><ol>" +
-                      "<li>本作属非商业性质，制作组无义务提供任何服务与质量担保</li>" +
-                      "<li>因使用本作产生的一切损失由使用者本人承担</li>" +
-                      "<li>制作组保留一切权利</li>" +
-                      "</ol>"
-            }
-
-            Row {
-                spacing: global.size.space
-                anchors.horizontalCenter: parent.horizontalCenter
-                Buzzon {
-                    text: "同意，继续入坑"; textLength: 10;
-                    onClicked: { license.visible = false;  }
-                }
-                Buzzon { text: "弃坑"; onClicked: { closed(); } }
-            }
-        }
-    }
-
     Rectangle {
         id: authOkScreen
         visible: false

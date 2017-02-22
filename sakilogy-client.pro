@@ -17,6 +17,7 @@ SOURCES += main.cpp \
     libsaki/ai_usuzan.cpp \
     libsaki/explain.cpp \
     libsaki/form.cpp \
+    libsaki/form_gb.cpp \
     libsaki/gen.cpp \
     libsaki/girl.cpp \
     libsaki/girls_achiga.cpp \
@@ -53,8 +54,7 @@ SOURCES += main.cpp \
     gui/p_table.cpp \
     gui/p_table_local.cpp \
     gui/p_json_tcp.cpp \
-    gui/p_image_settings.cpp \
-    libsaki/form_gb.cpp
+    gui/p_image_settings.cpp
 
 
 
