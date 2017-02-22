@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.7
 import rolevax.sakilogy 1.0
 
 Rectangle {
@@ -20,6 +20,7 @@ Rectangle {
         hoverEnabled: true
         anchors.fill: parent
         onClicked: {
+            global.sound.button.play();
             buddon.clicked();
         }
     }

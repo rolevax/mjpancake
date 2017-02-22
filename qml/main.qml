@@ -1,5 +1,6 @@
 import QtQuick 2.7
 import QtQuick.Window 2.2
+import QtMultimedia 5.7
 import rolevax.sakilogy 1.0
 import "area"
 import "widget"
@@ -20,6 +21,11 @@ Window {
             "defaultFont": (mobile ? 0.032 : 0.030) * window.height,
             "space": (mobile ? 0.009 : 0.007) * window.height,
             "gap": (mobile ? 0.054 : 0.042) * window.height
+        },
+        "sound": {
+            "button": soundButton,
+            "toggle": soundToggle,
+            "select": soundSelect
         }
     }
 
@@ -129,7 +135,30 @@ Window {
             }
         }
 
-        Buzzon { text: "骑马"; textLength: 8; onClicked: { Qt.quit() } }
+        Buzzon {
+            text: "骑马"; textLength: 8; sound: soundHorse
+        }
+    }
+
+    SoundEffect {
+        id: soundButton
+        source: "qrc:///sound/button.wav"
+    }
+
+    SoundEffect {
+        id: soundHorse
+        source: "qrc:///sound/horse.wav"
+        onPlayingChanged: { if (!playing) Qt.quit(); }
+    }
+
+    SoundEffect {
+        id: soundToggle
+        source: "qrc:///sound/toggle.wav"
+    }
+
+    SoundEffect {
+        id: soundSelect
+        source: "qrc:///sound/select.wav"
     }
 
     function closeRoom() {

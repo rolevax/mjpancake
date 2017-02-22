@@ -61,6 +61,7 @@ Room {
 
             GomboToggle {
                 model: [ "随机选人" ]
+                sound: global.sound.button
                 onActivated: {
                     var indices = Names.genIndices();
                     girlBox0.chooseByAvalIndex(indices[0]);

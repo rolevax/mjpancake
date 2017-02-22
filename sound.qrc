@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>sound/horse.wav</file>
+        <file>sound/button.wav</file>
+        <file>sound/toggle.wav</file>
+        <file>sound/select.wav</file>
+    </qresource>
+</RCC>

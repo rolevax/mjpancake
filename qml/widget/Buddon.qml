@@ -1,4 +1,5 @@
 import QtQuick 2.7
+import QtMultimedia 5.7
 
 Rectangle {
     id: buddon
@@ -11,6 +12,7 @@ Rectangle {
     property bool enabled: true
     property real textLength: 4.0
     property int fontSize: smallFont ? global.size.smallFont : global.size.middleFont
+    property SoundEffect sound: global.sound.button
 
     width: textLength * fontSize
     height: 1.5 * fontSize
@@ -32,6 +34,7 @@ Rectangle {
         hoverEnabled: true
         anchors.fill: parent
         onClicked: {
+            sound.play();
             buddon.clicked();
         }
     }

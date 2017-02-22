@@ -65,6 +65,7 @@ Rectangle {
                 enabled: modelAble
                 hoverEnabled: true
                 onClicked: {
+                    global.sound.select.play();
                     var i;
                     if (modelMono) {
                         // set all adjacent mono-boxes' "on" to false
