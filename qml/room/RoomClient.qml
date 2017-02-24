@@ -66,6 +66,14 @@ Room {
         }
     }
 
+    AreaChoose {
+        id: areaChoose
+        users: room.users
+        onChosen: {
+            PClient.sendChoose(girlIndex);
+        }
+    }
+
     Timer {
         id: startTimer
         interval: 17
@@ -81,7 +89,7 @@ Room {
     Timer {
         interval: 5000
         repeat: true
-        running: loader.source == ""
+        running: loader.source == "" && !areaChoose.visible && !areaStage.visible
         triggeredOnStart: true
         onTriggered: {
             PClient.lookAround();
@@ -93,15 +101,23 @@ Room {
 
         onStartIn: {
             room.tempDealer = tempDealer;
-            room.girlIds = girlIds;
-            for (var i = 0; i < 4; i++) {
-                room.displayedNames[i] = Names.names[girlIds[i]];
+
+            for (var i = 0; i < 4; i++)
                 room.users[i] = users[i];
-            }
+            areaChoose.users = room.users;
+            areaChoose.choices = choices;
+            areaChoose.splash();
+        }
+
+        onChosenIn: {
+            room.girlIds = girlIds;
+            for (var i = 0; i < 4; i++)
+                room.displayedNames[i] = Names.names[girlIds[i]];
 
             // somehow variants are not binded... fuck qml
             areaStage.names = room.displayedNames;
             areaStage.users = room.users;
+            areaChoose.visible = false;
             areaStage.splash();
 
             loader.source = "../game/Game.qml";
@@ -125,6 +141,8 @@ Room {
     }
 
     function _rankPercent(r) {
+        if (!PClient.user.Ranks)
+            return "----%";
         return ((PClient.user.Ranks[r] / PClient.playCt) * 100).toFixed(1) + "%";
     }
 }

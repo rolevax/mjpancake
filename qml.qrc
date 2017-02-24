@@ -60,5 +60,7 @@
         <file>qml/room/RoomEffGB.qml</file>
         <file>qml/widget/Fligable.qml</file>
         <file>qml/room/RoomHelpAdv.qml</file>
+        <file>qml/area/AreaChoose.qml</file>
+        <file>qml/widget/TimeBar.qml</file>
     </qresource>
 </RCC>

@@ -387,39 +387,12 @@ Item {
         }
     }
 
-    Rectangle {
+    TimeBar {
         id: timeBar
-        height: global.size.space
-        visible: false
-        color: width > 0.7 * table.width ? "green"
-                                         : width > 0.3 * table.width ? "orange" : "red"
-        anchors.right: parent.right
+        width: table.width
         anchors.top: playerControl.bottom
-
-        SequentialAnimation {
-            id: timeBarAnim
-
-            PauseAnimation { duration: 5000 }
-
-            ScriptAction {
-                script: {
-                    timeBar.width = table.width;
-                    timeBar.visible = true;
-                }
-            }
-
-            NumberAnimation {
-                target: timeBar
-                property: "width"
-                to: 0
-                duration: 5000
-            }
-
-            ScriptAction{
-                script: {
-                    table.action("SWEEP", "-1");
-                }
-            }
+        onFired: {
+            table.action("SWEEP", "-1");
         }
     }
 
@@ -463,8 +436,7 @@ Item {
     }
 
     function action(actStr, actArg) {
-        timeBarAnim.stop();
-        timeBar.visible = false;
+        timeBar.cancel();
         table.deactivate();
         if (table._nonce < 0 || table._nonce === PClient.lastNonce)
             pTable.action(actStr, actArg);
@@ -491,7 +463,7 @@ Item {
             table._nonce = nonce;
             if (nonce !== PClient.lastNonce)
                 return;
-            timeBarAnim.start();
+            timeBar.timeDown();
         }
 
         PGlobal.forceImmersive();

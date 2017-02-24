@@ -153,3 +153,9 @@ ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 MOC_DIR = ./moc
 RCC_DIR = ./qrc
 OBJECTS_DIR = ./obj
+
+contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
+    ANDROID_EXTRA_LIBS = \
+        /home/gfp/test/cpp/qt/sakilogy-client/lib/libcrypto.so \
+        $$PWD/lib/libssl.so
+}

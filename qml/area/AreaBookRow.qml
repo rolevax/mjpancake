@@ -3,17 +3,13 @@ import rolevax.sakilogy 1.0
 import "../widget"
 
 Row {
-    property string bookType
+    property int bookType
     property bool booking: false
-
-    property var _ruleNames: {
-       "S71": "东南 IH71"
-    }
 
     spacing: global.size.gap
 
     Texd {
-        text: _ruleNames[bookType.substring(1)]
+        text: "东南 IH71"
         font.pixelSize: global.size.middleFont
         anchors.verticalCenter: parent.verticalCenter
     }

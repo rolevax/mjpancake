@@ -13,7 +13,7 @@ Column {
         Texd {
             anchors.horizontalCenter: parent.horizontalCenter
             font.pixelSize: 1.1 * global.size.middleFont
-            text: PClient.user.Username
+            text: PClient.user.Username ? PClient.user.Username : ""
         }
 
         Texd {

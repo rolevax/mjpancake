@@ -24,7 +24,6 @@ Column {
             id: repSelect
             model: 4
             delegate: Buzzon {
-                id: dButton
                 text: _gradeNames[index]
                 onClicked: {
                     selectBar.x = x;
@@ -57,7 +56,7 @@ Column {
         model: 4
         delegate: AreaBookRow {
             visible: index === _currGrade
-            bookType: [ "D", "C", "B", "A" ][index] + "S71"
+            bookType: index
             anchors.horizontalCenter: parent.horizontalCenter
         }
     }
@@ -69,8 +68,16 @@ Column {
     }
 
     Component.onCompleted: {
-        // TODO use user's highest grade
-        var dButton = repSelect.itemAt(0);
+        var level = PClient.user.Level;
+        var rating = PClient.user.Rating;
+        var max = 0;
+        if (level >= 16 && rating >= 2000.0)
+            max = 3;
+        else if (level >= 13 && rating >= 1800.0)
+            max = 2;
+        else if (level >= 9)
+            max = 1;
+        var dButton = repSelect.itemAt(max);
         selectBar.width = dButton.width;
         selectBar.height = 0.15 * dButton.height;
     }

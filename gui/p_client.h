@@ -21,29 +21,31 @@ public:
     Q_PROPERTY(QVariantMap user READ user NOTIFY userChanged)
     Q_PROPERTY(int playCt READ playCt NOTIFY userChanged)
     Q_PROPERTY(int connCt READ connCt NOTIFY lookedAround)
-    Q_PROPERTY(QVariantMap books READ books NOTIFY lookedAround)
+    Q_PROPERTY(QVariantList books READ books NOTIFY lookedAround)
     Q_PROPERTY(int lastNonce READ lastNonce NOTIFY lastNonceChanged)
 
     Q_INVOKABLE void login(const QString &username, const QString &password);
     Q_INVOKABLE void signUp(const QString &username, const QString &password);
     Q_INVOKABLE void lookAround();
-    Q_INVOKABLE void book(const QString &bookType);
+    Q_INVOKABLE void book(int bookType);
     Q_INVOKABLE void unbook();
     Q_INVOKABLE void sendReady();
+    Q_INVOKABLE void sendChoose(int girlIndex);
     Q_INVOKABLE void sendResume();
 
     QVariantMap user() const;
     bool loggedIn() const;
     int playCt() const;
     int connCt() const;
-    QVariantMap books() const;
+    QVariantList books() const;
     int lastNonce() const;
 
 signals:
     void remoteClosed();
     void connError();
     void authFailIn(const QString &reason);
-    void startIn(const QVariantList &users, const QVariantList &girlIds, int tempDealer);
+    void startIn(const QVariantList &users, const QVariantList &choices, int tempDealer);
+    void chosenIn(const QVariantList &girlIds);
     void resumeIn();
 
     void userChanged();
@@ -68,7 +70,7 @@ private:
     PJsonTcpSocket mSocket;
     QVariantMap mUser;
     int mConnCt = 0;
-    QVariantMap mBooks;
+    QVariantList mBooks;
     int mLastNonce = 0;
 };
 

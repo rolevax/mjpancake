@@ -20,11 +20,8 @@ PClient::PClient(QObject *parent) : QObject(parent)
     bookEntry["Bookable"] = false;
     bookEntry["Play"] = 0;
     bookEntry["Book"] = 0;
-
-    mBooks["DS71"] = bookEntry;
-    mBooks["CS71"] = bookEntry;
-    mBooks["BS71"] = bookEntry;
-    mBooks["AS71"] = bookEntry;
+    for (int i = 0; i < 4; i++)
+        mBooks.append(bookEntry);
 
     connect(&mSocket, &PJsonTcpSocket::recvJson, this, &PClient::onJsonReceived);
     connect(&mSocket, &PJsonTcpSocket::remoteClosed, this, &PClient::remoteClosed);
@@ -65,7 +62,7 @@ void PClient::lookAround()
     mSocket.send(req);
 }
 
-void PClient::book(const QString &bookType)
+void PClient::book(int bookType)
 {
     QJsonObject req;
     req["Type"] = "book";
@@ -84,6 +81,14 @@ void PClient::sendReady()
 {
     QJsonObject req;
     req["Type"] = "ready";
+    mSocket.send(req);
+}
+
+void PClient::sendChoose(int girlIndex)
+{
+    QJsonObject req;
+    req["Type"] = "choose";
+    req["GirlIndex"] = girlIndex;
     mSocket.send(req);
 }
 
@@ -125,7 +130,7 @@ int PClient::connCt() const
     return mConnCt;
 }
 
-QVariantMap PClient::books() const
+QVariantList PClient::books() const
 {
     return mBooks;
 }
@@ -212,15 +217,18 @@ void PClient::onJsonReceived(const QJsonObject &msg)
         }
     } else if (type == "look-around") {
         mConnCt = msg["Conn"].toInt();
-        mBooks = msg["Books"].toObject().toVariantMap();
+        mBooks = msg["Books"].toArray().toVariantList();
         emit lookedAround();
     } else if (type == "start") {
         mLastNonce = 0;
         emit lastNonceChanged();
         QJsonArray users = msg["Users"].toArray();
-        QJsonArray girlIds = msg["GirlIds"].toArray();
+        QJsonArray choices = msg["Choices"].toArray();
         int tempDealer = msg["TempDealer"].toInt();
-        emit startIn(users.toVariantList(), girlIds.toVariantList(), tempDealer);
+        emit startIn(users.toVariantList(), choices.toVariantList(), tempDealer);
+    } else if (type == "chosen") {
+        QJsonArray girlIds = msg["GirlIds"].toArray();
+        emit chosenIn(girlIds.toVariantList());
     } else if (type == "resume") {
         mLastNonce = 0;
         emit lastNonceChanged();

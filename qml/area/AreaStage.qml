@@ -50,6 +50,14 @@ Rectangle {
         }
     }
 
+    TimeBar {
+        id: timeBar
+        anchors.left: photos.left
+        anchors.right: photos.right
+        anchors.top: photos.bottom
+        onFired: { _clickReady(); }
+    }
+
     Buzzon {
         id: readyButton
         visible: showReady && !anim.running
@@ -58,10 +66,8 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         text: "入座"
         textLength: 8
-        onClicked: {
-            showReady = false;
-            readyClicked();
-        }
+        onClicked: { _clickReady(); }
+        onVisibleChanged: { if (visible) timeBar.timeDown(); }
     }
 
     SequentialAnimation {
@@ -113,6 +119,12 @@ Rectangle {
         }
 
         PauseAnimation { duration: 500 }
+    }
+
+    function _clickReady() {
+        showReady = false;
+        timeBar.cancel();
+        readyClicked();
     }
 
     function splash() {

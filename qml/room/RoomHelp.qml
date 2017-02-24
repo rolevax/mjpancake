@@ -4,7 +4,7 @@ import "../widget"
 
 Room {
     property var _loadTars: [ "Faq", "Op", "Rules", "Girls", "Adv" ]
-    property var _names: [ "常见问题", "操作说明", "麻将规则", "角色能力", "打法建议" ]
+    property var _names: [ "常见问题", "操作说明", "麻将规则", "角色能力", "推荐打法" ]
 
     Column {
         anchors.centerIn: parent
