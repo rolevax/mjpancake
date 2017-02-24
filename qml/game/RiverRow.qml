@@ -6,7 +6,7 @@ ListView {
     property bool animEnabled: true
     property string tileSet: "std"
     property color backColor
-    property int tw
+    property real tw
 
     property bool showCircle: false
     property bool flashCircle: false
@@ -62,18 +62,52 @@ ListView {
 
     add: Transition {
         enabled: frame.animEnabled
-        NumberAnimation {
-            property: "y"
-            from: outCoord.y
-            duration: 200
-            easing.type: Easing.OutQuad
+        SequentialAnimation {
+            NumberAnimation {
+                property: "y"
+                from: outCoord.y
+                to: 0.1 * tw
+                duration: 140
+                easing.type: Easing.InQuad
+            }
+
+            PauseAnimation {
+                duration: 300
+            }
+
+            NumberAnimation {
+                property: "y"
+                to: 0
+                duration: 200
+                easing.type: Easing.Linear
+            }
         }
 
-        NumberAnimation {
-            property: "x"
-            from: outCoord.x
-            duration: 200
-            easing.type: Easing.OutQuad
+        SequentialAnimation {
+            NumberAnimation {
+                property: "x"
+                from: outCoord.x
+                to: (frame.model.count - 0.4) * tw
+                duration: 140
+                easing.type: Easing.InQuad
+            }
+
+            PauseAnimation {
+                duration: 300
+            }
+
+            NumberAnimation {
+                property: "x"
+                to: (frame.model.count - 1) * tw
+                duration: 200
+                easing.type: Easing.InOutQuad
+            }
+        }
+
+        ScriptAction {
+            script: {
+                global.sound.discard.play();
+            }
         }
     }
 }

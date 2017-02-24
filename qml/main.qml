@@ -25,7 +25,8 @@ Window {
         "sound": {
             "button": soundButton,
             "toggle": soundToggle,
-            "select": soundSelect
+            "select": soundSelect,
+            "discard": soundDiscard
         }
     }
 
@@ -141,25 +142,15 @@ Window {
     }
 
     SoundEffect {
-        id: soundButton
-        source: "qrc:///sound/button.wav"
-    }
-
-    SoundEffect {
         id: soundHorse
         source: "qrc:///sound/horse.wav"
         onPlayingChanged: { if (!playing) Qt.quit(); }
     }
 
-    SoundEffect {
-        id: soundToggle
-        source: "qrc:///sound/toggle.wav"
-    }
-
-    SoundEffect {
-        id: soundSelect
-        source: "qrc:///sound/select.wav"
-    }
+    SoundEffect { id: soundButton; source: "qrc:///sound/button.wav" }
+    SoundEffect { id: soundToggle; source: "qrc:///sound/toggle.wav" }
+    SoundEffect { id: soundSelect; source: "qrc:///sound/select.wav" }
+    SoundEffect { id: soundDiscard; source: "qrc:///sound/discard.wav" }
 
     function closeRoom() {
         loader.source = "";

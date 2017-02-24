@@ -128,7 +128,7 @@ Item {
                     rivers.itemAt(args.who).add(args.tile, osc);
                     _lastDiscardStr = args.tile.substr(0, 2);
                 };
-                duration = 200;
+                duration = 800;
                 break;
             case PTable.RiichiCalled:
                 cb = function() { shockers.itemAt(args.who).shock("RIICHI"); };

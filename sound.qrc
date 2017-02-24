@@ -4,5 +4,6 @@
         <file>sound/button.wav</file>
         <file>sound/toggle.wav</file>
         <file>sound/select.wav</file>
+        <file>sound/discard.wav</file>
     </qresource>
 </RCC>
