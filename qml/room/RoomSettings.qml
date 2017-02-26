@@ -45,6 +45,14 @@ Room {
                 PGlobal.savePassword = !PGlobal.savePassword;
             }
         }
+
+        Buzzon {
+            text: PGlobal.mute ? "音效 X" : "音效 O"
+            textLength: 8
+            onClicked: {
+                PGlobal.mute = !PGlobal.mute;
+            }
+        }
     }
 
     Loader {

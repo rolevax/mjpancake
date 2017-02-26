@@ -137,7 +137,13 @@ Window {
         }
 
         Buzzon {
-            text: "骑马"; textLength: 8; sound: soundHorse
+            text: "骑马"; textLength: 8
+            onClicked: {
+                if (PGlobal.mute)
+                    Qt.quit();
+                else
+                    soundHorse.play();
+            }
         }
     }
 
@@ -147,10 +153,10 @@ Window {
         onPlayingChanged: { if (!playing) Qt.quit(); }
     }
 
-    SoundEffect { id: soundButton; source: "qrc:///sound/button.wav" }
-    SoundEffect { id: soundToggle; source: "qrc:///sound/toggle.wav" }
-    SoundEffect { id: soundSelect; source: "qrc:///sound/select.wav" }
-    SoundEffect { id: soundDiscard; source: "qrc:///sound/discard.wav" }
+    SoundEffect { id: soundButton; muted: PGlobal.mute; source: "qrc:///sound/button.wav" }
+    SoundEffect { id: soundToggle; muted: PGlobal.mute; source: "qrc:///sound/toggle.wav" }
+    SoundEffect { id: soundSelect; muted: PGlobal.mute; source: "qrc:///sound/select.wav" }
+    SoundEffect { id: soundDiscard; muted: PGlobal.mute; source: "qrc:///sound/discard.wav" }
 
     function closeRoom() {
         loader.source = "";

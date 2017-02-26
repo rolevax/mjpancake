@@ -140,6 +140,17 @@ void PGlobal::setRedDots(const QVariantList &v)
     emit redDotsChanged();
 }
 
+bool PGlobal::mute() const
+{
+    return root["mute"].toBool();
+}
+
+void PGlobal::setMute(bool v)
+{
+    root["mute"] = v;
+    emit muteChanged();
+}
+
 void PGlobal::regulateRoot()
 {
     if (!root["backColors"].isArray())
@@ -157,8 +168,11 @@ void PGlobal::regulateRoot()
     if (!root["savedPassword"].isString())
         root["savedPassword"] = QString();
 
-    if (!(root["redDots"].isArray() && root["redDots"].toArray().size() == 5))
-        root["redDots"] = QJsonArray{ true, true, false, true, true };
+    if (!(root["redDots"].isArray() && root["redDots"].toArray().size() == 6))
+        root["redDots"] = QJsonArray{ false, false, false, true, false, false };
+
+    if (!root["mute"].isBool())
+        root["mute"] = false;
 }
 
 QObject *pGlobalSingletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine)

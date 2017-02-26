@@ -96,6 +96,8 @@ Rectangle {
     }
 
     function splash() {
+        _buttonVisible = true;
+        _girlIndex = -1;
         frame.visible = true;
         timeBar.timeDown();
     }
