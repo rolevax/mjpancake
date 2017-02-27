@@ -37,11 +37,16 @@ void PJsonTcpSocket::conn(std::function<void()> callback)
 {
     mOnConn = callback;
 
+#ifdef Q_OS_ANDROID
+    // Crashes on Android 6.0, fuck Qt for Android...
+    mSocket.connectToHost(SRV_ADDR, SRV_PORT);
+#else
     QNetworkRequest request;
     request.setUrl(QUrl(ADDR_HOSTER));
     request.setRawHeader("User-Agent", "Wget/1.18 (linux-gnu)");
 
     mHttp.get(request);
+#endif
 }
 
 void PJsonTcpSocket::send(const QJsonObject &msg)
