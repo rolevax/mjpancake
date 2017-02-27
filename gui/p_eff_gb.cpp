@@ -78,7 +78,7 @@ void PEffGb::draw()
     }
 
     if (mSkill)
-        Huiyu::skill(mMount, mHand);
+        Huiyu::skill(mMount, mHand, mInfo);
 
     mHand.draw(mMount.wallPop(mRand));
     emit drawn(createTileVar(mHand.drawn()));

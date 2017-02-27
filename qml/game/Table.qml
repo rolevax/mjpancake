@@ -195,6 +195,7 @@ Item {
                 break;
             case PTable.Resume:
                 cb = function() { resume(args); };
+                duration = 1600;
                 break;
             default:
                 throw "PTable::onTableEvent: unkown event type " + type;

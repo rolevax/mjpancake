@@ -123,6 +123,9 @@ Room {
             anchors.horizontalCenter: parent.horizontalCenter
             text: "开始"
             onClicked: {
+                _round = 0;
+                _fanValues = [];
+                _finishTurns = [];
                 _nextRound();
             }
         }

@@ -98,7 +98,6 @@ ListView {
 
             NumberAnimation {
                 property: "x"
-                to: (frame.model.count - 1) * tw
                 duration: 200
                 easing.type: Easing.InOutQuad
             }

@@ -77,7 +77,9 @@ Column {
             max = 2;
         else if (level >= 9)
             max = 1;
+        _currGrade = max;
         var dButton = repSelect.itemAt(max);
+        selectBar.x = dButton.x;
         selectBar.width = dButton.width;
         selectBar.height = 0.15 * dButton.height;
     }
