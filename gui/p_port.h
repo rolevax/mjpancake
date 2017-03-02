@@ -26,7 +26,7 @@ namespace saki
 
 QString createTileVar(const saki::T37 &t, bool lay = false);
 QStringList createTilesVar(const saki::TileCount &count);
-QVariantList createTilesVar(const std::vector<saki::T37> &tiles);
+QStringList createTilesVar(const std::vector<saki::T37> &tiles);
 QVariant createTileStrsVar(const std::vector<saki::T34> &tiles);
 unsigned createSwapMask(const saki::TileCount &count,
                         const std::vector<saki::T37> &choices);

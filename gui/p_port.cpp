@@ -42,9 +42,9 @@ QStringList createTilesVar(const saki::TileCount &count)
     return list;
 }
 
-QVariantList createTilesVar(const std::vector<saki::T37> &tiles)
+QStringList createTilesVar(const std::vector<saki::T37> &tiles)
 {
-    QVariantList list;
+    QStringList list;
 
     for (const saki::T37 &t : tiles)
         list << createTileVar(t, false);

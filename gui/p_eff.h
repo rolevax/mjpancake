@@ -37,12 +37,12 @@ public:
     void setIppatsu(bool v);
 
 signals:
-    void dealt(const QStringList &init);
+    void dealt(const QStringList &init, const QString &indic);
     void drawn(const QVariant &tile);
-    void ankaned(const QVariant &bark, bool spin);
+    void ankaned(const QVariant &bark, bool spin, const QString &newIndic);
     void activated(const QVariantMap &actions);
     void autoSpin();
-    void finished(const QVariant &form, int gain, int turn);
+    void finished(const QVariant &form, int gain, int turn, const QStringList &urids);
     void exhausted();
 
     void uradoraChanged();

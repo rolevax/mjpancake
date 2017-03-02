@@ -30,6 +30,7 @@ Room {
         onDealt: {
             function cb() {
                 pc.deal(init);
+                doraIndic.doraIndic = [ indic ];
             }
 
             animBuf.push({ callback: cb, duration: 1300 });
@@ -48,6 +49,10 @@ Room {
         onAnkaned: {
             function cb() {
                 pc.bark(bark, spin);
+                if (pEff.kandora) {
+                    doraIndic.doraIndic.push(newIndic);
+                    doraIndic.doraIndicChanged();
+                }
             }
 
             animBuf.push({ callback: cb, duration: 300 });
@@ -73,7 +78,7 @@ Room {
         onExhausted: {
             function cb() {
                 formText.text = "流局";
-                resultRect.visible = true;
+                rectResult.visible = true;
             }
 
             animBuf.push({ callback: cb, duration: 0 });
@@ -86,7 +91,8 @@ Room {
                 formText.text = turn + "巡\n" +
                         Spell.spell(form.spell) + "\n" +
                         Spell.charge(form.charge);
-                resultRect.visible = true;
+                rectResult.visible = true;
+                uradoraIndic.doraIndic = urids;
             }
 
             animBuf.push({ callback: cb, duration: 0 });
@@ -94,6 +100,25 @@ Room {
     }
 
     AnimadionBuffer { id: animBuf }
+
+    Row {
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: global.size.space
+        spacing: global.size.gap
+
+        DoraIndic {
+            id: doraIndic
+            visible: rectRemain.visible || rectAnswer.visible || rectResult.visible
+            tw: room.tw
+        }
+
+        DoraIndic {
+            id: uradoraIndic
+            visible: rectResult.visible
+            tw: room.tw
+        }
+    }
 
     PinchArea {
         anchors.fill: parent
@@ -118,7 +143,6 @@ Room {
         Row {
             spacing: global.size.space
 
-            /*
             GomboToggle {
                 model: ["里宝牌 X", "里宝牌 O"]
                 onActivated: { pEff.uradora = index }
@@ -130,7 +154,6 @@ Room {
                 onActivated: { pEff.kandora = index }
                 Component.onCompleted: { currentIndex = pEff.kandora; }
             }
-            */
 
             GomboToggle {
                 model: [ "赤0", "赤3", "赤4" ]
@@ -164,7 +187,8 @@ Room {
     }
 
     Column {
-        visible: _round > 0 && !resultRect.visible && !statRect.visible && !rectAnswer.visible
+        id: rectRemain
+        visible: _round > 0 && !rectResult.visible && !statRect.visible && !rectAnswer.visible
         spacing: global.size.space
         anchors.centerIn: parent
 
@@ -190,7 +214,7 @@ Room {
     }
 
     Column {
-        id: resultRect
+        id: rectResult
         visible: false
         anchors.centerIn: parent
         spacing: global.size.gap
@@ -207,7 +231,7 @@ Room {
             text: ">"
             textLength: 6
             onClicked: {
-                resultRect.visible = false;
+                rectResult.visible = false;
                 _nextRound();
             }
         }

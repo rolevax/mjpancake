@@ -1,11 +1,12 @@
-import QtQuick 2.0
+import QtQuick 2.7
+import rolevax.sakilogy 1.0
 
 Item {
     id: frame
 
     property var doraIndic: []
     property string tileSet: "std"
-    property color backColor
+    property color backColor: PGlobal.backColors[0]
     property real tw
 
     width: 5 * tw

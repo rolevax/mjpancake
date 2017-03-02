@@ -76,8 +76,9 @@ void PEff::deal()
     Exist exist;
     mMount.initFill(mRand, init, exist);
     mHand = Hand(init);
+    mMount.flipIndic(mRand);
 
-    emit dealt(createTilesVar(mHand.closed()));
+    emit dealt(createTilesVar(mHand.closed()), createTileVar(mMount.getDrids().back()));
     draw();
 }
 
@@ -169,6 +170,7 @@ void PEff::draw()
         return;
     }
 
+mMount.lightA(saki::T34(saki::Suit::M, 1), 2000);
     mHand.draw(mMount.wallPop(mRand));
     emit drawn(createTileVar(mHand.drawn()));
 
@@ -222,7 +224,10 @@ void PEff::ankan(saki::T34 t)
 {
     bool spin = t == mHand.drawn();
     mHand.ankan(t);
-    emit ankaned(createBarkVar(mHand.barks().back()), spin);
+    if (mRule.kandora)
+        mMount.flipIndic(mRand);
+    emit ankaned(createBarkVar(mHand.barks().back()), spin,
+                 createTileVar(mMount.getDrids().back()));
     mInfo.duringKan = true;
     draw();
 }
@@ -230,9 +235,9 @@ void PEff::ankan(saki::T34 t)
 void PEff::tsumo()
 {
     using namespace saki;
-    std::vector<T37> drids;
-    std::vector<T37> urids;
-    Form form(mHand, mInfo, mRule, drids, urids);
+    if (mRule.uradora && mInfo.riichi > 0)
+        mMount.digIndic(mRand);
+    Form form(mHand, mInfo, mRule, mMount.getDrids(), mMount.getUrids());
     emit finished(createFormVar(form.spell().c_str(), form.charge().c_str()),
-                  form.gain(), mTurn);
+                  form.gain(), mTurn, createTilesVar(mMount.getUrids()));
 }
