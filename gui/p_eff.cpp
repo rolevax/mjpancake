@@ -89,13 +89,15 @@ void PEff::action(const QString &actStr, const QString &actArg)
     switch (action.act()) {
     case ActCode::SWAP_OUT:
         mInfo.duringKan = false;
-        mInfo.ippatsu = false;
+        mInfo.ippatsu = mToEstablishRiichi;
+        mToEstablishRiichi = false;
         mHand.swapOut(action.tile());
         draw();
         break;
     case ActCode::SPIN_OUT:
         mInfo.duringKan = false;
-        mInfo.ippatsu = false;
+        mInfo.ippatsu = mToEstablishRiichi;
+        mToEstablishRiichi = false;
         mHand.spinOut();
         draw();
         break;
@@ -103,7 +105,8 @@ void PEff::action(const QString &actStr, const QString &actArg)
         declareRiichi();
         break;
     case ActCode::ANKAN:
-        mInfo.ippatsu = false;
+        mInfo.ippatsu = mToEstablishRiichi;
+        mToEstablishRiichi = false;
         ankan(action.tile());
         break;
     case ActCode::TSUMO:
@@ -165,19 +168,20 @@ void PEff::setIppatsu(bool v)
 
 void PEff::draw()
 {
+    using namespace saki;
+
     if (mTurn++ == 27) {
         emit exhausted();
         return;
     }
 
-mMount.lightA(saki::T34(saki::Suit::M, 1), 2000);
     mHand.draw(mMount.wallPop(mRand));
     emit drawn(createTileVar(mHand.drawn()));
 
     mInfo.emptyMount = mTurn == 27;
 
     QVariantMap actions;
-    std::vector<saki::T34> ankanables;
+    std::vector<T34> ankanables;
     bool canTsumo = mHand.canTsumo(mInfo, mRule);
     bool canAnkan = mHand.canAnkan(ankanables, mInfo.riichi);
     if (canTsumo)
@@ -207,7 +211,7 @@ void PEff::declareRiichi()
     using namespace saki;
 
     mInfo.riichi = mTurn == 1 ? 2 : 1;
-    mInfo.ippatsu = true;
+    mToEstablishRiichi = true;
     std::vector<T37> swappables;
     bool spinnable = false;
     mHand.declareRiichi(swappables, spinnable);

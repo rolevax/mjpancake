@@ -32,7 +32,7 @@ unsigned createSwapMask(const saki::TileCount &count,
                         const std::vector<saki::T37> &choices);
 QVariant createBarkVar(const saki::M37 &m);
 QVariant createBarksVar(const std::vector<saki::M37> &ms);
-QVariant createFormVar(const char *spell, const char *charge);
+QVariantMap createFormVar(const char *spell, const char *charge);
 QVariant createIrsCheckRowVar(const saki::IrsCheckRow &row);
 
 QVariantMap createTableSnapMap(const saki::TableSnap &snap);

@@ -14,6 +14,7 @@ Room {
     property int tempDealer
 
     Row {
+        id: rowMain
         anchors.centerIn: parent
         spacing: 2 * global.size.gap
 
@@ -32,6 +33,13 @@ Room {
             id: areaOp
             anchors.verticalCenter: parent.verticalCenter
         }
+    }
+
+    Texd {
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: rowMain.bottom
+        anchors.topMargin: global.size.gap
+        text: "凑桌/讨论企鹅群 253708512"
     }
 
     function _closeTable() {

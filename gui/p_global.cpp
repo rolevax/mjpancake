@@ -169,7 +169,7 @@ void PGlobal::regulateRoot()
         root["savedPassword"] = QString();
 
     if (!(root["redDots"].isArray() && root["redDots"].toArray().size() == 6))
-        root["redDots"] = QJsonArray{ false, false, false, true, false, false };
+        root["redDots"] = QJsonArray{ true, true, false, false, true, true };
 
     if (!root["mute"].isBool())
         root["mute"] = false;

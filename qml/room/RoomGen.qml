@@ -1,6 +1,7 @@
-import QtQuick 2.0
+import QtQuick 2.7
 import rolevax.sakilogy 1.0
 import "../widget"
+import "../game"
 import "../js/spell.js" as Spell
 
 Room {
@@ -76,6 +77,7 @@ Room {
     Column {
         anchors.centerIn: parent
         spacing: 2 * global.size.space
+
         Row {
             z: form.z + 1
             anchors.horizontalCenter: parent.horizontalCenter
@@ -118,10 +120,9 @@ Room {
             id: text
             anchors.horizontalCenter: parent.horizontalCenter
             horizontalAlignment: Text.AlignHCenter
-            // TODO scale those sizes
-            height: global.mobile ? 70 : 54
-            font.pixelSize: global.mobile ? 30 : 20
-            color: "black"
+            height: 3 * global.size.middleFont
+            font.pixelSize: global.size.middleFont
+            color: PGlobal.themeText
             text: ""
         }
 

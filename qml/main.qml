@@ -125,7 +125,7 @@ Window {
         Repeater {
             model: [
                 { text: "练习", load: "Prac" },
-                { text: "牌谱", load: "Replay" },
+                { text: "工具", load: "Tools" },
                 { text: "设定", load: "Settings" }
             ]
 

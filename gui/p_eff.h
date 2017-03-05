@@ -63,7 +63,7 @@ private:
     saki::Mount mMount;
     saki::Hand mHand;
     int mTurn;
-    int mRiichi;
+    bool mToEstablishRiichi = false;
 };
 
 

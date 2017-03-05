@@ -1,5 +1,6 @@
 #include "gui/p_gen.h"
 #include "gui/p_port.h"
+
 #include "libsaki/gen.h"
 
 #include <QVariantMap>
@@ -24,21 +25,22 @@ void PGen::genPoint(int point, int selfWind, int roundWind, bool ron)
                                      g.hand.getBarks(), g.pick);
     emit genned(formVar);
 }
+    */
 
 void PGen::genFuHan(int fu, int han, int selfWind, int roundWind, bool ron)
 {
-    RuleInfo rule;
+    using namespace saki;
 
-    Gen g = fu == 0 ? Gen::genForm4Mangan(han, selfWind, roundWind, rule, ron)
-                    : Gen::genForm4FuHan(fu, han, selfWind, roundWind, rule, ron);
-    const Form &form = *g.form;
+    Gen g = fu == 0 ? Gen::genForm4Mangan(mRand, han, selfWind, roundWind, mRule, ron)
+                    : Gen::genForm4FuHan(mRand, fu, han, selfWind, roundWind, mRule, ron);
 
-    QVariant formVar = createFormVar(form.spell().c_str(), form.charge().c_str(),
-                                     g.hand.getHand(),
-                                     g.hand.getBarks(), g.pick);
-    emit genned(formVar);
+    QVariantMap how = createFormVar(g.form.spell().c_str(), g.form.charge().c_str());
+    how["hand"] = createTilesVar(g.hand.closed());
+    how["barks"] = createBarksVar(g.hand.barks());
+    how["pick"] = createTileVar(g.pick);
+
+    emit genned(how);
 }
-    */
 
 
 

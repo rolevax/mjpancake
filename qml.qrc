@@ -63,5 +63,6 @@
         <file>qml/area/AreaChoose.qml</file>
         <file>qml/widget/TimeBar.qml</file>
         <file>qml/room/RoomHelpRank.qml</file>
+        <file>qml/room/RoomTools.qml</file>
     </qresource>
 </RCC>

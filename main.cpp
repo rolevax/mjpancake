@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
     engine.addImageProvider(QString("impro"), new PImageProvider);
 
     qmlRegisterType<PTable>("rolevax.sakilogy", 1, 0, "PTable");
-//    qmlRegisterType<PGen>("rolevax.sakilogy", 1, 0, "PGen");
+    qmlRegisterType<PGen>("rolevax.sakilogy", 1, 0, "PGen");
     qmlRegisterType<PReplay>("rolevax.sakilogy", 1, 0, "PReplay");
     qmlRegisterType<PImageSettings>("rolevax.sakilogy", 1, 0, "PImageSettings");
     qmlRegisterType<PEff>("rolevax.sakilogy", 1, 0, "PEff");

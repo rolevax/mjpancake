@@ -112,14 +112,14 @@ QVariant createBarkVar(const saki::M37 &m)
     return QVariant::fromValue(map);
 }
 
-QVariant createFormVar(const char *spell, const char *charge)
+QVariantMap createFormVar(const char *spell, const char *charge)
 {
     QVariantMap map;
 
     map.insert("spell", QString(spell));
     map.insert("charge", QString(charge));
 
-    return QVariant::fromValue(map);
+    return map;
 }
 
 QVariant createBarksVar(const std::vector<saki::M37> &ms)
