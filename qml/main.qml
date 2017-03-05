@@ -26,7 +26,8 @@ Window {
             "button": soundButton,
             "toggle": soundToggle,
             "select": soundSelect,
-            "discard": soundDiscard
+            "discard": soundDiscard,
+            "bell": soundBell
         }
     }
 
@@ -157,6 +158,7 @@ Window {
     SoundEffect { id: soundToggle; muted: PGlobal.mute; source: "qrc:///sound/toggle.wav" }
     SoundEffect { id: soundSelect; muted: PGlobal.mute; source: "qrc:///sound/select.wav" }
     SoundEffect { id: soundDiscard; muted: PGlobal.mute; source: "qrc:///sound/discard.wav" }
+    SoundEffect { id: soundBell; muted: PGlobal.mute; source: "qrc:///sound/bell.wav" }
 
     function closeRoom() {
         loader.source = "";

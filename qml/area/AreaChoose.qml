@@ -96,6 +96,7 @@ Rectangle {
     }
 
     function splash() {
+        global.sound.bell.play();
         _buttonVisible = true;
         _girlIndex = -1;
         frame.visible = true;

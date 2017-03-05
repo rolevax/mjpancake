@@ -5,5 +5,6 @@
         <file>sound/toggle.wav</file>
         <file>sound/select.wav</file>
         <file>sound/discard.wav</file>
+        <file>sound/bell.wav</file>
     </qresource>
 </RCC>
