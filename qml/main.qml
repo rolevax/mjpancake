@@ -34,7 +34,7 @@ Window {
     visible: true
     width: 1207; height: 679
     color: PGlobal.themeBack
-    title: (PClient.loggedIn ? PClient.user.Username + "@" : "") + "Sakilogy " + global.version
+    title: (PClient.loggedIn ? PClient.user.Username + "@" : "") + "松饼麻雀 " + global.version
 
     Image {
         id: titleImage

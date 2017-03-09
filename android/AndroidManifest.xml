@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
-<manifest package="rolevax.sakilogy" xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="0.7.2" android:versionCode="20" android:installLocation="auto">
-    <application android:hardwareAccelerated="true" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:allowClearUserData="true" android:name="org.qtproject.qt5.android.bindings.QtApplication" android:label="Sakilogy" android:icon="@drawable/icon">
-        <activity android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|layoutDirection|locale|fontScale|keyboard|keyboardHidden|navigation" android:name="rolevax.sakilogy.ImagePickerActivity" android:label="Sakilogy" android:screenOrientation="sensorLandscape" android:launchMode="singleTop">
+<manifest package="rolevax.sakilogy" xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="0.7.3" android:versionCode="21" android:installLocation="auto">
+    <application android:hardwareAccelerated="true" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:allowClearUserData="true" android:name="org.qtproject.qt5.android.bindings.QtApplication" android:label="松饼" android:icon="@drawable/icon">
+        <activity android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|layoutDirection|locale|fontScale|keyboard|keyboardHidden|navigation" android:name="rolevax.sakilogy.ImagePickerActivity" android:label="松饼" android:screenOrientation="sensorLandscape" android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
