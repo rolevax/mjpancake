@@ -1,4 +1,5 @@
 import QtQuick 2.7
+import "../js/girlnames.js" as Names
 import "../js/nettrans.js" as NetTrans
 import "../widget"
 
@@ -7,7 +8,7 @@ Item {
 
     signal rivalShotted
 
-    property string name
+    property int girlId: -1
     property var user: null
 
     Rectangle {
@@ -40,7 +41,7 @@ Item {
         style: Text.Outline
         styleColor: "black"
         font.pixelSize: frame.height / 13
-        text: frame.name
+        text: Names.names[girlId]
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         anchors.bottomMargin: frame.height / 24

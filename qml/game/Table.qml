@@ -1,7 +1,6 @@
 import QtQuick 2.7
 import rolevax.sakilogy 1.0
 import "../widget"
-import "../js/girlnames.js" as Names
 
 Item {
     id: table
@@ -164,10 +163,10 @@ Item {
                 break;
             case PTable.TableEnded:
                 cb = function() {
-                    resultFinal.names = [ resultWindow.names[args.rank[0]],
-                                          resultWindow.names[args.rank[1]],
-                                          resultWindow.names[args.rank[2]],
-                                          resultWindow.names[args.rank[3]] ];
+                    resultFinal.girlIds = [ resultWindow.girlIds[args.rank[0]],
+                                            resultWindow.girlIds[args.rank[1]],
+                                            resultWindow.girlIds[args.rank[2]],
+                                            resultWindow.girlIds[args.rank[3]] ];
                     resultFinal.points = [ args.scores[args.rank[0]],
                                            args.scores[args.rank[1]],
                                            args.scores[args.rank[2]],
@@ -443,11 +442,11 @@ Item {
             pTable.action(actStr, actArg);
     }
 
-    function setNames(names) {
-        pointBoard.setNames(names);
-        resultWindow.names = names
-        for (var i = 0; i < 4; i++)
-            photos[i].name = names[i];
+    function setGirlIds(girlIds) {
+        pointBoard.setGirlIds(girlIds);
+        resultWindow.girlIds = girlIds
+        for (var w = 0; w < 4; w++)
+            photos[w].girlId = girlIds[w];
     }
 
     function setUsers(users) {
@@ -544,10 +543,7 @@ Item {
     function resume(snap) {
         var i;
 
-        var names = [ "", "", "", "" ];
-        for (i = 0; i < 4; i++)
-            names[i] = Names.names[snap.girlIds[i]];
-        setNames(names);
+        setGirlIds(snap.girlIds);
         setUsers(snap.users);
 
         pointBoard.points = snap.points;

@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.7
 import QtQuick.Dialogs 1.2
 import rolevax.sakilogy 1.0
 import "../widget"

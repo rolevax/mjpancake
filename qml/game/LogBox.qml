@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.7
 import "../widget"
 import "../js/spell.js" as Spell
 

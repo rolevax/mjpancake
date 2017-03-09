@@ -1,7 +1,6 @@
-import QtQuick 2.0
+import QtQuick 2.7
 import rolevax.sakilogy 1.0
 import "../widget"
-import "../js/girlnames.js" as Names
 
 Room {
     id: room
@@ -58,9 +57,7 @@ Room {
 
             var meta = pReplay.meta();
             roundsGombo.model = meta.roundNames.map(_roundNameTr);
-            loader.item.table.setNames(meta.girlIds.map(function(id) {
-                return Names.names[id];
-            }));
+            loader.item.table.setGirlIds(meta.girlIds);
             tableSeed = meta.seed;
 
             currentTurn = 1; // show from first draw (dealer's 14th)

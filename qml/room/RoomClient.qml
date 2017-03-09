@@ -1,6 +1,5 @@
-import QtQuick 2.0
+import QtQuick 2.7
 import rolevax.sakilogy 1.0
-import "../js/girlnames.js" as Names
 import "../widget"
 import "../area"
 import "../game"
@@ -9,7 +8,6 @@ Room {
     id: room
 
     property var girlIds: [ 0, 0, 0, 0 ]
-    property var displayedNames: [ "???", "???", "???", "???" ]
     property var users: [ null, null, null, null ]
     property int tempDealer
 
@@ -39,7 +37,7 @@ Room {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: rowMain.bottom
         anchors.topMargin: global.size.gap
-        text: "凑桌/讨论企鹅群 253708512"
+        text: "凑桌/讨论QQ群 253708512"
     }
 
     function _closeTable() {
@@ -56,7 +54,7 @@ Room {
             loader.focus = true;
 
             item.table.tileSet = "std";
-            item.table.setNames(displayedNames);
+            item.table.setGirlIds(girlIds);
             item.table.setUsers(users);
             item.table.middle.setDealer(tempDealer, true);
             item.table.closed.connect(_closeTable);
@@ -68,7 +66,7 @@ Room {
     AreaStage {
         id: areaStage
         users: room.users
-        names: room.displayedNames
+        girlIds: room.girlIds
         onReadyClicked: {
             PClient.sendReady();
         }
@@ -119,11 +117,8 @@ Room {
 
         onChosenIn: {
             room.girlIds = girlIds;
-            for (var i = 0; i < 4; i++)
-                room.displayedNames[i] = Names.names[girlIds[i]];
-
             // somehow variants are not binded... fuck qml
-            areaStage.names = room.displayedNames;
+            areaStage.girlIds = room.girlIds;
             areaStage.users = room.users;
             areaChoose.visible = false;
             areaStage.splash();

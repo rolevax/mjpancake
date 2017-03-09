@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.7
 import "../widget"
 
 Grid {
@@ -14,6 +14,12 @@ Grid {
     spacing: global.size.space
     flow: Grid.TopToBottom
     rows: 4
+
+    GomboToggle {
+        model: [ "东风", "东南" ]
+        onActivated: { gameRule.roundLimit = (index + 1) * 4 }
+        Component.onCompleted: { currentIndex = gameRule.roundLimit / 4 - 1; }
+    }
 
     GomboToggle {
         model: ["击飞 X", "击飞 O"]

@@ -1,4 +1,5 @@
-import QtQuick 2.0
+import QtQuick 2.7
+import "../js/girlnames.js" as Names
 import "../widget"
 
 Rectangle {
@@ -6,8 +7,8 @@ Rectangle {
 
     signal closed
 
-    property var names: ["", "", "", ""]
-    property var points: [0, 0, 0, 0]
+    property var girlIds: [ -1, -1, -1, -1 ]
+    property var points: [ 0, 0, 0, 0 ]
 
     width: 0.75 * height
     height: 400
@@ -36,7 +37,7 @@ Rectangle {
                     color: "white"
                     anchors.left: parent.left
                     font.pixelSize: global.size.middleFont
-                    text: (index + 1) + "  " + frame.names[index]
+                    text: (index + 1) + "  " + Names.names[girlIds[index]]
                 }
 
                 Texd {

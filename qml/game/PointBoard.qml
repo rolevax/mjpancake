@@ -1,4 +1,5 @@
-import QtQuick 2.0
+import QtQuick 2.7
+import "../js/girlnames.js" as Names
 import "../widget"
 
 Item {
@@ -78,11 +79,11 @@ Item {
         y: ys[0]
     }
 
-    function setNames(names) {
-        item0.name = names[0];
-        item1.name = names[1];
-        item2.name = names[2];
-        item3.name = names[3];
+    function setGirlIds(girlIds) {
+        item0.name = Names.names[girlIds[0]];
+        item1.name = Names.names[girlIds[1]];
+        item2.name = Names.names[girlIds[2]];
+        item3.name = Names.names[girlIds[3]];
     }
 
     onPointsChanged: {

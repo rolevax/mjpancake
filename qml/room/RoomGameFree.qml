@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.7
 import rolevax.sakilogy 1.0
 import "../area"
 import "../widget"
@@ -9,7 +9,6 @@ Room {
 
     property var girlIds: [ 0, 0, 0, 0 ]
     property var shuffledGirlIds: [ 0, 0, 0, 0 ]
-    property var displayedNames: [ "???", "???", "???", "???" ]
     property int tempDealer
     property string tileSet: "std"
     property bool shuffleSeat: false
@@ -132,10 +131,6 @@ Room {
 
     function loadTable() {
         _shuffleRivals();
-
-        for (var i = 0; i < 4; i++)
-            displayedNames[i] = Names.names[shuffledGirlIds[i]];
-
         loader.source = "../game/Game.qml";
     }
 
@@ -176,7 +171,7 @@ Room {
             loader.focus = true;
 
             item.table.tileSet = room.tileSet;
-            item.table.setNames(displayedNames);
+            item.table.setGirlIds(shuffledGirlIds);
             item.table.middle.setDealer(tempDealer, true);
             item.table.closed.connect(closeTable);
 
