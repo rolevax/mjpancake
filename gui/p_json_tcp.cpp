@@ -8,8 +8,6 @@
 
 
 
-const char *ADDR_HOSTER = "http://git.oschina.net/rolevax/sl-addr"
-                          "/raw/master/sl-addr?dir=0&filepath=sl-addr";
 #ifdef NDEBUG
 const char *SRV_ADDR = "118.89.219.207";
 #else
@@ -22,8 +20,6 @@ const quint16 SRV_PORT = 6171;
 PJsonTcpSocket::PJsonTcpSocket(QObject *parent)
     : QObject(parent)
 {
-    connect(&mHttp, &QNetworkAccessManager::finished, this, &PJsonTcpSocket::onAddrReplied);
-
     using ErrorSignal = void (QAbstractSocket::*)(QAbstractSocket::SocketError);
     connect(&mSocket, static_cast<ErrorSignal>(&QTcpSocket::error),
             this, &PJsonTcpSocket::onError);
@@ -36,17 +32,7 @@ PJsonTcpSocket::PJsonTcpSocket(QObject *parent)
 void PJsonTcpSocket::conn(std::function<void()> callback)
 {
     mOnConn = callback;
-
-#ifdef Q_OS_ANDROID
-    // Crashes on Android 6.0, fuck Qt for Android...
     mSocket.connectToHost(SRV_ADDR, SRV_PORT);
-#else
-    QNetworkRequest request;
-    request.setUrl(QUrl(ADDR_HOSTER));
-    request.setRawHeader("User-Agent", "Wget/1.18 (linux-gnu)");
-
-    mHttp.get(request);
-#endif
 }
 
 void PJsonTcpSocket::send(const QJsonObject &msg)
@@ -99,27 +85,6 @@ void PJsonTcpSocket::onReadReady()
         QJsonObject msg = QJsonDocument::fromJson(line.toUtf8()).object();
         emit recvJson(msg);
     }
-}
-
-void PJsonTcpSocket::onAddrReplied(QNetworkReply *reply)
-{
-    mSocket.abort();
-
-#ifdef NDEBUG
-    QString strAddr(reply->readAll().trimmed());
-    QHostAddress addr;
-    if (addr.setAddress(strAddr)) {
-        saki::util::p("srv ++++", strAddr.toStdString());
-        mSocket.connectToHost(addr, SRV_PORT);
-    } else {
-        saki::util::p("srv ++++", SRV_ADDR, "(fetch)", strAddr.toStdString());
-        mSocket.connectToHost(SRV_ADDR, SRV_PORT);
-    }
-#else
-    mSocket.connectToHost(SRV_ADDR, SRV_PORT);
-#endif
-
-    reply->deleteLater();
 }
 
 

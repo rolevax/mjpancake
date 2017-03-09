@@ -3,7 +3,6 @@
 
 #include <QObject>
 #include <QTcpSocket>
-#include <QNetworkAccessManager>
 #include <QTextStream>
 #include <QJsonObject>
 
@@ -27,10 +26,8 @@ private slots:
     void onError(QAbstractSocket::SocketError socketError);
     void onConnected();
     void onReadReady();
-    void onAddrReplied(QNetworkReply *reply);
 
 private:
-    QNetworkAccessManager mHttp;
     QTcpSocket mSocket;
     QTextStream mNetIo;
     QString mHalfMsg;
