@@ -1,9 +1,47 @@
-# README
+# Pancake Mahjong
 
-This repository contains submodules. 
-Please don't forget to use `--recursive` when cloning. 
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/mjpancake)
+
+Pancake Mahjong is an inofficial Saki mahjong game
+where the character skills strictly follow the original
+manga settings based on statistics and analytics.
+
+## Features
+
+- (TODO)
+
+## Build
+
+The client can be built on Linux, Windows, or macOS with
+Qt 5.7.1 or later installed.
+The target platform can be Linux, Windows, macOS, or Android. 
+We will also test supporting for iOS in the future.
+
+To obtain an executable client, build it either by the Qt Creator or from the command line:
 
 ```
-git clone --recursive https://bitbucket.org/rolevax/sakilogy-client.git
+git clone --recursive https://github.com/mjpancake/mjpancake-client.git
+mkdir build && cd build
+qmake -config release ../mjpancake-client
+make (or nmake, or mingw32-make according to your environment)
 ```
+
+## Contributing
+
+We love help of any kind, including but not limited to:
+
+- Introducing and/or implementing new ideas
+- Reporting and/or fixing bugs and improving the code quality
+- Handling known issues
+- Artwork and design
+- Documentation
+- Translation and internationalization
+
+Just contact us on [Gitter](https://gitter.im/mjpancake)!
+
+## License
+
+- The Pancake Mahjong client is released under the LGPLv3 license
+- The Libsaki library is released under the MIT license
+
 
