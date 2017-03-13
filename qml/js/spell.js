@@ -16,6 +16,7 @@ function spell(str) {
         Mtp: "門断平", Mpn: "門平", Mtn: "門断", Tpn: "断平",
         Rtm: "立自摸", Ptm: "平自摸", Ttm: "断自摸",
         W1f: "Ｗ東",  W2f: "Ｗ南",  W3f: "Ｗ西",  W4f: "Ｗ北",
+        Kah: "開花・", Rye: "撈月・",
 
         Nmi: "のみ",
         Dra: "ドラ", Ura: "裏", Aka: "赤",
