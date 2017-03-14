@@ -14,7 +14,7 @@ Item {
     property string tileSet: "std"
 
     // small tile width, height, and thickness
-    property real tw: table.height / 20
+    property real tw: 0.05 * table.height
     property real th: 1.35 * tw
 
     // big tile width and height
@@ -46,6 +46,7 @@ Item {
             switch (type) {
             case PTable.FirstDealerChoosen:
                 cb = function() {
+                    mount.dealer = args.dealer;
                     middle.setDealer(args.dealer)
                     pointBoard.initDealer = args.dealer;
                 };
@@ -55,6 +56,8 @@ Item {
                     middle.setRound(args.round, args.extra);
                     middle.setDealer(args.dealer);
                     middle.wallRemain = 122;
+                    mount.visible = true;
+                    mount.dealer = args.dealer;
                     for (var i = 0; i < 4; i++) {
                         if (i === args.dealer)
                             photos[i].setBars(args.extra, args.deposit);
@@ -69,7 +72,7 @@ Item {
                 cb = function() {
                     playerControl.clear();
                     logBox.clear();
-                    doraIndic.doraIndic = [];
+                    mount.clear();
                     var i;
                     for (i = 0; i < 3; i++)
                         oppoControls.itemAt(i).clear();
@@ -78,7 +81,10 @@ Item {
                 };
                 break;
             case PTable.Diced:
-                cb = function() { middle.setDice(args.die1, args.die2); };
+                cb = function() {
+                    middle.setDice(args.die1, args.die2);
+                    mount.dice = args.die1 + args.die2;
+                };
                 duration = 1600;
                 break;
             case PTable.Dealt:
@@ -87,20 +93,24 @@ Item {
                     oppoControls.itemAt(0).deal();
                     oppoControls.itemAt(1).deal();
                     oppoControls.itemAt(2).deal();
+                    mount.deal();
                 };
                 animBuf.push({ callback: preCb, duration: 1600 });
                 cb =  function() { middle.wallRemain = 70; };
                 break;
             case PTable.Flipped:
                 cb = function() {
-                    doraIndic.doraIndic.push(args.newIndic);
-                    doraIndic.doraIndicChanged();
-                    resultWindow.doraIndic.doraIndic = doraIndic.doraIndic;
+                    mount.flip(args.newIndic);
+                    resultWindow.doraIndic.doraIndic = mount.doraIndics;
                 };
                 break;
             case PTable.Drawn:
                 cb = function() {
                     middle.wallRemain--;
+                    if (args.rinshan)
+                        mount.backRemain--;
+                    else
+                        mount.frontRemain--;
                     if (args.who === 0)
                         playerControl.draw(args.tile);
                     else
@@ -321,15 +331,14 @@ Item {
         }
     }
 
-    DoraIndic {
-        id: doraIndic
+    Mount {
+        id: mount
+        visible: false
+        z: middle.pointed ? playerControl.z + 1 : rivers.z
+        tw: table.tw
         tileSet: table.tileSet
         backColor: table.backColors[table.colorIndex]
-        tw: table.tw
-        anchors.right: middle.left
-        anchors.rightMargin: 0.6 * tw
-        anchors.bottom: middle.top
-        anchors.bottomMargin: 1.2 * th
+        anchors.centerIn: parent
     }
 
     Repeater {
@@ -548,16 +557,24 @@ Item {
 
         pointBoard.points = snap.points;
         if (snap.dice > 0)
-            doraIndic.doraIndic = snap.drids;
+            mount.doraIndics = snap.drids;
 
         middle.setRound(snap.round, snap.extraRound);
         middle.setPoints(snap.points);
-        if (snap.dice > 0)
+        if (snap.dice > 0) {
             middle.setDice(1, snap.dice - 1);
+            mount.dice = snap.dice;
+            mount.visible = true;
+        }
+
         middle.setDealer(snap.dealer);
         middle.wallRemain = 0; // force change signal
         middle.wallRemain = snap.wallRemain;
         middle.removeBars();
+
+        mount.dealer = snap.dealer;
+        mount.frontRemain = snap.wallRemain + (4 - snap.deadRemain);
+        mount.backRemain = snap.deadRemain;
 
         playerControl.clear();
         if (snap.dice > 0) {
@@ -587,7 +604,6 @@ Item {
 
         resultWindow.visible = false;
         pointBoard.points = snap.points;
-        doraIndic.doraIndic = snap.drids;
 
         middle.setRound(snap.round, snap.extraRound);
         middle.setPoints(snap.points);
@@ -596,6 +612,13 @@ Item {
         middle.wallRemain = 0; // force change signal
         middle.wallRemain = snap.wallRemain;
         middle.removeBars();
+
+        mount.dice = snap.die1 + snap.die2;
+        mount.dealer = snap.dealer;
+        mount.frontRemain = snap.wallRemain + (4 - snap.deadRemain);
+        mount.backRemain = snap.deadRemain;
+        mount.doraIndics = snap.drids;
+        mount.visible = true;
 
         playerControl.clear();
         playerControl.deal(snap.players[0].hand);

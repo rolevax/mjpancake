@@ -64,5 +64,6 @@
         <file>qml/widget/TimeBar.qml</file>
         <file>qml/room/RoomHelpRank.qml</file>
         <file>qml/room/RoomTools.qml</file>
+        <file>qml/game/Mount.qml</file>
     </qresource>
 </RCC>

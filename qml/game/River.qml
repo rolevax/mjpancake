@@ -3,7 +3,7 @@ import QtQuick 2.7
 Item {
     property bool animEnabled: true
     property string tileSet: "std"
-    property int tw
+    property real tw
     readonly property int maxExtra: 4
 
     id: river

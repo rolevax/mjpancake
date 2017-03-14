@@ -14,6 +14,7 @@ Rectangle {
     property int die1: 0
     property int die2: 0
     property int wallRemain
+    readonly property bool pointed: mouseArea.containsMouse || mouseArea.containsPress
 
     Column {
         anchors.centerIn: parent
@@ -60,6 +61,13 @@ Rectangle {
                 origin.y: 12 + height - middle.height / 2
             }
         }
+    }
+
+    MouseArea {
+        id: mouseArea
+        anchors.fill: parent
+        hoverEnabled: true
+        propagateComposedEvents: true
     }
 
     ActionButton {

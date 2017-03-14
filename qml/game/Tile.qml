@@ -23,7 +23,7 @@ Item {
 
     Rectangle {
         border.width: 2
-        border.color: "#99333333"
+        border.color: "#DD444444"
         width: tileWidth
         height: tileWidth * 1.35
         color: frame.tileStr === "back" ? backColor

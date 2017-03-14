@@ -158,6 +158,7 @@ QVariantMap createTableSnapMap(const saki::TableSnap &snap)
     map.insert("points", points);
 
     map.insert("wallRemain", snap.wallRemain);
+    map.insert("deadRemain", snap.deadRemain);
     map.insert("drids", createTilesVar(snap.drids));
     map.insert("urids", createTilesVar(snap.urids));
 
