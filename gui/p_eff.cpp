@@ -70,6 +70,8 @@ void PEff::deal()
 
     mTurn = 0;
     mInfo.riichi = 0;
+    mInfo.ippatsu = false;
+    mInfo.duringKan = false;
 
     mMount = Mount(mRule.akadora);
     TileCount init;
@@ -88,25 +90,15 @@ void PEff::action(const QString &actStr, const QString &actArg)
     Action action = readAction(actStr, actArg);
     switch (action.act()) {
     case ActCode::SWAP_OUT:
-        mInfo.duringKan = false;
-        mInfo.ippatsu = mToEstablishRiichi;
-        mToEstablishRiichi = false;
-        mHand.swapOut(action.tile());
-        draw();
+        swapOut(action.tile());
         break;
     case ActCode::SPIN_OUT:
-        mInfo.duringKan = false;
-        mInfo.ippatsu = mToEstablishRiichi;
-        mToEstablishRiichi = false;
-        mHand.spinOut();
-        draw();
+        spinOut();
         break;
     case ActCode::RIICHI:
         declareRiichi();
         break;
     case ActCode::ANKAN:
-        mInfo.ippatsu = mToEstablishRiichi;
-        mToEstablishRiichi = false;
         ankan(action.tile());
         break;
     case ActCode::TSUMO:
@@ -170,6 +162,8 @@ void PEff::draw()
 {
     using namespace saki;
 
+    mToEstablishRiichi = false;
+
     if (mTurn++ == 27) {
         emit exhausted();
         return;
@@ -195,8 +189,7 @@ void PEff::draw()
             emit activated(actions);
         } else {
             emit autoSpin();
-            mHand.spinOut();
-            draw();
+            spinOut(); // tail recursion
         }
     } else {
         actions["SWAP_OUT"] = 8191; // 0111_1111_1111
@@ -224,8 +217,25 @@ void PEff::declareRiichi()
     emit activated(actions);
 }
 
+void PEff::swapOut(const saki::T37 &tile)
+{
+    mInfo.duringKan = false;
+    mInfo.ippatsu = mToEstablishRiichi;
+    mHand.swapOut(tile);
+    draw();
+}
+
+void PEff::spinOut()
+{
+    mInfo.duringKan = false;
+    mInfo.ippatsu = mToEstablishRiichi;
+    mHand.spinOut();
+    draw();
+}
+
 void PEff::ankan(saki::T34 t)
 {
+    mInfo.ippatsu = mToEstablishRiichi;
     bool spin = t == mHand.drawn();
     mHand.ankan(t);
     if (mRule.kandora)

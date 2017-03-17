@@ -53,6 +53,8 @@ signals:
 private:
     void draw();
     void declareRiichi();
+    void swapOut(const saki::T37 &tile);
+    void spinOut();
     void ankan(saki::T34 t);
     void tsumo();
 
