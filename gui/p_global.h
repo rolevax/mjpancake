@@ -79,7 +79,8 @@ private:
     void regulateRoot();
 
 private:
-    QJsonObject root;
+    QJsonObject mRoot;
+    QJsonObject mCachedPhotoMap; // Qt cannot modify nested object, fuck
 };
 
 QObject *pGlobalSingletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine);

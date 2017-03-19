@@ -23,9 +23,9 @@ PGlobal::PGlobal(QObject *parent) : QObject(parent)
         QString val = file.readAll();
         file.close();
         QJsonDocument d = QJsonDocument::fromJson(val.toUtf8());
-        root = d.object();
-    } else {
-        root = QJsonObject();
+        mRoot = d.object();
+        if (mRoot["photoMap"].isObject())
+            mCachedPhotoMap = mRoot["photoMap"].toObject();
     }
 
     regulateRoot();
@@ -38,11 +38,13 @@ PGlobal::~PGlobal()
 
 void PGlobal::save()
 {
+    mRoot["photoMap"] = mCachedPhotoMap;
+
     QDir().mkdir("user");
     QFile file("user/settings.json");
 
     file.open(QIODevice::WriteOnly | QIODevice::Text);
-    file.write(QJsonDocument(root).toJson());
+    file.write(QJsonDocument(mRoot).toJson());
 }
 
 void PGlobal::forceImmersive()
@@ -62,23 +64,23 @@ QString PGlobal::version()
 
 QVariant PGlobal::backColors() const
 {
-    return root["backColors"].toVariant();
+    return mRoot["backColors"].toVariant();
 }
 
 void PGlobal::setBackColors(const QVariant &v)
 {
-    root["backColors"] = QJsonArray::fromVariantList(v.toList());
+    mRoot["backColors"] = QJsonArray::fromVariantList(v.toList());
     emit backColorsChanged();
 }
 
 bool PGlobal::nightMode() const
 {
-    return root["nightMode"].toBool();
+    return mRoot["nightMode"].toBool();
 }
 
 void PGlobal::setNightMode(bool v)
 {
-    root["nightMode"] = v;
+    mRoot["nightMode"] = v;
     emit nightModeChanged();
     emit themeBackChanged();
     emit themeTextChanged();
@@ -86,33 +88,33 @@ void PGlobal::setNightMode(bool v)
 
 QColor PGlobal::themeBack() const
 {
-    return root["nightMode"].toBool() ? QColor("#202030") : QColor("#FFFFFF");
+    return mRoot["nightMode"].toBool() ? QColor("#202030") : QColor("#FFFFFF");
 }
 
 QColor PGlobal::themeText() const
 {
-    return root["nightMode"].toBool() ? QColor("#AAAAAA") : QColor("#111111");
+    return mRoot["nightMode"].toBool() ? QColor("#AAAAAA") : QColor("#111111");
 }
 
 QString PGlobal::savedUsername() const
 {
-    return root["savedUsername"].toString();
+    return mRoot["savedUsername"].toString();
 }
 
 void PGlobal::setSavedUsername(const QString &username)
 {
-    root["savedUsername"] = username;
+    mRoot["savedUsername"] = username;
     emit savedUsernameChanged();
 }
 
 bool PGlobal::savePassword() const
 {
-    return root["savePassword"].toBool();
+    return mRoot["savePassword"].toBool();
 }
 
 void PGlobal::setSavePassword(bool v)
 {
-    root["savePassword"] = v;
+    mRoot["savePassword"] = v;
     emit savePasswordChanged();
     if (!v)
         setSavedPassword("");
@@ -120,75 +122,73 @@ void PGlobal::setSavePassword(bool v)
 
 QString PGlobal::savedPassword() const
 {
-    return root["savedPassword"].toString();
+    return mRoot["savedPassword"].toString();
 }
 
 void PGlobal::setSavedPassword(const QString &password)
 {
-    root["savedPassword"] = password;
+    mRoot["savedPassword"] = password;
     emit savedPasswordChanged();
 }
 
 QVariantList PGlobal::redDots() const
 {
-    return root["redDots"].toArray().toVariantList();
+    return mRoot["redDots"].toArray().toVariantList();
 }
 
 void PGlobal::setRedDots(const QVariantList &v)
 {
-    root["redDots"] = QJsonArray::fromVariantList(v);
+    mRoot["redDots"] = QJsonArray::fromVariantList(v);
     emit redDotsChanged();
 }
 
 bool PGlobal::mute() const
 {
-    return root["mute"].toBool();
+    return mRoot["mute"].toBool();
 }
 
 void PGlobal::setMute(bool v)
 {
-    root["mute"] = v;
+    mRoot["mute"] = v;
     emit muteChanged();
 }
 
 QVariantMap PGlobal::photoMap() const
 {
-    return root["photoMap"].toObject().toVariantMap();
+    return mCachedPhotoMap.toVariantMap();
 }
 
 void PGlobal::setPhoto(const QString &girlId, int value)
 {
-    QJsonObject obj = root["photoMap"].toObject();
-    obj[girlId] = value;
-    root["photoMap"] = obj;
+    mCachedPhotoMap[girlId] = value;
     emit photoMapChanged();
 }
 
 void PGlobal::regulateRoot()
 {
-    if (!root["backColors"].isArray())
-        root["backColors"] = QJsonArray{ "#DD9900", "#111166" };
+    if (!mRoot["backColors"].isArray())
+        mRoot["backColors"] = QJsonArray{ "#DD9900", "#111166" };
 
-    if (!root["nightMode"].isBool())
-        root["nightMode"] = false;
+    if (!mRoot["nightMode"].isBool())
+        mRoot["nightMode"] = false;
 
-    if (!root["savedUsername"].isString())
-        root["savedUsername"] = QString();
+    if (!mRoot["savedUsername"].isString())
+        mRoot["savedUsername"] = QString();
 
-    if (!root["savePassword"].isBool())
-        root["savePassword"] = false;
+    if (!mRoot["savePassword"].isBool())
+        mRoot["savePassword"] = false;
 
-    if (!root["savedPassword"].isString())
-        root["savedPassword"] = QString();
+    if (!mRoot["savedPassword"].isString())
+        mRoot["savedPassword"] = QString();
 
-    if (!(root["redDots"].isArray() && root["redDots"].toArray().size() == 6))
-        root["redDots"] = QJsonArray{ true, true, false, false, true, true };
+    if (!(mRoot["redDots"].isArray() && mRoot["redDots"].toArray().size() == 6))
+        mRoot["redDots"] = QJsonArray{ true, true, false, false, true, true };
 
-    if (!root["mute"].isBool())
-        root["mute"] = false;
+    if (!mRoot["mute"].isBool())
+        mRoot["mute"] = false;
 
-    if (!root["photoMap"].isObject())
-        root["photoMap"] = QJsonObject();
+    if (!mRoot["photoMap"].isObject())
+        mRoot["photoMap"] = QJsonObject();
 }
 
 QObject *pGlobalSingletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine)
