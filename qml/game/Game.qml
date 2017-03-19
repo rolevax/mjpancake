@@ -31,12 +31,10 @@ PinchArea {
         }
 
         onClicked: {
-            if (mouse.button & Qt.RightButton) {
+            if (mouse.button & Qt.RightButton)
                 table.easyPass();
-                mouse.accepted = true;
-            } else {
-                mouse.accepted = false;
-            }
+
+            mouse.accepted = true;
         }
     }
 

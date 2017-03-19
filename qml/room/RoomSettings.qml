@@ -31,6 +31,15 @@ Room {
         }
 
         Buzzon {
+            text: "选择角色头像"
+            textLength: 8
+            onClicked: {
+                loader.source = "RoomSettingsPhoto.qml";
+                loader.item.closed.connect(closeRoom);
+            }
+        }
+
+        Buzzon {
             text: PGlobal.nightMode ? "开灯" : "关灯"
             textLength: 8
             onClicked: {
@@ -124,6 +133,10 @@ Room {
                 PGlobal.backColors = table.backColors;
             }
         }
+    }
+
+    function closeRoom() {
+        loader.source = "";
     }
 
     function cancelHandler() { // override

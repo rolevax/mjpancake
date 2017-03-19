@@ -1,4 +1,5 @@
 import QtQuick 2.7
+import rolevax.sakilogy 1.0
 import "../js/girlnames.js" as Names
 import "../js/nettrans.js" as NetTrans
 import "../widget"
@@ -17,7 +18,8 @@ Item {
     }
 
     Image {
-        source: "/pic/girl/default.png"
+        source: "image://impro/photo/" + girlId + "/" +
+                (PGlobal.photoMap[girlId] ? PGlobal.photoMap[girlId] : "0")
         anchors.fill: parent
     }
 

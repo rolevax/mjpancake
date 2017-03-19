@@ -151,6 +151,19 @@ void PGlobal::setMute(bool v)
     emit muteChanged();
 }
 
+QVariantMap PGlobal::photoMap() const
+{
+    return root["photoMap"].toObject().toVariantMap();
+}
+
+void PGlobal::setPhoto(const QString &girlId, int value)
+{
+    QJsonObject obj = root["photoMap"].toObject();
+    obj[girlId] = value;
+    root["photoMap"] = obj;
+    emit photoMapChanged();
+}
+
 void PGlobal::regulateRoot()
 {
     if (!root["backColors"].isArray())
@@ -173,6 +186,9 @@ void PGlobal::regulateRoot()
 
     if (!root["mute"].isBool())
         root["mute"] = false;
+
+    if (!root["photoMap"].isObject())
+        root["photoMap"] = QJsonObject();
 }
 
 QObject *pGlobalSingletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine)

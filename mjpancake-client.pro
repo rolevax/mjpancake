@@ -155,7 +155,5 @@ RCC_DIR = ./qrc
 OBJECTS_DIR = ./obj
 
 contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
-    ANDROID_EXTRA_LIBS = \
-        $$PWD/lib/libcrypto.so \
-        $$PWD/lib/libssl.so
+    ANDROID_EXTRA_LIBS =
 }

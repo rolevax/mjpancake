@@ -14,7 +14,8 @@ Rectangle {
     property int die1: 0
     property int die2: 0
     property int wallRemain
-    readonly property bool pointed: mouseArea.containsMouse || mouseArea.containsPress
+    readonly property bool pointed: global.mobile ? mouseArea.containsPress
+                                                  : mouseArea.containsMouse
 
     Column {
         anchors.centerIn: parent

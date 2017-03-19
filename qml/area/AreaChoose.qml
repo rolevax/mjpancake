@@ -36,7 +36,7 @@ Rectangle {
                     horizontalAlignment: Text.AlignHCenter
                     font.pixelSize: global.size.middleFont
                     text: users[index] ? users[index].Username + "\n" +
-                                         NetTrans.level(users[index].Level) +
+                                         NetTrans.level(users[index].Level) + " " +
                                          NetTrans.rating(users[index].Rating) + "\n"
                                        : ""
                 }
