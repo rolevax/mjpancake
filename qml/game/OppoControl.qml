@@ -10,11 +10,12 @@ Item {
     property bool show: true // meaningful only if 'stand === false'
     property string tileSet: "std"
     property color backColor
-    property int tw
+    property real tw
 
     TileStand {
         id: drawnStand
         visible: false
+        y: 1.35 * frame.tw - drawnStand.height
         tileSet: frame.tileSet
         backColor: frame.backColor
         width: frame.tw
@@ -24,7 +25,7 @@ Item {
         PropertyAnimation on y {
             id: animDraw
             from: -frame.tw
-            to: 0
+            to: 1.35 * frame.tw - drawnStand.height
             duration: 100
         }
     }
@@ -51,6 +52,7 @@ Item {
         interactive: false
         model: standModel
         delegate: TileStand {
+            y: stand.height - height
             tileSet: frame.tileSet
             width: frame.tw
             backColor: frame.backColor
@@ -112,7 +114,7 @@ Item {
 
     ListView {
         id: hand
-        x: stand.x; y: stand.y; z: 5
+        x: 0; y: 0; z: 5
         width: tw * handModel.count
         height: 1.35 * tw
         visible: !frame.stand
