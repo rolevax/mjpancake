@@ -31,6 +31,7 @@ public:
 
     Q_INVOKABLE void save();
     Q_INVOKABLE static void forceImmersive();
+    Q_INVOKABLE static void systemNotify();
 
     static QString version();
 

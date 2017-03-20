@@ -50,10 +50,20 @@ void PGlobal::save()
 void PGlobal::forceImmersive()
 {
 #ifdef Q_OS_ANDROID
-    QAndroidJniObject::callStaticObjectMethod(
+    QAndroidJniObject::callStaticMethod<void>(
                 "rolevax/sakilogy/ImagePickerActivity",
                 "forceImmersive",
-                "()Ljava/lang/Object;");
+                "()V");
+#endif
+}
+
+void PGlobal::systemNotify()
+{
+#ifdef Q_OS_ANDROID
+    QAndroidJniObject::callStaticMethod<void>(
+                "rolevax/sakilogy/ImagePickerActivity",
+                "popNotification",
+                "()V");
 #endif
 }
 

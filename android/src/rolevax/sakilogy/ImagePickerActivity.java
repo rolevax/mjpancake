@@ -1,30 +1,65 @@
 package rolevax.sakilogy;
 
 import org.qtproject.qt5.android.bindings.QtActivity;
-import android.content.Intent;
 import android.app.Activity;
-import android.provider.MediaStore;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
+import android.media.RingtoneManager;
+import android.content.Intent;
+import android.content.Context;
 import android.content.CursorLoader;
+import android.provider.MediaStore;
 import android.database.Cursor;
 import android.util.Log;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.net.Uri;
 import android.view.View;
 
 public class ImagePickerActivity extends QtActivity {
-	public ImagePickerActivity() {
-		m_instance = this;
+    private static ImagePickerActivity mInstance;
+    private static NotificationManager mNotificationManager;
+    private static Notification.Builder mBuilder;
+
+    public ImagePickerActivity() {
+        mInstance = this;
 	}
 
-    public static Object forceImmersive() {
-        if (m_instance != null) {
-            m_instance.delayedHide(300);
+    public static void forceImmersive() {
+        if (mInstance != null) {
+            mInstance.delayedHide(300);
         }
-        return null;
     }
 	
-	public static Intent createChoosePhotoIntent() {
+    public static void popNotification()
+    {
+        if (mNotificationManager == null) {
+            mNotificationManager = (NotificationManager)mInstance.getSystemService(
+                Context.NOTIFICATION_SERVICE);
+            mBuilder = new Notification.Builder(mInstance);
+            mBuilder.setSmallIcon(R.drawable.icon);
+            mBuilder.setContentTitle("Pancake Mahjong Notification");
+            mBuilder.setAutoCancel(true);
+            mBuilder.setPriority(Notification.PRIORITY_MAX);
+            mBuilder.setDefaults(Notification.DEFAULT_ALL);
+
+            Intent intent = new Intent(mInstance, ImagePickerActivity.class);
+            intent.setAction(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_LAUNCHER);
+            PendingIntent pendingIntent = PendingIntent.getActivity(mInstance, 0, intent, 0);
+            mBuilder.setContentIntent(pendingIntent);
+        }
+
+        mBuilder.setContentText("Table started");
+        Notification noti = mBuilder.build();
+        noti.sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        mNotificationManager.notify(1, noti);
+    }
+
+    public static Intent createChoosePhotoIntent() {
 		Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 		intent.setType("image/*");
 		return Intent.createChooser(intent, "Select Image");
@@ -32,7 +67,7 @@ public class ImagePickerActivity extends QtActivity {
 
 	public static String getPath(android.net.Uri uri) {
 		String[] proj = { MediaStore.Images.Media.DATA };
-		CursorLoader loader = new CursorLoader(m_instance.getApplicationContext(), uri, proj, null, null, null);
+        CursorLoader loader = new CursorLoader(mInstance.getApplicationContext(), uri, proj, null, null, null);
 		Cursor cursor = loader.loadInBackground();
 		int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
 		cursor.moveToFirst();
@@ -40,8 +75,6 @@ public class ImagePickerActivity extends QtActivity {
 		cursor.close();
 		return result;
 	}
-	
-	private static ImagePickerActivity m_instance;
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {

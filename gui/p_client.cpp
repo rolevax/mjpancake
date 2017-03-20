@@ -220,6 +220,9 @@ void PClient::onJsonReceived(const QJsonObject &msg)
         mBooks = msg["Books"].toArray().toVariantList();
         emit lookedAround();
     } else if (type == "start") {
+        // wait for Qt 5.9 release,
+        // and notify from background by Android service + Qt Remote Object
+        //PGlobal::systemNotify();
         mLastNonce = 0;
         emit lastNonceChanged();
         QJsonArray users = msg["Users"].toArray();

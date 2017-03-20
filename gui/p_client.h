@@ -10,7 +10,6 @@
 #include <QVariantMap>
 
 
-
 class PClient : public QObject
 {
     Q_OBJECT
