@@ -11,33 +11,40 @@ Room {
     property var users: [ null, null, null, null ]
     property int tempDealer
 
-    Row {
-        id: rowMain
+    Column {
         anchors.centerIn: parent
-        spacing: 2 * global.size.gap
+        anchors.verticalCenterOffset: 1 * global.size.gap
+        spacing: global.size.gap
 
-        AreaStats {
-            anchors.verticalCenter: parent.verticalCenter
+        Row {
+            anchors.horizontalCenter: parent.horizontalCenter
+            spacing: 2 * global.size.gap
+
+            AreaStats {
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            Rectangle {
+                width: 1
+                height: parent.height
+                color: PGlobal.themeText
+                opacity: 0.5
+            }
+
+            AreaOp {
+                id: areaOp
+                anchors.verticalCenter: parent.verticalCenter
+            }
         }
 
-        Rectangle {
-            width: 1
-            height: parent.height
-            color: PGlobal.themeText
-            opacity: 0.5
+        Texd {
+            anchors.horizontalCenter: parent.horizontalCenter
+            horizontalAlignment: Text.AlignHCenter
+            text: "凑桌/讨论QQ群 253708512\n" +
+                  "晚上比白天人多，周末比周中人多\n" +
+                  "加群可大幅降低凑桌难度\n" +
+                  "群内还会出现攻略心得、神剧本、小道消息以及py交易"
         }
-
-        AreaOp {
-            id: areaOp
-            anchors.verticalCenter: parent.verticalCenter
-        }
-    }
-
-    Texd {
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: rowMain.bottom
-        anchors.topMargin: global.size.gap
-        text: "凑桌/讨论QQ群 253708512"
     }
 
     function _closeTable() {

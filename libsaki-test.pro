@@ -6,6 +6,12 @@ CONFIG(release, debug|release): DEFINES += NDEBUG
 SOURCES += main_test.cpp \
     libsaki/action.cpp \
     libsaki/ai.cpp \
+    libsaki/ai_achiga.cpp \
+    libsaki/ai_eisui.cpp \
+    libsaki/ai_miyamori.cpp \
+    libsaki/ai_senriyama.cpp \
+    libsaki/ai_shiraitodai.cpp \
+    libsaki/ai_usuzan.cpp \
     libsaki/form.cpp \
     libsaki/form_gb.cpp \
     libsaki/girl.cpp \
@@ -23,17 +29,12 @@ SOURCES += main_test.cpp \
     libsaki/girls_achiga.cpp \
     libsaki/girls_senriyama.cpp \
     libsaki/girls_himematsu.cpp \
-    libsaki/ai_senriyama.cpp \
-    libsaki/ai_achiga.cpp \
-    libsaki/ai_shiraitodai.cpp \
     libsaki/girls_other.cpp \
     libsaki/girls_usuzan.cpp \
     libsaki/girls_rinkai.cpp \
-    libsaki/ai_usuzan.cpp \
     libsaki/replay.cpp \
     libsaki/girls_eisui.cpp \
     libsaki/girls_miyamori.cpp \
-    libsaki/ai_eisui.cpp \
     libsaki/string_enum.cpp \
     libsaki/tableview.cpp \
     libsaki/test.cpp \
@@ -46,6 +47,12 @@ include(deployment.pri)
 HEADERS += \
     libsaki/action.h \
     libsaki/ai.h \
+    libsaki/ai_achiga.h \
+    libsaki/ai_eisui.h \
+    libsaki/ai_miyamori.h \
+    libsaki/ai_senriyama.h \
+    libsaki/ai_shiraitodai.h \
+    libsaki/ai_usuzan.h \
     libsaki/form.h \
     libsaki/form_gb.h \
     libsaki/girl.h \
@@ -68,16 +75,11 @@ HEADERS += \
     libsaki/girls_senriyama.h \
     libsaki/girls_himematsu.h \
     libsaki/girls_rinkai.h \
-    libsaki/ai_senriyama.h \
-    libsaki/ai_achiga.h \
-    libsaki/ai_shiraitodai.h \
     libsaki/girls_other.h \
     libsaki/girls_usuzan.h \
-    libsaki/ai_usuzan.h \
     libsaki/replay.h \
     libsaki/girls_eisui.h \
     libsaki/girls_miyamori.h \
-    libsaki/ai_eisui.h \
     libsaki/who.h \
     libsaki/tableoperator.h \
     libsaki/assume.h \

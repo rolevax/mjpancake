@@ -7,46 +7,21 @@ Column {
     spacing: global.size.space
 
     property var _gradeNames: [ "应援", "替补", "正选", "ＡＣＥ" ]
-    property int _currGrade: 0
 
     Texd {
         anchors.horizontalCenter: parent.horizontalCenter
-        text: "在线：" + PClient.connCt
+        horizontalAlignment: Text.AlignHCenter
+        text: "预约后人齐即开\n" +
+              "应援、替补、正选、ACE区内能抽到的角色依次增强\n" +
+              "提高段位可进入高级战区"
     }
 
     Item { width:1; height: global.size.gap }
 
-    Row {
+    TabBager {
+        id: tabPager
         anchors.horizontalCenter: parent.horizontalCenter
-        spacing: global.size.space
-
-        Repeater {
-            id: repSelect
-            model: 4
-            delegate: Buzzon {
-                text: _gradeNames[index]
-                onClicked: {
-                    selectBar.x = x;
-                    selectBar.width = width;
-                    _currGrade = index;
-                }
-            }
-        }
-    }
-
-    Rectangle {
-        id: selectBar
-        // size set by Component.onCompleted
-        radius: 0.5 * height
-        color: PGlobal.themeText
-        opacity: 0.5
-
-        Behavior on x {
-            PropertyAnimation {
-                duration: 100
-                easing.type: Easing.InOutQuad
-            }
-        }
+        model: _gradeNames
     }
 
     Item { width:1; height: global.size.gap }
@@ -55,7 +30,7 @@ Column {
         id: repBooks
         model: 4
         delegate: AreaBookRow {
-            visible: index === _currGrade
+            visible: index === tabPager.currIndex
             bookType: index
             anchors.horizontalCenter: parent.horizontalCenter
         }
@@ -77,10 +52,6 @@ Column {
             max = 2;
         else if (level >= 9)
             max = 1;
-        _currGrade = max;
-        var dButton = repSelect.itemAt(max);
-        selectBar.x = dButton.x;
-        selectBar.width = dButton.width;
-        selectBar.height = 0.15 * dButton.height;
+        tabPager.currIndex = max;
     }
 }

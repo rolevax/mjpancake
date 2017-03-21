@@ -12,6 +12,7 @@ SOURCES += main.cpp \
     libsaki/ai.cpp \
     libsaki/ai_achiga.cpp \
     libsaki/ai_eisui.cpp \
+    libsaki/ai_miyamori.cpp \
     libsaki/ai_senriyama.cpp \
     libsaki/ai_shiraitodai.cpp \
     libsaki/ai_usuzan.cpp \
@@ -71,9 +72,10 @@ include(deployment.pri)
 
 HEADERS += \
     libsaki/action.h \
+    libsaki/ai.h \
     libsaki/ai_achiga.h \
     libsaki/ai_eisui.h \
-    libsaki/ai.h \
+    libsaki/ai_miyamori.h \
     libsaki/ai_shiraitodai.h \
     libsaki/ai_senriyama.h \
     libsaki/ai_usuzan.h \
