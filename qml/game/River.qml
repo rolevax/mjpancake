@@ -2,6 +2,7 @@ import QtQuick 2.7
 
 Item {
     property bool animEnabled: true
+    property bool upDown: false
     property string tileSet: "std"
     property real tw
     readonly property int maxExtra: 4
@@ -20,6 +21,7 @@ Item {
         RiverRow {
             id: row1
             animEnabled: river.animEnabled
+            upDown: river.upDown
             tileSet: river.tileSet
             tw: river.tw
             model: model1
@@ -28,6 +30,7 @@ Item {
         RiverRow {
             id: row2
             animEnabled: river.animEnabled
+            upDown: river.upDown
             tileSet: river.tileSet
             tw: river.tw
             model: model2
@@ -36,6 +39,7 @@ Item {
         RiverRow {
             id: row3
             animEnabled: river.animEnabled
+            upDown: river.upDown
             tileSet: river.tileSet
             tw: river.tw
             width: tw * (6 + maxExtra);

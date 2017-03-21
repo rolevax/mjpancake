@@ -454,8 +454,11 @@ Item {
     function setGirlIds(girlIds) {
         pointBoard.setGirlIds(girlIds);
         resultWindow.girlIds = girlIds
-        for (var w = 0; w < 4; w++)
+        for (var w = 0; w < 4; w++) {
             photos[w].girlId = girlIds[w];
+            if (girlIds[w] === 712411 || girlIds[w] === 712412)
+                rivers.itemAt(w).upDown = true;
+        }
     }
 
     function setUsers(users) {

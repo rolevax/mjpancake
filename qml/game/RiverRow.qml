@@ -4,6 +4,7 @@ ListView {
     id: frame
 
     property bool animEnabled: true
+    property bool upDown: false // upside down discarding for kuro and yuu
     property string tileSet: "std"
     property color backColor
     property real tw
@@ -57,6 +58,11 @@ ListView {
             tileStr: modelTileStr
             backColor: frame.backColor
             lay: modelLay
+            transform: Rotation {
+                angle: upDown && !tile.lay ? 180 : 0
+                origin.x: width / 2
+                origin.y: height / 2
+            }
         }
     }
 
