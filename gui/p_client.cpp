@@ -27,6 +27,10 @@ PClient::PClient(QObject *parent) : QObject(parent)
     connect(&mSocket, &PJsonTcpSocket::remoteClosed, this, &PClient::remoteClosed);
     connect(&mSocket, &PJsonTcpSocket::connError, this, &PClient::connError);
     connect(&mSocket, &PJsonTcpSocket::remoteClosed, this, &PClient::onRemoteClosed);
+
+    connect(&mHeartbeatTimer, &QTimer::timeout, this, &PClient::heartbeat);
+    mHeartbeatTimer.setInterval(5 * 60 * 1000); // 5 min
+    mHeartbeatTimer.start();
 }
 
 void PClient::login(const QString &username, const QString &password)
@@ -64,6 +68,11 @@ void PClient::lookAround()
 
 void PClient::book(int bookType)
 {
+    while (mBookings.size() <= bookType)
+        mBookings.append(false);
+    mBookings[bookType] = true;
+    emit bookingsChanged();
+
     QJsonObject req;
     req["Type"] = "book";
     req["BookType"] = bookType;
@@ -72,6 +81,10 @@ void PClient::book(int bookType)
 
 void PClient::unbook()
 {
+    for (auto &v : mBookings)
+        v = false;
+    emit bookingsChanged();
+
     QJsonObject req;
     req["Type"] = "unbook";
     mSocket.send(req);
@@ -133,6 +146,19 @@ int PClient::connCt() const
 QVariantList PClient::books() const
 {
     return mBooks;
+}
+
+QVariantList PClient::bookings() const
+{
+    return mBookings;
+}
+
+bool PClient::hasBooking() const
+{
+    for (auto v : mBookings)
+        if (v.toBool())
+            return true;
+    return false;
 }
 
 int PClient::lastNonce() const
@@ -258,6 +284,15 @@ void PClient::recvTableEvent(const QJsonObject &msg)
     if (event == PTable::Activated)
         args["nonce"] = nonce;
     emit tableEvent(event, args);
+}
+
+void PClient::heartbeat()
+{
+    if (loggedIn()) {
+        QJsonObject req;
+        req["Type"] = "heartbeat";
+        mSocket.send(req);
+    }
 }
 
 QString PClient::hash(const QString &password) const

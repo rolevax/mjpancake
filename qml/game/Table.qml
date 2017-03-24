@@ -565,7 +565,9 @@ Item {
         middle.setRound(snap.round, snap.extraRound);
         middle.setPoints(snap.points);
         if (snap.dice > 0) {
-            middle.setDice(1, snap.dice - 1);
+            var die1 = Math.floor(snap.dice / 2);
+            var die2 = snap.dice - die1;
+            middle.setDice(die1, die2);
             mount.dice = snap.dice;
             mount.visible = true;
         }

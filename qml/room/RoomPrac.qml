@@ -16,14 +16,14 @@ Room {
         }
 
         Buzzon {
-            text: "牌效"
+            text: "牌效练习"
             textLength: 8
             onClicked: { loader.source = "RoomEff.qml"; }
             anchors.horizontalCenter: parent.horizontalCenter
         }
 
         Buzzon {
-            text: "国标"
+            text: "国标练习"
             textLength: 8
             onClicked: { loader.source = "RoomEffGB.qml"; }
             anchors.horizontalCenter: parent.horizontalCenter

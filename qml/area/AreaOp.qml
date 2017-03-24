@@ -4,27 +4,23 @@ import "../widget"
 
 Column {
     id: opArea
-    spacing: global.size.space
+    spacing: global.size.gap
 
     property var _gradeNames: [ "应援", "替补", "正选", "ＡＣＥ" ]
 
     Texd {
         anchors.horizontalCenter: parent.horizontalCenter
         horizontalAlignment: Text.AlignHCenter
-        text: "预约后人齐即开\n" +
+        text: "预约后人齐即开，等待期间可进行单机游戏\n" +
               "应援、替补、正选、ACE区内能抽到的角色依次增强\n" +
               "提高段位可进入高级战区"
     }
-
-    Item { width:1; height: global.size.gap }
 
     TabBager {
         id: tabPager
         anchors.horizontalCenter: parent.horizontalCenter
         model: _gradeNames
     }
-
-    Item { width:1; height: global.size.gap }
 
     Repeater {
         id: repBooks
@@ -36,10 +32,13 @@ Column {
         }
     }
 
-    function popBookButtons() {
-        for (var i = 0; i < 4; i++) {
-            repBooks.itemAt(i).booking = false;
-        }
+    Buzzon {
+        id: cancelButton
+        text: "取消预约"
+        textLength: 6
+        enabled: PClient.hasBooking
+        anchors.horizontalCenter: parent.horizontalCenter
+        onClicked: { PClient.unbook(); }
     }
 
     Component.onCompleted: {

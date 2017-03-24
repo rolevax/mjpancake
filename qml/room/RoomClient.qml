@@ -49,7 +49,6 @@ Room {
 
     function _closeTable() {
         loader.source = "";
-        areaOp.popBookButtons();
     }
 
     Loader {
@@ -112,16 +111,6 @@ Room {
     Connections {
         target: PClient
 
-        onStartIn: {
-            room.tempDealer = tempDealer;
-
-            for (var i = 0; i < 4; i++)
-                room.users[i] = users[i];
-            areaChoose.users = room.users;
-            areaChoose.choices = choices;
-            areaChoose.splash();
-        }
-
         onChosenIn: {
             room.girlIds = girlIds;
             // somehow variants are not binded... fuck qml
@@ -146,8 +135,16 @@ Room {
         }
     }
 
-    onClosed: {
-        PClient.unbook();
+    function handleStartIn(tempDealer, users, choices) {
+        PClient.unbook(); // just pop book buttons
+
+        room.tempDealer = tempDealer;
+
+        for (var i = 0; i < 4; i++)
+            room.users[i] = users[i];
+        areaChoose.users = room.users;
+        areaChoose.choices = choices;
+        areaChoose.splash();
     }
 
     function _rankPercent(r) {

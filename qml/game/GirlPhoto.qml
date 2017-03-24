@@ -11,6 +11,7 @@ Item {
 
     property int girlId: -1
     property var user: null
+    property bool cache: true
 
     Rectangle {
         anchors.fill: parent
@@ -21,6 +22,7 @@ Item {
         source: "image://impro/photo/" + girlId + "/" +
                 (PGlobal.photoMap[girlId] ? PGlobal.photoMap[girlId] : "0")
         anchors.fill: parent
+        cache: frame.cache
     }
 
     Texd {

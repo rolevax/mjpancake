@@ -40,6 +40,7 @@ Room {
                 width: 0.6 * height
                 height: 0.5 * frame.height
                 girlId: girlMenu.currGirlId
+                cache: false
             }
 
             ChegList {

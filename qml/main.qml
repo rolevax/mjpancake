@@ -113,10 +113,19 @@ Window {
             text: "段位"
             textLength: 8
             visible: PClient.loggedIn
+            enabled: !docButton.redDot
             onClicked: { loader.source = "room/RoomClient.qml"; }
         }
 
         Buzzon {
+            text: "单机"
+            textLength: 8
+            enabled: !docButton.redDot
+            onClicked: { loader.source = "room/RoomPrac.qml"; }
+        }
+
+        Buzzon {
+            id: docButton
             text: "文档"
             textLength: 8
             redDot: !PGlobal.redDots.every(function(b) { return !b; })
@@ -125,7 +134,6 @@ Window {
 
         Repeater {
             model: [
-                { text: "练习", load: "Prac" },
                 { text: "工具", load: "Tools" },
                 { text: "设定", load: "Settings" }
             ]
@@ -173,6 +181,27 @@ Window {
             loader.focus = true;
             item.closed.connect(closeRoom);
         }
+    }
+
+    Connections {
+        target: PClient
+
+        onStartIn: {
+            if (loader.source != Qt.resolvedUrl("room/RoomClient.qml"))
+                loader.source = "room/RoomClient.qml";
+
+            loader.item.handleStartIn(tempDealer, users, choices);
+        }
+    }
+
+    Buzzon {
+        textLength: 8
+        anchors.margins: global.size.space
+        anchors.right: parent.right
+        anchors.top: parent.top
+        visible: PClient.hasBooking
+        text: "预约中"
+        onClicked: { loader.source = "room/RoomClient.qml"; }
     }
 
     Shortcut {

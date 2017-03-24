@@ -27,8 +27,8 @@ Column {
 
     Rectangle {
         id: selectBar
-        x: repSelect.itemAt(currIndex).x
-        width: repSelect.itemAt(currIndex).width
+        x: currIndex < repSelect.count ? repSelect.itemAt(currIndex).x : 0
+        width: currIndex < repSelect.count ? repSelect.itemAt(currIndex).width : 0
         height: 0.25 * global.size.middleFont
         radius: 0.5 * height
         color: PGlobal.themeText

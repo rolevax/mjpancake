@@ -25,6 +25,14 @@ Room {
                 anchors.horizontalCenter: parent.horizontalCenter
             }
         }
+
+        Item { width: 1; height: global.size.gap }
+
+        Texd {
+            anchors.horizontalCenter: parent.horizontalCenter
+            horizontalAlignment: Text.AlignHCenter
+            text: "本作之精华在于文档，麻将不过是个附赠品"
+        }
     }
 
     function closeRoom() {

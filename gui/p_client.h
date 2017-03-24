@@ -8,6 +8,7 @@
 #include <QQmlEngine>
 #include <QJSEngine>
 #include <QVariantMap>
+#include <QTimer>
 
 
 class PClient : public QObject
@@ -21,6 +22,8 @@ public:
     Q_PROPERTY(int playCt READ playCt NOTIFY userChanged)
     Q_PROPERTY(int connCt READ connCt NOTIFY lookedAround)
     Q_PROPERTY(QVariantList books READ books NOTIFY lookedAround)
+    Q_PROPERTY(QVariantList bookings READ bookings NOTIFY bookingsChanged)
+    Q_PROPERTY(bool hasBooking READ hasBooking NOTIFY bookingsChanged)
     Q_PROPERTY(int lastNonce READ lastNonce NOTIFY lastNonceChanged)
 
     Q_INVOKABLE void login(const QString &username, const QString &password);
@@ -37,6 +40,8 @@ public:
     int playCt() const;
     int connCt() const;
     QVariantList books() const;
+    QVariantList bookings() const;
+    bool hasBooking() const;
     int lastNonce() const;
 
 signals:
@@ -50,6 +55,7 @@ signals:
     void userChanged();
     void lookedAround();
     void lastNonceChanged();
+    void bookingsChanged();
 
     void tableEvent(PTable::Event type, const QVariantMap &args);
 
@@ -62,12 +68,15 @@ private:
     void send(const QJsonObject &obj);
     void onJsonReceived(const QJsonObject &msg);
     void recvTableEvent(const QJsonObject &msg);
+    void heartbeat();
 
     QString hash(const QString &password) const;
 
 private:
     PJsonTcpSocket mSocket;
+    QTimer mHeartbeatTimer;
     QVariantMap mUser;
+    QVariantList mBookings;
     int mConnCt = 0;
     QVariantList mBooks;
     int mLastNonce = 0;

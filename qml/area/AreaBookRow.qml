@@ -4,7 +4,6 @@ import "../widget"
 
 Row {
     property int bookType
-    property bool booking: false
 
     spacing: global.size.gap
 
@@ -16,14 +15,11 @@ Row {
 
     Buzzon {
         id: bookButton
-        enabled: !booking && PClient.books[bookType].Bookable
+        enabled: !PClient.bookings[bookType] && PClient.books[bookType].Bookable
         anchors.verticalCenter: parent.verticalCenter
         textLength: 4
-        text: booking ? "待开" : "预约"
-        onClicked: {
-            booking = true;
-            PClient.book(bookType);
-        }
+        text: PClient.bookings[bookType] ? "待开" : "预约"
+        onClicked: { PClient.book(bookType); }
     }
 
     Texd {
