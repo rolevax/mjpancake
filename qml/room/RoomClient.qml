@@ -146,10 +146,4 @@ Room {
         areaChoose.choices = choices;
         areaChoose.splash();
     }
-
-    function _rankPercent(r) {
-        if (!PClient.user.Ranks)
-            return "----%";
-        return ((PClient.user.Ranks[r] / PClient.playCt) * 100).toFixed(1) + "%";
-    }
 }

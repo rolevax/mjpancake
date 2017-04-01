@@ -20,7 +20,7 @@ Column {
             anchors.horizontalCenter: parent.horizontalCenter
             font.pixelSize: global.size.smallFont
             opacity: 0.8
-            text: "ID " + PClient.user.Id
+            text: "UID " + PClient.user.Id
         }
     }
 
@@ -57,5 +57,9 @@ Column {
                 text: _rankPercent(index);
             }
         }
+    }
+
+    function _rankPercent(r) {
+        return ((PClient.ranks[r] / PClient.playCt) * 100).toFixed(1) + "%";
     }
 }

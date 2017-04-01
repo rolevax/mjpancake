@@ -19,7 +19,10 @@ public:
 
     Q_PROPERTY(bool loggedIn READ loggedIn NOTIFY userChanged)
     Q_PROPERTY(QVariantMap user READ user NOTIFY userChanged)
-    Q_PROPERTY(int playCt READ playCt NOTIFY userChanged)
+    Q_PROPERTY(QVariantList stats READ stats NOTIFY statsChanged)
+    Q_PROPERTY(QVariantList playedGirlIds READ playedGirlIds NOTIFY statsChanged)
+    Q_PROPERTY(int playCt READ playCt NOTIFY statsChanged)
+    Q_PROPERTY(QVariantList ranks READ ranks NOTIFY statsChanged)
     Q_PROPERTY(int connCt READ connCt NOTIFY lookedAround)
     Q_PROPERTY(QVariantList books READ books NOTIFY lookedAround)
     Q_PROPERTY(QVariantList bookings READ bookings NOTIFY bookingsChanged)
@@ -36,8 +39,11 @@ public:
     Q_INVOKABLE void sendResume();
 
     QVariantMap user() const;
+    QVariantList stats() const;
+    QVariantList playedGirlIds() const;
     bool loggedIn() const;
     int playCt() const;
+    QVariantList ranks() const;
     int connCt() const;
     QVariantList books() const;
     QVariantList bookings() const;
@@ -53,6 +59,7 @@ signals:
     void resumeIn();
 
     void userChanged();
+    void statsChanged();
     void lookedAround();
     void lastNonceChanged();
     void bookingsChanged();
@@ -62,20 +69,22 @@ signals:
 public slots:
     void action(QString actStr, const QVariant &actArg);
 
-private:
+private slots:
     static PTable::Event eventOf(const QString &event);
     void onRemoteClosed();
-    void send(const QJsonObject &obj);
     void onJsonReceived(const QJsonObject &msg);
     void recvTableEvent(const QJsonObject &msg);
     void heartbeat();
 
+private:
     QString hash(const QString &password) const;
+    void updateStats(const QVariantList &stats);
 
 private:
     PJsonTcpSocket mSocket;
     QTimer mHeartbeatTimer;
     QVariantMap mUser;
+    QVariantList mStats;
     QVariantList mBookings;
     int mConnCt = 0;
     QVariantList mBooks;

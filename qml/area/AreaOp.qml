@@ -11,9 +11,9 @@ Column {
     Texd {
         anchors.horizontalCenter: parent.horizontalCenter
         horizontalAlignment: Text.AlignHCenter
-        text: "预约后人齐即开，等待期间可进行单机游戏\n" +
-              "应援、替补、正选、ACE区内能抽到的角色依次增强\n" +
-              "提高段位可进入高级战区"
+        text: "预约后人齐即开，等待期间可返回进行单机游戏\n" +
+              "提高段位R量可进入替补、正选、ACE区\n" +
+              "部分角色只在高级战区出没（见\"文档->段位规则\"）"
     }
 
     TabBager {

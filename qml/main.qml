@@ -99,8 +99,9 @@ Window {
         anchors.left: parent.left
         anchors.margins: parent.height / 9
         visible: PClient.loggedIn
-        text: !!PClient.user.Username ? PClient.user.Username : ""
+        text: "战绩"
         textLength: 8
+        onClicked: { loader.source = "room/RoomStats.qml"; }
     }
 
     Column {

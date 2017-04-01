@@ -120,6 +120,21 @@ QVariantMap PClient::user() const
     return mUser;
 }
 
+QVariantList PClient::stats() const
+{
+    return mStats;
+}
+
+QVariantList PClient::playedGirlIds() const
+{
+    QVariantList res;
+
+    for (const auto &statRow : mStats)
+        res.append(statRow.toMap()["GirlId"]);
+
+    return res;
+}
+
 bool PClient::loggedIn() const
 {
     return mUser.contains("Username") && mUser["Username"].toString() != "";
@@ -127,15 +142,18 @@ bool PClient::loggedIn() const
 
 int PClient::playCt() const
 {
-    if (mUser.contains("Ranks")) {
-        const auto &ranks = mUser["Ranks"].toList();
-        int sum = 0;
-        for (int i = 0; i < 4; i++)
-            sum += ranks.at(i).toInt();
-        return sum;
-    } else {
-        return 0;
-    }
+    int sum = 0;
+
+    const auto &ranks = mStats[0].toMap()["Ranks"].toList();
+    for (int i = 0; i < 4; i++)
+        sum += ranks.at(i).toInt();
+
+    return sum;
+}
+
+QVariantList PClient::ranks() const
+{
+    return mStats[0].toMap()["Ranks"].toList();
 }
 
 int PClient::connCt() const
@@ -267,6 +285,7 @@ void PClient::onJsonReceived(const QJsonObject &msg)
     } else if (type == "update-user") {
         mUser = msg["User"].toObject().toVariantMap();
         emit userChanged();
+        updateStats(msg["Stats"].toArray().toVariantList());
     }
 }
 
@@ -300,6 +319,40 @@ QString PClient::hash(const QString &password) const
     QCryptographicHash hasher(QCryptographicHash::Sha256);
     hasher.addData(password.toUtf8());
     return QString::fromUtf8(hasher.result().toBase64());
+}
+
+void PClient::updateStats(const QVariantList &stats)
+{
+    QVariantMap summary;
+
+    summary["GirlId"] = -2;
+
+    QVariantList sumRanks { 0, 0, 0, 0 };
+    int sumPlay = 0;
+    double avgPoint = 0;
+
+    for (const auto &statRow : stats) {
+        const auto &ranks = statRow.toMap()["Ranks"].toList();
+        int currPlay = 0;
+        for (int i = 0; i < 4; i++) {
+            sumRanks[i] = sumRanks[i].toInt() + ranks.at(i).toInt();
+            currPlay += ranks.at(i).toInt();
+        }
+
+        // weighted average among all girls
+        avgPoint = (avgPoint * sumPlay + statRow.toMap()["AvgPoint"].toDouble() * currPlay)
+                / (sumPlay + currPlay);
+
+        sumPlay += currPlay;
+    }
+
+    summary["Ranks"] = sumRanks;
+    summary["AvgPoint"] = avgPoint;
+
+    mStats = stats;
+    mStats.insert(0, summary);
+
+    emit statsChanged();
 }
 
 QObject *pClientSingletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine)

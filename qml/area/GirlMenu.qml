@@ -7,6 +7,7 @@ Item {
     id: frame
 
     property int currGirlId: 0
+    property int currIndex: 0
     property var girlIds: []
 
     // height set by parent
@@ -40,7 +41,10 @@ Item {
                 id: girlButton
                 text: Names.names[modelData]
                 textLength: 7
-                onClicked: { currGirlId = modelData; }
+                onClicked: {
+                    currIndex = index;
+                    currGirlId = modelData;
+                }
             }
         }
     }
