@@ -33,7 +33,7 @@ Item {
                     Texd {
                         anchors.left: parent.left
                         text: [ "一位", "二位", "三位", "四位",
-                                "平顺", "终素", "击飞", "三杀" ][index]
+                                "平顺", "终素", "三杀", "独沉" ][index]
                     }
 
                     Texd {
@@ -49,7 +49,7 @@ Item {
 
         Texd {
             anchors.horizontalCenter: parent.horizontalCenter
-            text: "23333" + " 局"
+            text: PClient.stats[currIndex].Round + " 局"
         }
 
         Grid {
@@ -66,15 +66,15 @@ Item {
 
                     Texd {
                         anchors.left: parent.left
-                        text: [ "和率", "铳率", "副率", "立率",
+                        text: [ "和了", "放铳", "副露", "立直",
                                 "和点", "铳点", "副期", "立期",
-                                "和巡", "听巡", "开杠", "役满" ][index]
+                                "听牌", "听巡", "和巡", "役满" ][index]
                     }
 
                     Texd {
                         anchors.right: parent.right
                         anchors.rightMargin: global.size.defaultFont
-                        text: "23.3%"
+                        text: _roundValue(index)
                     }
                 }
             }
@@ -133,7 +133,8 @@ Item {
                     Texd {
                         anchors.right: parent.right
                         anchors.rightMargin: global.size.defaultFont
-                        text: "177/.233/1.3"
+                        text: _yakuValue(index, 0) + "/" + _yakuValue(index, 1) +
+                              "/" + _yakuValue(index, 2)
                     }
                 }
             }
@@ -148,7 +149,7 @@ Item {
         spacing: global.size.space
 
         Texd {
-            text: "和了时宝牌统计\n（平均张数/平均复合翻）"
+            text: "和了时宝牌统计\n（平均张数）\n"
             horizontalAlignment: Text.AlignHCenter
             anchors.horizontalCenter: parent.horizontalCenter
         }
@@ -160,7 +161,7 @@ Item {
             Repeater {
                 model: 5
                 delegate: Item {
-                    width: 14 * global.size.defaultFont
+                    width: 12 * global.size.defaultFont
                     height: global.size.defaultFont
 
                     Texd {
@@ -172,7 +173,7 @@ Item {
                     Texd {
                         anchors.right: parent.right
                         anchors.rightMargin: global.size.defaultFont
-                        text: "1.7/3.7"
+                        text: _doraValue(index)
                     }
                 }
             }
@@ -204,7 +205,7 @@ Item {
                 Texd {
                     anchors.right: parent.right
                     anchors.rightMargin: global.size.defaultFont
-                    text: "17" + "次"
+                    text: _yakumanValue(index) + "次"
                 }
             }
         }
@@ -221,7 +222,7 @@ Item {
             Texd {
                 anchors.right: parent.right
                 anchors.rightMargin: global.size.defaultFont
-                text: "17" + "次"
+                text: _yakumanValue(15) + "次"
             }
         }
     }
@@ -243,9 +244,8 @@ Item {
             Texd {
                 text: "平顺：平均顺位\n" +
                       "终素：终局时平均素点\n" +
-                      "击飞：击飞他家频率（并非被击飞）\n" +
-                      "三杀：他三家负分A-Top频率\n" +
-                      "和/铳/副/立率：分别为和了、放铳、副露、立直频率\n" +
+                      "三杀：他三家计分点以下A-top频率\n" +
+                      "独沉：他三家计分点以上一人沉频率\n" +
                       "和/铳点：和了/放铳平均点数\n" +
                       "副/立期：副露/立直后点数得失期望值\n" +
                       "和/听巡：平均和了/听牌巡目\n"
@@ -287,8 +287,119 @@ Item {
             return (sum / _playCt()).toFixed(2);
         } else if (index === 5) { // average point
             return stat.AvgPoint.toFixed(0);
+        } else if (index === 6) { // a top
+            return (stat.ATop / _playCt() * 100).toFixed(1) + "%";
+        } else if (index === 7) { // a last
+            return (stat.ALast / _playCt() * 100).toFixed(1) + "%";
         } else {
-            return "----"
+            return "----";
+        }
+    }
+
+    function _roundValue(index) {
+        var stat = PClient.stats[currIndex];
+        if (stat.Round === 0) // new account, only summary
+            return "---";
+
+        var r = stat.Round;
+        var keys = [
+            "X13", "Xd3", "X4a", "Xt1", "Xs4", "Xd4",
+            "Xcr", "Xr1", "Xth", "Xch", "X4k", "X9r",
+            "W13", "W4a", "W9r", "Kzeykm"
+        ];
+        switch (index) {
+        case 0:
+            return (stat.Win / r * 100).toFixed(1) + "%";
+        case 1:
+            return (stat.Gun / r * 100).toFixed(1) + "%";
+        case 2:
+            return (stat.Bark / r * 100).toFixed(1) + "%";
+        case 3:
+            return (stat.Riichi / r * 100).toFixed(1) + "%";
+        case 4:
+            return stat.WinPoint.toFixed(1);
+        case 5:
+            return "-" + stat.GunPoint.toFixed(1);
+        case 6:
+            return stat.BarkPoint.toFixed(1);
+        case 7:
+            return stat.RiichiPoint.toFixed(1);
+        case 8:
+            return (stat.Ready / r * 100).toFixed(1) + "%";
+        case 9:
+            return stat.ReadyTurn.toFixed(2);
+        case 10:
+            return stat.WinTurn.toFixed(2);
+        case 11:
+            return (keys.reduce(function(s, k){return s+stat[k];}, 0) / r * 100).toFixed(2) + "%";
+        default:
+            return "----";
+        }
+    }
+
+    function _yakuValue(index, column) {
+        var stat = PClient.stats[currIndex];
+        if (stat.Round === 0) // new account, only summary
+            return "-";
+
+        var keys = [
+            "Rci", "Ipt", "Tmo", "Tny", "Pnf", "Ipk",
+            "Y1y", "Y2y", "Y3y",
+            "Jk1", "Jk2", "Jk3", "Jk4", "Bk1", "Bk2", "Bk3", "Bk4",
+            "Rns", "Hai", "Hou", "Ckn", "Ss1", "It1", "Ct1",
+            "Wri", "Ss2", "It2", "Ct2",
+            "Ctt", "Toi", "Sak", "Skt", "Stk", "Hrt", "S3g", "H1t", "Jc2",
+            "Mnh", "Jc3", "Rpk", "C1t", "Mnc"
+        ];
+
+        if (index < keys.length) {
+            var key = keys[index];
+            if (column === 0) { // count
+                return stat[key];
+            } else if (column === 1) { // freq
+                var res = "" + (stat[key] / stat.Win).toFixed(3);
+                return res[0] === "1" ? "1.00" : res.substr(1);
+            } else { // avg han
+                key += "Han";
+                return stat[key].toFixed(1);
+            }
+        } else {
+            return "---";
+        }
+    }
+
+    function _doraValue(index) {
+        var stat = PClient.stats[currIndex];
+        switch (index) {
+        case 0:
+            return (stat.Dora / stat.Win).toFixed(3);
+        case 1:
+            return (stat.Akadora / stat.Win).toFixed(3);
+        case 2:
+            return (stat.Uradora / stat.Win).toFixed(3);
+        case 3:
+            return (stat.Kandora / stat.Win).toFixed(3);
+        case 4:
+            return (stat.Kanuradora / stat.Win).toFixed(3);
+        default:
+            return "---";
+        }
+    }
+
+    function _yakumanValue(index) {
+        if (PClient.stats[currIndex].Round === 0) // new account, only summary
+            return 0;
+
+        var keys = [
+            "X13", "Xd3", "X4a", "Xt1", "Xs4", "Xd4",
+            "Xcr", "Xr1", "Xth", "Xch", "X4k", "X9r",
+            "W13", "W4a", "W9r", "Kzeykm"
+        ];
+
+        if (index < keys.length) {
+            return PClient.stats[currIndex][keys[index]];
+        } else {
+            return "---";
         }
     }
 }

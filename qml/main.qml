@@ -94,14 +94,13 @@ Window {
         }
     }
 
-    Buzzon {
+    Texd {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.margins: parent.height / 9
         visible: PClient.loggedIn
-        text: "战绩"
-        textLength: 8
-        onClicked: { loader.source = "room/RoomStats.qml"; }
+        text: PClient.user.Username ? ("欢迎，" + PClient.user.Username) : ""
+        font.pixelSize: global.size.middleFont
     }
 
     Column {
@@ -110,19 +109,20 @@ Window {
         anchors.margins: parent.height / 9
         spacing: global.size.space
 
-        Buzzon {
-            text: "段位"
-            textLength: 8
-            visible: PClient.loggedIn
-            enabled: !docButton.redDot
-            onClicked: { loader.source = "room/RoomClient.qml"; }
-        }
+        Repeater {
+            model: [
+                { text: "段位", load: "Client", onlyOnline: true },
+                { text: "战绩", load: "Stats", onlyOnline: true },
+                { text: "单机", load: "Prac", onlyOnline: false }
+            ]
 
-        Buzzon {
-            text: "单机"
-            textLength: 8
-            enabled: !docButton.redDot
-            onClicked: { loader.source = "room/RoomPrac.qml"; }
+            delegate: Buzzon {
+                visible: modelData.onlyOnline ? PClient.loggedIn : true
+                text: modelData.text
+                textLength: 8
+                enabled: !docButton.redDot
+                onClicked: { loader.source = "room/Room" + modelData.load + ".qml"; }
+            }
         }
 
         Buzzon {
@@ -136,18 +136,19 @@ Window {
         Repeater {
             model: [
                 { text: "工具", load: "Tools" },
-                { text: "设定", load: "Settings" }
+                { text: "设置", load: "Settings" }
             ]
 
             delegate: Buzzon {
                 text: modelData.text
                 textLength: 8
+                enabled: !docButton.redDot
                 onClicked: { loader.source = "room/Room" + modelData.load + ".qml"; }
             }
         }
 
         Buzzon {
-            text: "骑马"; textLength: 8
+            text: "骑马"; textLength: 8; enabled: !docButton.redDot
             onClicked: {
                 if (PGlobal.mute)
                     Qt.quit();
