@@ -41,9 +41,8 @@ Room {
             anchors.horizontalCenter: parent.horizontalCenter
             horizontalAlignment: Text.AlignHCenter
             text: "凑桌/讨论QQ群 253708512\n" +
-                  "晚上比白天人多，周末比周中人多\n" +
-                  "加群可大幅降低凑桌难度\n" +
-                  "群内还会出现攻略心得、神剧本、小道消息以及py交易"
+                  "目前整体人少，凑桌基本靠群\n" +
+                  "约桌时间基本集中在晚上或周末"
         }
     }
 

@@ -4,16 +4,17 @@ import "../widget"
 
 Column {
     id: opArea
-    spacing: global.size.gap
+    spacing: global.size.space
 
     property var _gradeNames: [ "应援", "替补", "正选", "ＡＣＥ" ]
 
     Texd {
         anchors.horizontalCenter: parent.horizontalCenter
-        horizontalAlignment: Text.AlignHCenter
-        text: "预约后人齐即开，等待期间可返回进行单机游戏\n" +
-              "提高段位R量可进入替补、正选、ACE区\n" +
-              "部分角色只在高级战区出没（见\"文档->段位规则\"）"
+        text: "<ul>" +
+              "<li>预约后人齐即开</li>" +
+              "<li>等待期间可返回进行单机游戏</li>" +
+              "<li>部分角色只在上位战区出没</li>" +
+              "</ul>"
     }
 
     TabBager {
@@ -21,6 +22,13 @@ Column {
         anchors.horizontalCenter: parent.horizontalCenter
         model: _gradeNames
     }
+
+    Texd {
+        anchors.horizontalCenter: parent.horizontalCenter
+        text: [ "四段R1800未满", "1级以上", "四段R1800", "七段R2000" ][tabPager.currIndex]
+    }
+
+    Item { width: 1; height: 2 * global.size.space }
 
     Repeater {
         id: repBooks
@@ -31,6 +39,8 @@ Column {
             anchors.horizontalCenter: parent.horizontalCenter
         }
     }
+
+    Item { width: 1; height: 2 * global.size.space }
 
     Buzzon {
         id: cancelButton
