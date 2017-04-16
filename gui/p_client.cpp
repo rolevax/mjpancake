@@ -20,8 +20,10 @@ PClient::PClient(QObject *parent) : QObject(parent)
     bookEntry["Bookable"] = false;
     bookEntry["Play"] = 0;
     bookEntry["Book"] = 0;
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 4; i++) {
         mBooks.append(bookEntry);
+        mBookings.append(false);
+    }
 
     connect(&mSocket, &PJsonTcpSocket::recvJson, this, &PClient::onJsonReceived);
     connect(&mSocket, &PJsonTcpSocket::remoteClosed, this, &PClient::remoteClosed);
@@ -68,8 +70,6 @@ void PClient::lookAround()
 
 void PClient::book(int bookType)
 {
-    while (mBookings.size() <= bookType)
-        mBookings.append(false);
     mBookings[bookType] = true;
     emit bookingsChanged();
 

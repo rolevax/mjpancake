@@ -28,6 +28,8 @@ Rectangle {
             id: rep
             model: 4
             delegate: Column {
+                property int userIndex: index
+
                 spacing: global.size.space
                 width: 0.3 * frame.height
 
@@ -35,42 +37,29 @@ Rectangle {
                     anchors.horizontalCenter: parent.horizontalCenter
                     horizontalAlignment: Text.AlignHCenter
                     font.pixelSize: global.size.middleFont
-                    text: users[index] ? users[index].Username + "\n" +
-                                         NetTrans.level(users[index].Level) + " " +
-                                         NetTrans.rating(users[index].Rating) + "\n"
-                                       : ""
+                    text: users[index] ? _userIntro(users[index]) : ""
                 }
 
-                Texd {
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    font.pixelSize: global.size.middleFont
-                    visible: !(index === 0 && _buttonVisible)
-                    opacity: index === 0 && _girlIndex !== 0 ? 0.5 : 1.0
-                    text: choices ? Names.names[choices[2 * index + 0]] : ""
+                Repeater {
+                    model: 3
+                    delegate: Texd {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        font.pixelSize: global.size.middleFont
+                        visible: !(userIndex === 0 && _buttonVisible)
+                        opacity: userIndex === 0 && _girlIndex !== index ? 0.5 : 1.0
+                        text: choices ? Names.names[choices[3 * userIndex + index]] : ""
+                    }
                 }
 
-                Texd {
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    font.pixelSize: global.size.middleFont
-                    visible: !(index === 0 && _buttonVisible)
-                    opacity: index === 0 && _girlIndex !== 1 ? 0.5 : 1.0
-                    text: choices ? Names.names[choices[2 * index + 1]] : ""
-                }
-
-                Buzzon {
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    textLength: 8
-                    text: choices ? Names.names[choices[2 * index + 0]] : ""
-                    visible: _buttonVisible && index === 0
-                    onClicked: { _clickChoose(0) }
-                }
-
-                Buzzon {
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    textLength: 8
-                    text: choices ? Names.names[choices[2 * index + 1]] : ""
-                    visible: _buttonVisible && index === 0
-                    onClicked: { _clickChoose(1); }
+                Repeater {
+                    model: 3
+                    delegate: Buzzon {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        textLength: 8
+                        text: choices ? Names.names[choices[3 * userIndex + index]] : ""
+                        visible: _buttonVisible && userIndex === 0
+                        onClicked: { _clickChoose(index) }
+                    }
                 }
             }
         }
@@ -93,6 +82,14 @@ Rectangle {
         _girlIndex = girlIndex;
 
         chosen(girlIndex);
+    }
+
+    function _userIntro(user) {
+        var res = user.Username + "\n" + NetTrans.level(user.Level);
+        if (user.Rating >= 1800.0)
+            res += " " + NetTrans.rating(user.Rating);
+        res += "\n";
+        return res;
     }
 
     function splash() {
