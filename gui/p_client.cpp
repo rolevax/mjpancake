@@ -10,6 +10,7 @@
 #include <QCryptographicHash>
 #include <QDebug>
 
+#include <array>
 #include <cassert>
 
 
@@ -323,6 +324,32 @@ QString PClient::hash(const QString &password) const
 
 void PClient::updateStats(const QVariantList &stats)
 {
+    const std::array<const char*, 42> yakuKeys {
+        "Rci", "Ipt", "Tmo", "Tny", "Pnf",
+        "Y1y", "Y2y", "Y3y",
+        "Jk1", "Jk2", "Jk3", "Jk4", "Bk1", "Bk2", "Bk3", "Bk4",
+        "Ipk", "Rns", "Hai", "Hou", "Ckn", "Ss1", "It1", "Ct1",
+        "Wri", "Ss2", "It2", "Ct2",
+        "Toi", "Ctt", "Sak", "Skt",
+        "Stk", "Hrt", "S3g", "H1t", "Jc2",
+        "Mnh", "Jc3", "Rpk", "C1t", "Mnc"
+    };
+    const std::array<const char*, 42> yakuHans {
+        "RciHan", "IptHan", "TmoHan", "TnyHan", "PnfHan",
+        "Y1yHan", "Y2yHan", "Y3yHan",
+        "Jk1Han", "Jk2Han", "Jk3Han", "Jk4Han", "Bk1Han", "Bk2Han", "Bk3Han", "Bk4Han",
+        "IpkHan", "RnsHan", "HaiHan", "HouHan", "CknHan", "Ss1Han", "It1Han", "Ct1Han",
+        "WriHan", "Ss2Han", "It2Han", "Ct2Han",
+        "ToiHan", "CttHan", "SakHan", "SktHan",
+        "StkHan", "HrtHan", "S3gHan", "H1tHan", "Jc2Han",
+        "MnhHan", "Jc3Han", "RpkHan", "C1tHan", "MncHan"
+    };
+    const std::array<const char*, 16> yakumanKeys {
+        "X13", "Xd3", "X4a", "Xt1", "Xs4", "Xd4",
+        "Xcr", "Xr1", "Xth", "Xch", "X4k", "X9r",
+        "W13", "W4a", "W9r", "Kzeykm"
+    };
+
     QVariantMap summary;
 
     summary["GirlId"] = -2;
@@ -383,34 +410,9 @@ void PClient::updateStats(const QVariantList &stats)
         addAndAvg("Riichi", "RiichiPoint");
         addAndAvg("Ready", "ReadyTurn");
 
-        const std::array<const char*, 42> yakuKeys {
-            "Rci", "Ipt", "Tmo", "Tny", "Pnf",
-            "Y1y", "Y2y", "Y3y",
-            "Jk1", "Jk2", "Jk3", "Jk4", "Bk1", "Bk2", "Bk3", "Bk4",
-            "Ipk", "Rns", "Hai", "Hou", "Ckn", "Ss1", "It1", "Ct1",
-            "Wri", "Ss2", "It2", "Ct2",
-            "Toi", "Ctt", "Sak", "Skt",
-            "Stk", "Hrt", "S3g", "H1t", "Jc2",
-            "Mnh", "Jc3", "Rpk", "C1t", "Mnc"
-        };
-        const std::array<const char*, 42> yakuHans {
-            "RciHan", "IptHan", "TmoHan", "TnyHan", "PnfHan",
-            "Y1yHan", "Y2yHan", "Y3yHan",
-            "Jk1Han", "Jk2Han", "Jk3Han", "Jk4Han", "Bk1Han", "Bk2Han", "Bk3Han", "Bk4Han",
-            "IpkHan", "RnsHan", "HaiHan", "HouHan", "CknHan", "Ss1Han", "It1Han", "Ct1Han",
-            "WriHan", "Ss2Han", "It2Han", "Ct2Han",
-            "ToiHan", "CttHan", "SakHan", "SktHan",
-            "StkHan", "HrtHan", "S3gHan", "H1tHan", "Jc2Han",
-            "MnhHan", "Jc3Han", "RpkHan", "C1tHan", "MncHan"
-        };
         for (size_t i = 0; i < yakuKeys.size(); i++)
             addAndAvg(yakuKeys[i], yakuHans[i]);
 
-        const std::array<const char*, 42> yakumanKeys {
-            "X13", "Xd3", "X4a", "Xt1", "Xs4", "Xd4",
-            "Xcr", "Xr1", "Xth", "Xch", "X4k", "X9r",
-            "W13", "W4a", "W9r", "Kzeykm"
-        };
         for (const char *key : yakumanKeys)
             add(key);
         for (const char *key : { "Dora", "Uradora", "Akadora", "Kandora", "Kanuradora" })
