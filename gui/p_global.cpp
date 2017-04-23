@@ -1,6 +1,7 @@
 #include "gui/p_global.h"
 
 #include <QDir>
+#include <QStandardPaths>
 #include <QFile>
 #include <QJsonArray>
 #include <QColor>
@@ -15,8 +16,7 @@
 
 PGlobal::PGlobal(QObject *parent) : QObject(parent)
 {
-    QDir().mkdir("user");
-    QFile file("user/settings.json");
+    QFile file(configPath() + "/settings.json");
 
     if (file.exists()) {
         file.open(QIODevice::ReadOnly | QIODevice::Text);
@@ -40,8 +40,7 @@ void PGlobal::save()
 {
     mRoot["photoMap"] = mCachedPhotoMap;
 
-    QDir().mkdir("user");
-    QFile file("user/settings.json");
+    QFile file(configPath() + "/settings.json");
 
     file.open(QIODevice::WriteOnly | QIODevice::Text);
     file.write(QJsonDocument(mRoot).toJson());
@@ -70,6 +69,29 @@ void PGlobal::systemNotify()
 QString PGlobal::version()
 {
     return QString("0.7.5");
+}
+
+QString PGlobal::configPath()
+{
+    QString res = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
+    QDir().mkpath(res);
+    return res;
+}
+
+QString PGlobal::photoPath()
+{
+    QString path = configPath() + "/photos";
+    QDir().mkpath(path);
+    return path;
+}
+
+QString PGlobal::replayPath(QString filename)
+{
+    QString path = configPath() + "/replay";
+    QDir().mkpath(path);
+    if (!filename.isEmpty())
+        path += "/" + filename;
+    return path;
 }
 
 QVariant PGlobal::backColors() const

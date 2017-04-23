@@ -1,10 +1,9 @@
 # Pancake Mahjong
 
-[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/mjpancake)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mjpancake)
 
 Pancake Mahjong is an inofficial Saki mahjong game
-where the character skills strictly follow the original
-manga settings based on statistics and analytics.
+with high-quality occult implementation.
 
 ## Features
 

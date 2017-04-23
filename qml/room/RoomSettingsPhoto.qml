@@ -63,17 +63,6 @@ Room {
                 }
             }
         }
-
-        Texd {
-            anchors.top: row.bottom
-            anchors.topMargin: global.size.gap
-            anchors.horizontalCenter: parent.horizontalCenter
-            horizontalAlignment: Text.AlignHCenter
-            text: "各角色头像已开始接收上传分享 上传作品将在下次更新中新增为内建选项\n" +
-                  "新选项的名称可以自由指定（比如P号、常用ID）；工具不限，画风自由\n" +
-                  "条件：①自己画的 ②宽高比3:5 ③节操大于零 ④1MB以下PNG或JPG\n" +
-                  "上传方式：①贴吧回复原图地址 ②发邮件rolevax@gmail.com 欢迎贡献！"
-        }
     }
 
     GirlMenu {

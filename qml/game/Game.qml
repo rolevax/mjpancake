@@ -18,7 +18,7 @@ PinchArea {
     Image{
         id: background
         anchors.fill: parent
-        source: "image://impro/user/background"
+        source: "image://impro/background"
     }
 
     MouseArea { // right/double-click to pass/tsumokiri

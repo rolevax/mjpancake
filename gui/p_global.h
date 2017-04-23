@@ -34,6 +34,9 @@ public:
     Q_INVOKABLE static void systemNotify();
 
     static QString version();
+    static QString configPath();
+    static QString photoPath();
+    static QString replayPath(QString filename = "");
 
     QVariant backColors() const;
     void setBackColors(const QVariant &v);
