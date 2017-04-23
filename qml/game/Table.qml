@@ -123,7 +123,7 @@ Item {
                 cb = function() {
                     var osc; // out-tile's scene coord
                     if (args.who === 0) {
-                        playerControl.fixSyncError(args.tile.substr(0, 2));
+                        playerControl.spinIfNotYet();
                         osc = playerControl.outCoord;
                         osc = mapFromItem(playerControl, osc.x, osc.y);
                         osc = mapToItem(rivers.itemAt(0), osc.x, osc.y);
