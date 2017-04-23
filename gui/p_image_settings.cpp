@@ -1,7 +1,7 @@
-#include "gui/p_image_settings.h"
+#include "p_image_settings.h"
+#include "p_global.h"
 
 #include <QFile>
-#include <QDir>
 #include <QJsonArray>
 
 #include <iostream>
@@ -55,8 +55,7 @@ PImageSettings::PImageSettings(QObject *parent)
 
 void PImageSettings::setBackground(QString path)
 {
-    QDir().mkpath(QString("user"));
-    static const char *bgPath = "user/background";
+    QString bgPath = PGlobal::configPath() + "/background";
     if (QFile::exists(bgPath))
         QFile::remove(bgPath);
 
@@ -78,9 +77,7 @@ void PImageSettings::setBackgroundByAndroidGallery()
 
 void PImageSettings::setPhoto(QString girlId, QString path)
 {
-    QDir().mkpath(QString("user/photos"));
-
-    QString photoPath("user/photos/" + girlId);
+    QString photoPath(PGlobal::photoPath() + "/" + girlId);
     if (QFile::exists(photoPath))
         QFile::remove(photoPath);
 
@@ -98,6 +95,8 @@ void PImageSettings::setPhotoByAndroidGallery(QString girlId)
                 "()Landroid/content/Intent;" );
     mImagePickReceiver.setGirlId(girlId);
     QtAndroid::startActivity(intent, ImagePickReceiver::REQ_GIRL_PHOTO, &mImagePickReceiver);
+#else
+    (void) girlId;
 #endif
 }
 
