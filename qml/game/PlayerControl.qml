@@ -505,32 +505,10 @@ Item {
         // else do nothing
     }
 
-    function fixSyncError(tileStr) {
-        function searchAndSwapOut() {
-            for (var outPos = 0; outPos < handModel.count; outPos++) {
-                if (handModel.get(outPos).modelTileStr === tileStr) {
-                    swapOut(outPos);
-                    break;
-                }
-            }
-        }
-
-        if (drawn.visible) {
-            // if drawn.visible, user didn't do anything, or spin-out anim playing
-            // (all actions set drawn invisible)
-            // case 1: auto-move after riichi
-            // case 2: server sweep-one and local timeout
-            // case 3: spin-out anim playing
+    function spinIfNotYet() {
+        // mainly handle auto-spin after riichi
+        if (drawn.visible)
             _spinOut();
-        } else if (handModel.count % 3 === 2) {
-            // case: server sweep-one, local timeout after bark
-            searchAndSwapOut();
-        } else if (_lastDiscardStr !== tileStr) {
-            // case: server sweep-one intersects local discard
-            // simply fix by picking-back and re-discard
-            drawn.tileStr = _lastDiscardStr;
-            searchAndSwapOut();
-        }
     }
 } // end of Item
 
