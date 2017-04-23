@@ -1,11 +1,11 @@
 #include "p_table_local.h"
 #include "p_port.h"
+#include "p_global.h"
 
 #include "libsaki/rand.h"
 #include "libsaki/string_enum.h"
 #include "libsaki/util.h"
 
-#include <QDir>
 #include <QFile>
 #include <QDateTime>
 #include <QStandardPaths>
@@ -349,8 +349,7 @@ void PTableLocal::action(QString actStr, const QVariant &actArg)
 
 void PTableLocal::saveRecord()
 {
-    QString path("user/replay");
-    QDir().mkpath(path);
+    QString path(PGlobal::replayPath());
 
     QString datetime(QDateTime::currentDateTime().toString("yyMMdd_HHmm"));
     QString extension(".pai.json");

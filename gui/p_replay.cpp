@@ -1,5 +1,6 @@
-#include "gui/p_replay.h"
-#include "gui/p_port.h"
+#include "p_replay.h"
+#include "p_port.h"
+#include "p_global.h"
 
 #include "libsaki/util.h"
 
@@ -20,7 +21,7 @@ PReplay::PReplay(QObject *parent)
 
 QStringList PReplay::ls()
 {
-    QDir dir("user/replay");
+    QDir dir(PGlobal::replayPath());
 
     dir.setNameFilters(QStringList { QString("*.pai.json") });
     dir.setSorting(QDir::Time); // latest first
@@ -30,12 +31,12 @@ QStringList PReplay::ls()
 
 void PReplay::rm(QString filename)
 {
-    QFile::remove(QString("user/replay/") + filename);
+    QFile::remove(PGlobal::replayPath(filename));
 }
 
 void PReplay::load(QString filename)
 {
-    QFile file(QString("user/replay/") + filename);
+    QFile file(PGlobal::replayPath(filename));
     file.open(QIODevice::ReadOnly | QIODevice::Text);
     QString val = file.readAll();
     file.close();

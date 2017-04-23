@@ -31,8 +31,9 @@ Item {
         styleColor: "black"
         font.pixelSize: 0.65 * nameText.font.pixelSize
         text: user == null ? ""
-                           : user.Username + "\n"
-                             + NetTrans.level(user.Level) + " " + NetTrans.rating(user.Rating)
+                           : user.Username + "\n" +
+                             NetTrans.level(user.Level) +
+                             (user.Rating >= 1800.0 ? " " + NetTrans.rating(user.Rating) : "")
         horizontalAlignment: Text.AlignHCenter
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
