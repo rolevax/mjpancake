@@ -68,7 +68,7 @@ void PGlobal::systemNotify()
 
 QString PGlobal::version()
 {
-    return QString("0.7.5");
+    return QString("0.7.6");
 }
 
 QString PGlobal::configPath()
