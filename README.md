@@ -19,10 +19,10 @@ We will also test supporting for iOS in the future.
 To obtain an executable client, build it either by the Qt Creator or from the command line:
 
 ```
-git clone --recursive https://github.com/mjpancake/mjpancake-client.git
+git clone --recursive https://github.com/mjpancake/mjpancake.git
 mkdir build && cd build
-qmake -config release ../mjpancake-client
-make (or nmake, or mingw32-make according to your environment)
+qmake -config release ../mjpancake
+make (or nmake, or mingw32-make according to your platform)
 ```
 
 ## Contributing
