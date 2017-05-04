@@ -143,12 +143,12 @@ DISTFILES += \
     android/src/rolevax/sakilogy/ImagePickerActivity.java
 
 OTHER_FILES += \
-    qml/*.qml \
-    qml/area/*.qml \
-    qml/game/*.qml \
-    qml/room/*.qml \
-    qml/widget/*.qml \
-    qml/js/*.js
+    qrc/qml/*.qml \
+    qrc/qml/area/*.qml \
+    qrc/qml/game/*.qml \
+    qrc/qml/room/*.qml \
+    qrc/qml/widget/*.qml \
+    qrc/qml/js/*.js
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 
