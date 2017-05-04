@@ -178,6 +178,7 @@ Window {
     Loader {
         id: loader
         anchors.fill: parent
+		source: "room/RoomSplash.qml"
         onLoaded: {
             PGlobal.forceImmersive();
             loader.focus = true;

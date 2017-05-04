@@ -50,6 +50,7 @@
         <file>qml/room/RoomReplay.qml</file>
         <file>qml/room/RoomSettings.qml</file>
         <file>qml/room/RoomSignUp.qml</file>
+        <file>qml/room/RoomSplash.qml</file>
         <file>qml/area/AreaBookRow.qml</file>
         <file>qml/js/nettrans.js</file>
         <file>qml/area/AreaStage.qml</file>
