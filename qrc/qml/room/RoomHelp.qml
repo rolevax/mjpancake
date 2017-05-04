@@ -3,8 +3,8 @@ import rolevax.sakilogy 1.0
 import "../widget"
 
 Room {
-    property var _loadTars: [ "Faq", "Op", "Rules", "Rank", "Girls", "Adv" ]
-    property var _names: [ "常见问题", "操作说明", "麻将规则", "段位规则", "角色能力", "制作人员" ]
+    property var _loadTars: [ "Faq", "Op", "Rules", "Rank", "Girls" ]
+    property var _names: [ "常见问题", "操作说明", "麻将规则", "段位规则", "角色能力" ]
 
     Column {
         anchors.centerIn: parent
