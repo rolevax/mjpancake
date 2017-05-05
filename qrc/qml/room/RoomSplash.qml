@@ -36,7 +36,7 @@ Rectangle {
         Texd {
             anchors.horizontalCenter: parent.horizontalCenter
 			horizontalAlignment: Text.AlignHCenter
-            text: "livered by\nrolevax songkwon seline"
+            text: "制作人员\nrolevax + 招人中"
         }
 
         Texd {
