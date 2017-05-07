@@ -15,6 +15,8 @@
 
 
 
+PClient *PClient::sInstance = nullptr;
+
 PClient::PClient(QObject *parent) : QObject(parent)
 {
     QVariantMap bookEntry;
@@ -34,6 +36,13 @@ PClient::PClient(QObject *parent) : QObject(parent)
     connect(&mHeartbeatTimer, &QTimer::timeout, this, &PClient::heartbeat);
     mHeartbeatTimer.setInterval(5 * 60 * 1000); // 5 min
     mHeartbeatTimer.start();
+
+    sInstance = this;
+}
+
+PClient &PClient::instance()
+{
+    return *sInstance;
 }
 
 void PClient::login(const QString &username, const QString &password)
@@ -113,6 +122,14 @@ void PClient::sendResume()
     req["ActStr"] = "RESUME";
     req["ActArg"] = "-1";
     req["Nonce"] = 0;
+    mSocket.send(req);
+}
+
+void PClient::getReplay(int replayId)
+{
+    QJsonObject req;
+    req["Type"] = "get-replay";
+    req["ReplayId"] = replayId;
     mSocket.send(req);
 }
 
@@ -287,6 +304,10 @@ void PClient::onJsonReceived(const QJsonObject &msg)
         mUser = msg["User"].toObject().toVariantMap();
         emit userChanged();
         updateStats(msg["Stats"].toArray().toVariantList());
+    } else if (type == "get-replay") {
+        QString json = msg["ReplayJson"].toString();
+        int id = msg["ReplayId"].toInt();
+        emit replayIn(id, json);
     }
 }
 
