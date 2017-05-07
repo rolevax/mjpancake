@@ -6,6 +6,8 @@
 #include <QNetworkReply>
 #include <QHostAddress>
 
+#include <cassert>
+
 
 
 #ifdef NDEBUG
@@ -25,8 +27,6 @@ PJsonTcpSocket::PJsonTcpSocket(QObject *parent)
             this, &PJsonTcpSocket::onError);
     connect(&mSocket, &QTcpSocket::connected, this, &PJsonTcpSocket::onConnected);
     connect(&mSocket, &QTcpSocket::readyRead, this, &PJsonTcpSocket::onReadReady);
-
-    mNetIo.setDevice(&mSocket);
 }
 
 void PJsonTcpSocket::conn(std::function<void()> callback)
@@ -37,10 +37,14 @@ void PJsonTcpSocket::conn(std::function<void()> callback)
 
 void PJsonTcpSocket::send(const QJsonObject &msg)
 {
-    QString str = QString(QJsonDocument(msg).toJson(QJsonDocument::Compact));
-    mNetIo << str << '\n';
-    saki::util::p("srv <---", str.toStdString());
-    mNetIo.flush();
+    QByteArray data = QJsonDocument(msg).toJson(QJsonDocument::Compact);
+    quint32 size = data.size();
+    mSocket.putChar((size >> 24) & 0xff);
+    mSocket.putChar((size >> 16) & 0xff);
+    mSocket.putChar((size >> 8) & 0xff);
+    mSocket.putChar(size & 0xff);
+    mSocket.write(data);
+    saki::util::p("srv <---", data.toStdString());
 }
 
 void PJsonTcpSocket::onError(QAbstractSocket::SocketError socketError)
@@ -72,18 +76,25 @@ void PJsonTcpSocket::onConnected()
 
 void PJsonTcpSocket::onReadReady()
 {
-    // tcp message framing: split concatted msg
-    QString all = mHalfMsg + mNetIo.readAll();
-    QStringList lines = all.split('\n');
+    char c;
+    while (mSocket.getChar(&c)) {
+        if (mSizeByte < 4) {
+            mSize = (mSize << 8) | (0xff & c);
+            mSizeByte++;
+        } else {
+            assert(mSize > 0);
 
-    // tcp message framing: concat splitted msg
-    mHalfMsg = lines.back(); // either "" or a real half-msg
-    lines.pop_back();
+            mSize--;
+            mPayload.append(c);
 
-    for (const QString &line : lines) {
-        saki::util::p("srv --->", line.toStdString());
-        QJsonObject msg = QJsonDocument::fromJson(line.toUtf8()).object();
-        emit recvJson(msg);
+            if (mSize == 0) {
+                mSizeByte = 0;
+                saki::util::p("srv --->", mPayload.toStdString());
+                QJsonObject msg = QJsonDocument::fromJson(mPayload.toUtf8()).object();
+                emit recvJson(msg);
+                mPayload.clear();
+            }
+        }
     }
 }
 
