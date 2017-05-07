@@ -3,7 +3,6 @@
 
 #include <QObject>
 #include <QTcpSocket>
-#include <QTextStream>
 #include <QJsonObject>
 
 #include <functional>
@@ -29,8 +28,9 @@ private slots:
 
 private:
     QTcpSocket mSocket;
-    QTextStream mNetIo;
-    QString mHalfMsg;
+    int mSizeByte = 0;
+    int mSize = 0;
+    QString mPayload;
     std::function<void()> mOnConn;
 };
 
