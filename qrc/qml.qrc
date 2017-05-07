@@ -72,5 +72,6 @@
         <file>qml/widget/TabBager.qml</file>
         <file>qml/room/RoomStats.qml</file>
         <file>qml/area/AreaBigStats.qml</file>
+        <file>qml/widget/LisdView.qml</file>
     </qresource>
 </RCC>

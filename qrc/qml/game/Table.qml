@@ -456,8 +456,7 @@ Item {
         resultWindow.girlIds = girlIds
         for (var w = 0; w < 4; w++) {
             photos[w].girlId = girlIds[w];
-            if (girlIds[w] === 712411 || girlIds[w] === 712412)
-                rivers.itemAt(w).upDown = true;
+            rivers.itemAt(w).upDown = (girlIds[w] === 712411 || girlIds[w] === 712412);
         }
     }
 
@@ -604,8 +603,10 @@ Item {
         }
     }
 
-    function showSnap(snap) {
+    function showSnap(snap, pers) {
         var i;
+
+        _rotateSnap(snap, pers);
 
         resultWindow.visible = false;
         pointBoard.points = snap.points;
@@ -672,8 +673,27 @@ Item {
         }
     }
 
-    function handlePinchStarted() {
-        _prevTwb = twb;
+    function _rotateSnap(snap, pers) {
+        var i, temp;
+
+        for (i = 0; i < pers; i++) {
+            temp = snap.points.shift();
+            snap.points.push(temp);
+
+            temp = snap.players.shift();
+            snap.players.push(temp);
+        }
+
+        snap.dealer = (snap.dealer + 4 - pers) % 4;
+        if (snap.whoDrawn >= 0)
+            snap.whoDrawn = (snap.whoDrawn + 4 - pers) % 4;
+        if (snap.gunner >= 0)
+            snap.gunner = (snap.gunner + 4 - pers) % 4;
+        for (i = 0; i < snap.openers.length; i++) {
+            var o = snap.openers[i];
+            o = (o + 4 - pers) % 4;
+            snap.openers[i] = o;
+        }
     }
 
     function handlePinchUpdated(scale) {

@@ -10,39 +10,92 @@ Room {
     property bool endOfRound: false
     property string tableSeed
     property string roundSeed
+    property string replayId: ""
+
+    property bool _loading: false
 
     PReplay {
         id: pReplay
+
+        onOnlineReplayReady: {
+            loader.source = "../game/Game.qml";
+        }
     }
 
-    ListView {
-        id: listView
+    Texd {
+        font.pixelSize: global.size.middleFont
+        text: "段位牌谱"
+        anchors.bottom: onlineListView.top
+        anchors.bottomMargin: global.size.space
+        anchors.horizontalCenter: onlineListView.horizontalCenter
+    }
 
-        width: parent.width * 0.8
+    Texd {
+        font.pixelSize: global.size.middleFont
+        text: "单机牌谱"
+        anchors.bottom: localListView.top
+        anchors.bottomMargin: global.size.space
+        anchors.horizontalCenter: localListView.horizontalCenter
+    }
+
+    LisdView {
+        id: onlineListView
+
+        width: parent.width * 0.3
         height: parent.height * 0.8
-        anchors.centerIn: parent
+        anchors.left: parent.left
+        anchors.leftMargin: parent.width * 0.05
+        anchors.verticalCenter: parent.verticalCenter
+
+        model: 20
+        // CONTINUE fetch real data
+        delegate: Buzzon {
+            width: parent.width
+            text: modelData
+            enabled: !_loading
+            onClicked: {
+                replayId = modelData;
+                _loading = true;
+                pReplay.fetch(modelData);
+            }
+        }
+
+    }
+
+    LisdView {
+        id: localListView
+
+        width: parent.width * 0.55
+        height: parent.height * 0.8
+        anchors.right: parent.right
+        anchors.rightMargin: parent.width * 0.05
+        anchors.verticalCenter: parent.verticalCenter
         spacing: global.size.space
 
         delegate: Item {
-            width: listView.width
+            width: parent.width
             height: viewButton.height
+
             Buzzon {
                 id: viewButton
-                width: listView.width * 0.8
+                width: parent.width * 0.8
+                enabled: !_loading
                 text: modelData.substring(0, modelData.length - 9)
                 onClicked: {
+                    replayId = "";
                     pReplay.load(modelData);
                     loader.source = "../game/Game.qml";
                 }
             }
 
             Buzzon {
-                width: listView.width * 0.1
+                width: parent.width * 0.15
                 anchors.right: parent.right
+                enabled: !_loading
                 text: "删"
                 onClicked: {
                     pReplay.rm(modelData);
-                    listView.model = pReplay.ls();
+                    localListView.model = pReplay.ls();
                 }
             }
         }
@@ -59,9 +112,12 @@ Room {
             roundsGombo.model = meta.roundNames.map(_roundNameTr);
             loader.item.table.setGirlIds(meta.girlIds);
             tableSeed = meta.seed;
+            if (meta.users)
+                loader.item.table.setUsers(meta.users);
 
             currentTurn = 1; // show from first draw (dealer's 14th)
             _updateSnap();
+            _loading = false;
         }
     }
 
@@ -115,6 +171,31 @@ Room {
             id: roundsGombo
             model: [ "no_round" ]
         }
+
+        GomboMenu {
+            id: persGombo
+            model: [ "视角0", "视角1", "视角2", "视角3" ]
+            onActivated: {
+                if (replayControl.visible) {
+                    var meta = pReplay.meta();
+                    for (var i = 0; i < currentIndex; i++) {
+                        var temp;
+                        temp = meta.girlIds.shift();
+                        meta.girlIds.push(temp);
+                        if (meta.users) {
+                            temp = meta.users.shift();
+                            meta.users.push(temp);
+                        }
+                    }
+
+                    loader.item.table.setGirlIds(meta.girlIds);
+                    if (meta.users)
+                        loader.item.table.setUsers(meta.users);
+
+                    _updateSnap();
+                }
+            }
+        }
     }
 
     Rectangle {
@@ -129,7 +210,8 @@ Room {
             anchors.centerIn: parent
             color: "white"
             font.pixelSize: room.height / 30
-            text: tableSeed + ":" + roundSeed
+            text: "玄学码:" + tableSeed + "/" + roundSeed +
+                  (replayId === "" ? "" : " 牌谱编号:" + replayId)
         }
     }
 
@@ -149,8 +231,23 @@ Room {
         }
     }
 
+    Rectangle {
+        color: "#99000000"
+        visible: _loading
+        width: parent.width
+        height: 0.5 * parent.height
+        anchors.centerIn: parent
+        Texd {
+            id: loadingText
+            anchors.centerIn: parent
+            color: "white"
+            font.pixelSize: 0.1 * parent.height
+            text: "正在从茫茫零食堆里捞出牌谱……"
+        }
+    }
+
     Component.onCompleted: {
-        listView.model = pReplay.ls();
+        localListView.model = pReplay.ls();
     }
 
     onCurrentRoundIdChanged: {
@@ -185,6 +282,6 @@ Room {
         var snap = pReplay.look(currentRoundId, currentTurn);
         roundSeed = snap.state;
         endOfRound = snap.endOfRound;
-        loader.item.showSnap(snap);
+        loader.item.showSnap(snap, persGombo.currentIndex);
     }
 }

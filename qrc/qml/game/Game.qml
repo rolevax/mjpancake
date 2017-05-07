@@ -140,13 +140,12 @@ PinchArea {
         // one uncahed image client to affect the image provider
         // across the whole program
         background.cache = false;
-//        table.setNames(["宮永咲", "加治木ゆみ", "池田華菜", "天江衣"]);
         table.setGirlIds([ 713315, 713335, 713345, 713325 ]);
         table.pTable.startSample();
     }
 
-    function showSnap(snap) {
-        table.showSnap(snap);
+    function showSnap(snap, pers) {
+        table.showSnap(snap, pers);
     }
 }
 

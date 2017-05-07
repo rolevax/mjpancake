@@ -29,6 +29,8 @@ public:
     Q_PROPERTY(bool hasBooking READ hasBooking NOTIFY bookingsChanged)
     Q_PROPERTY(int lastNonce READ lastNonce NOTIFY lastNonceChanged)
 
+    static PClient &instance();
+
     Q_INVOKABLE void login(const QString &username, const QString &password);
     Q_INVOKABLE void signUp(const QString &username, const QString &password);
     Q_INVOKABLE void lookAround();
@@ -37,6 +39,8 @@ public:
     Q_INVOKABLE void sendReady();
     Q_INVOKABLE void sendChoose(int girlIndex);
     Q_INVOKABLE void sendResume();
+
+    void getReplay(int replayId);
 
     QVariantMap user() const;
     QVariantList stats() const;
@@ -57,6 +61,7 @@ signals:
     void startIn(const QVariantList &users, const QVariantList &choices, int tempDealer);
     void chosenIn(const QVariantList &girlIds);
     void resumeIn();
+    void replayIn(int replayId, const QString &replayJson);
 
     void userChanged();
     void statsChanged();
@@ -81,6 +86,8 @@ private:
     void updateStats(const QVariantList &stats);
 
 private:
+    static PClient *sInstance;
+
     PJsonTcpSocket mSocket;
     QTimer mHeartbeatTimer;
     QVariantMap mUser;
