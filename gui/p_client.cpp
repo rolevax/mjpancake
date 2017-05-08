@@ -125,6 +125,13 @@ void PClient::sendResume()
     mSocket.send(req);
 }
 
+void PClient::getReplayList()
+{
+    QJsonObject req;
+    req["Type"] = "get-replay-list";
+    mSocket.send(req);
+}
+
 void PClient::getReplay(int replayId)
 {
     QJsonObject req;
@@ -304,6 +311,9 @@ void PClient::onJsonReceived(const QJsonObject &msg)
         mUser = msg["User"].toObject().toVariantMap();
         emit userChanged();
         updateStats(msg["Stats"].toArray().toVariantList());
+    } else if (type == "get-replay-list") {
+        QVariantList ids = msg["ReplayIds"].toArray().toVariantList();
+        emit replayListIn(ids);
     } else if (type == "get-replay") {
         QString json = msg["ReplayJson"].toString();
         int id = msg["ReplayId"].toInt();

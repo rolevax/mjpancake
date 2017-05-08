@@ -40,6 +40,7 @@ public:
     Q_INVOKABLE void sendChoose(int girlIndex);
     Q_INVOKABLE void sendResume();
 
+    void getReplayList();
     void getReplay(int replayId);
 
     QVariantMap user() const;
@@ -61,6 +62,7 @@ signals:
     void startIn(const QVariantList &users, const QVariantList &choices, int tempDealer);
     void chosenIn(const QVariantList &girlIds);
     void resumeIn();
+    void replayListIn(const QVariantList &replayIds);
     void replayIn(int replayId, const QString &replayJson);
 
     void userChanged();
