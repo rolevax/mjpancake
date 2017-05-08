@@ -17,6 +17,10 @@ Room {
     PReplay {
         id: pReplay
 
+        onOnlineReplayListReady: {
+            onlineListView.model = ids;
+        }
+
         onOnlineReplayReady: {
             loader.source = "../game/Game.qml";
         }
@@ -47,8 +51,7 @@ Room {
         anchors.leftMargin: parent.width * 0.05
         anchors.verticalCenter: parent.verticalCenter
 
-        model: 20
-        // CONTINUE fetch real data
+        model: []
         delegate: Buzzon {
             width: parent.width
             text: modelData

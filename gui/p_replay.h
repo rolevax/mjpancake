@@ -25,6 +25,7 @@ public:
     Q_INVOKABLE QVariantMap look(int roundId, int turn);
 
 signals:
+    void onlineReplayListReady(const QVariantList &ids);
     void onlineReplayReady();
 
 private slots:

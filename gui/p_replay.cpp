@@ -19,7 +19,10 @@ std::map<int, QVariantList> PReplay::sCachedUsers;
 PReplay::PReplay(QObject *parent)
     : QObject(parent)
 {
+    connect(&PClient::instance(), &PClient::replayListIn, this, &PReplay::onlineReplayListReady);
     connect(&PClient::instance(), &PClient::replayIn, this, &PReplay::replayDownloaded);
+    if (PClient::instance().loggedIn())
+        PClient::instance().getReplayList();
 }
 
 QStringList PReplay::ls()
