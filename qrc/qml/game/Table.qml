@@ -696,6 +696,10 @@ Item {
         }
     }
 
+    function handlePinchStarted() {
+        _prevTwb = twb;
+    }
+
     function handlePinchUpdated(scale) {
         var next = scale * _prevTwb;
         if (next < tw || next > table.height * 1.6 / 14)
