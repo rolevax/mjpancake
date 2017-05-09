@@ -32,6 +32,10 @@ Room {
         anchors.bottom: onlineListView.top
         anchors.bottomMargin: global.size.space
         anchors.horizontalCenter: onlineListView.horizontalCenter
+        MouseArea {
+            anchors.fill: parent
+            onPressAndHold: { replayIdInput.visible = true; }
+        }
     }
 
     Texd {
@@ -56,11 +60,7 @@ Room {
             width: parent.width
             text: modelData
             enabled: !_loading
-            onClicked: {
-                replayId = modelData;
-                _loading = true;
-                pReplay.fetch(modelData);
-            }
+            onClicked: { _fetchOnline(modelData); }
         }
 
     }
@@ -249,6 +249,19 @@ Room {
         }
     }
 
+    TexdInput {
+        id: replayIdInput
+        visible: false
+        textLength: 8
+        anchors.centerIn: parent
+        hintText: "牌谱编号"
+        enabled: !_loading
+        onAccepted: {
+            visible = false;
+            _fetchOnline(text);
+        }
+    }
+
     Component.onCompleted: {
         localListView.model = pReplay.ls();
     }
@@ -286,5 +299,11 @@ Room {
         roundSeed = snap.state;
         endOfRound = snap.endOfRound;
         loader.item.showSnap(snap, persGombo.currentIndex);
+    }
+
+    function _fetchOnline(id) {
+        replayId = id;
+        _loading = true;
+        pReplay.fetch(id);
     }
 }
