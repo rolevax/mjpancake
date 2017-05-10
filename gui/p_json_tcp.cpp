@@ -90,7 +90,7 @@ void PJsonTcpSocket::onReadReady()
             if (mSize == 0) {
                 mSizeByte = 0;
                 saki::util::p("srv --->", mPayload.toStdString());
-                QJsonObject msg = QJsonDocument::fromJson(mPayload.toUtf8()).object();
+                QJsonObject msg = QJsonDocument::fromJson(mPayload).object();
                 emit recvJson(msg);
                 mPayload.clear();
             }

@@ -30,7 +30,7 @@ private:
     QTcpSocket mSocket;
     int mSizeByte = 0;
     int mSize = 0;
-    QString mPayload;
+    QByteArray mPayload;
     std::function<void()> mOnConn;
 };
 
