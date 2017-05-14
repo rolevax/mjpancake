@@ -267,6 +267,10 @@ PTable::Event PClient::eventOf(const QString &event)
 
 void PClient::onRemoteClosed()
 {
+    for (auto &v : mBookings)
+        v = false;
+    emit bookingsChanged();
+
     mUser.clear();
     emit userChanged();
 }
