@@ -73,5 +73,6 @@
         <file>qml/room/RoomStats.qml</file>
         <file>qml/area/AreaBigStats.qml</file>
         <file>qml/widget/LisdView.qml</file>
+        <file>qml/room/RoomQuit.qml</file>
     </qresource>
 </RCC>

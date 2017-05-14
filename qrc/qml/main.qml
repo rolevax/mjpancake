@@ -149,12 +149,7 @@ Window {
 
         Buzzon {
             text: "骑马"; textLength: 8; enabled: !docButton.redDot
-            onClicked: {
-                if (PGlobal.mute)
-                    Qt.quit();
-                else
-                    soundHorse.play();
-            }
+            onClicked: { rideHorse(); }
         }
     }
 
@@ -214,6 +209,26 @@ Window {
                 window.visibility = Window.FullScreen;
             else if (window.visibility === Window.FullScreen)
                 window.visibility = Window.Windowed;
+        }
+    }
+
+    onClosing: {
+        rideHorse();
+        close.accepted = false;
+    }
+
+    Timer {
+        id: horseTimer
+        interval: 3000
+        onTriggered: { Qt.quit(); }
+    }
+
+    function rideHorse() {
+        loader.source = "room/RoomQuit.qml";
+        if (PGlobal.mute) {
+            horseTimer.start();
+        } else {
+            soundHorse.play();
         }
     }
 }
