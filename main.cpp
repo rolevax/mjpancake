@@ -18,6 +18,11 @@
 
 int main(int argc, char *argv[])
 {
+    // fix 'animation too fast' in some environment
+    const QByteArray loopName = qgetenv("QSG_RENDER_LOOP");
+    if (loopName.isEmpty())
+        putenv("QSG_RENDER_LOOP=basic");
+
     QApplication app(argc, argv);
 
     QIcon icon(":/pic/icon/icon.ico");
