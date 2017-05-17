@@ -13,15 +13,30 @@ Room {
 
     Column {
         anchors.centerIn: parent
-        anchors.verticalCenterOffset: 1 * global.size.gap
+        //anchors.verticalCenterOffset: 1 * global.size.gap
         spacing: global.size.gap
+
+        AreaTitle {
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
 
         Row {
             anchors.horizontalCenter: parent.horizontalCenter
             spacing: 2 * global.size.gap
 
-            AreaStats {
+            Column {
                 anchors.verticalCenter: parent.verticalCenter
+
+                Repeater {
+                    model: PClient.water
+                    delegate: Texd {
+                        text: modelData
+                    }
+                }
+
+                Texd {
+                    text: "在线人数: " + PClient.connCt
+                }
             }
 
             Rectangle {

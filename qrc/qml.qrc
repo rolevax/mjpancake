@@ -54,7 +54,6 @@
         <file>qml/area/AreaBookRow.qml</file>
         <file>qml/js/nettrans.js</file>
         <file>qml/area/AreaStage.qml</file>
-        <file>qml/area/AreaStats.qml</file>
         <file>qml/area/AreaOp.qml</file>
         <file>qml/room/RoomPrac.qml</file>
         <file>qml/room/RoomEff.qml</file>
@@ -74,5 +73,6 @@
         <file>qml/area/AreaBigStats.qml</file>
         <file>qml/widget/LisdView.qml</file>
         <file>qml/room/RoomQuit.qml</file>
+        <file>qml/area/AreaTitle.qml</file>
     </qresource>
 </RCC>

@@ -28,6 +28,7 @@ public:
     Q_PROPERTY(QVariantList bookings READ bookings NOTIFY bookingsChanged)
     Q_PROPERTY(bool hasBooking READ hasBooking NOTIFY bookingsChanged)
     Q_PROPERTY(int lastNonce READ lastNonce NOTIFY lastNonceChanged)
+    Q_PROPERTY(QVariantList water READ water NOTIFY lookedAround)
 
     static PClient &instance();
 
@@ -54,6 +55,7 @@ public:
     QVariantList bookings() const;
     bool hasBooking() const;
     int lastNonce() const;
+    QVariantList water() const;
 
 signals:
     void remoteClosed();
@@ -97,6 +99,7 @@ private:
     QVariantList mBookings;
     int mConnCt = 0;
     QVariantList mBooks;
+    QVariantList mWater;
     int mLastNonce = 0;
 };
 

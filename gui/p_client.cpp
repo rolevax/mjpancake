@@ -209,6 +209,11 @@ int PClient::lastNonce() const
     return mLastNonce;
 }
 
+QVariantList PClient::water() const
+{
+    return mWater;
+}
+
 void PClient::action(QString actStr, const QVariant &actArg)
 {
     QJsonObject req;
@@ -291,6 +296,7 @@ void PClient::onJsonReceived(const QJsonObject &msg)
     } else if (type == "look-around") {
         mConnCt = msg["Conn"].toInt();
         mBooks = msg["Books"].toArray().toVariantList();
+        mWater = msg["Water"].toArray().toVariantList();
         emit lookedAround();
     } else if (type == "start") {
         // wait for Qt 5.9 release,

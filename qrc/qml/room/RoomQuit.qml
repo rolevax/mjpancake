@@ -10,6 +10,11 @@ Rectangle {
     anchors.fill: parent
     color: PGlobal.themeBack
 
+    MouseArea {
+        anchors.fill: parent
+        onClicked: { Qt.quit(); }
+    }
+
     Column {
         anchors.centerIn: parent
         spacing: global.size.gap
