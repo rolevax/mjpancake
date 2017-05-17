@@ -193,13 +193,24 @@ Window {
     }
 
     Buzzon {
+        id: bookingButton
         textLength: 8
         anchors.margins: global.size.space
         anchors.right: parent.right
         anchors.top: parent.top
         visible: PClient.hasBooking
-        text: "预约中"
+        text: "预约中 " + formatElapse(bookTimer.elapse)
         onClicked: { loader.source = "room/RoomClient.qml"; }
+
+        Timer {
+            id: bookTimer
+            property int elapse: 0
+            interval: 1000
+            repeat: true
+            onTriggered: { elapse++; }
+            running: bookingButton.visible
+            onRunningChanged: { if (!running) elapse = 0; }
+        }
     }
 
     Shortcut {
@@ -230,5 +241,11 @@ Window {
         } else {
             soundHorse.play();
         }
+    }
+
+    function formatElapse(elapse) {
+        var date = new Date(null);
+        date.setSeconds(elapse);
+        return date.toISOString().substr(14, 5);
     }
 }

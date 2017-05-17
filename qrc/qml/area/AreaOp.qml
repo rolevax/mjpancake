@@ -11,8 +11,9 @@ Column {
     Texd {
         anchors.horizontalCenter: parent.horizontalCenter
         text: "<ul>" +
-              "<li>预约后人齐即开</li>" +
-              "<li>等待期间可返回进行单机游戏</li>" +
+              "<li>点击预约开始匹配，人齐即开</li>" +
+              "<li>等待期间可以读牌谱、看战绩、打单机</li>" +
+              "<li>角色选项跟据实际胜率平衡随机</li>" +
               "<li>部分角色只在上位战区出没</li>" +
               "</ul>"
     }
