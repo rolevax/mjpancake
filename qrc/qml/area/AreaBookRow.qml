@@ -8,7 +8,7 @@ Row {
     spacing: global.size.gap
 
     Texd {
-        text: "东南 IH71"
+        text: "东南 IH71 " + (bookType >= 4 ? "2P" : "4P")
         font.pixelSize: global.size.middleFont
         anchors.verticalCenter: parent.verticalCenter
     }

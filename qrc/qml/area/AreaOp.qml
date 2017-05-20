@@ -33,9 +33,9 @@ Column {
 
     Repeater {
         id: repBooks
-        model: 4
+        model: 8
         delegate: AreaBookRow {
-            visible: index === tabPager.currIndex
+            visible: index % 4 === tabPager.currIndex
             bookType: index
             anchors.horizontalCenter: parent.horizontalCenter
         }

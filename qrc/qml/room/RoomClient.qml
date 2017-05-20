@@ -13,7 +13,6 @@ Room {
 
     Column {
         anchors.centerIn: parent
-        //anchors.verticalCenterOffset: 1 * global.size.gap
         spacing: global.size.gap
 
         AreaTitle {
@@ -102,7 +101,7 @@ Room {
 
     Timer {
         id: startTimer
-        interval: 17
+        interval: 100 // make sure state splash animation has started
         onTriggered: {
             loader.item.startOnline(PClient);
             if (areaStage.visible)
