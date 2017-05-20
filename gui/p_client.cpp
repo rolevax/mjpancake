@@ -23,7 +23,7 @@ PClient::PClient(QObject *parent) : QObject(parent)
     bookEntry["Bookable"] = false;
     bookEntry["Play"] = 0;
     bookEntry["Book"] = 0;
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 8; i++) {
         mBooks.append(bookEntry);
         mBookings.append(false);
     }
