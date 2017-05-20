@@ -8,6 +8,7 @@ Rectangle {
     property real textLength: 4.0
     property int fontSize: global.size.middleFont
     property var tabTo
+    property bool number: false
 
     property alias echoMode: input.echoMode
     property alias validator: input.validator
@@ -40,7 +41,7 @@ Rectangle {
         color: PGlobal.themeText
         focus: false
         font.family: wqy.name
-        inputMethodHints: Qt.ImhNoAutoUppercase
+        inputMethodHints: number ? Qt.ImhDigitsOnly : Qt.ImhNoAutoUppercase
         onAccepted: {
             if (acceptableInput)
                 frame.accepted();
@@ -53,6 +54,10 @@ Rectangle {
     onFocusChanged: {
         if (focus)
             input.focus = true;
+    }
+
+    function removeFocus() {
+        input.focus = false;
     }
 }
 
