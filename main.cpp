@@ -18,10 +18,12 @@
 
 int main(int argc, char *argv[])
 {
+#ifdef Q_OS_WIN
     // fix 'animation too fast' in some environment
     const QByteArray loopName = qgetenv("QSG_RENDER_LOOP");
     if (loopName.isEmpty())
         putenv("QSG_RENDER_LOOP=basic");
+#endif
 
     QApplication app(argc, argv);
 

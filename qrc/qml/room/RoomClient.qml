@@ -54,8 +54,8 @@ Room {
         Texd {
             anchors.horizontalCenter: parent.horizontalCenter
             horizontalAlignment: Text.AlignHCenter
-            text: "凑桌/讨论QQ群 253708512\n" +
-                  "目前整体人少，凑桌基本靠吼\n" +
+            text: "凑桌/讨论QQ群 253708512<br/>" +
+                  "目前整体人少，凑桌基本靠吼<br/>" +
                   "约桌时间集中在晚上或周末"
         }
     }

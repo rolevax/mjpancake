@@ -32,10 +32,6 @@ Room {
         anchors.bottom: onlineListView.top
         anchors.bottomMargin: global.size.space
         anchors.horizontalCenter: onlineListView.horizontalCenter
-        MouseArea {
-            anchors.fill: parent
-            onPressAndHold: { replayIdInput.visible = true; }
-        }
     }
 
     Texd {
@@ -50,10 +46,10 @@ Room {
         id: onlineListView
 
         width: parent.width * 0.3
-        height: parent.height * 0.8
+        height: parent.height * 0.8 - replayIdInput.height - global.size.space
         anchors.left: parent.left
         anchors.leftMargin: parent.width * 0.05
-        anchors.verticalCenter: parent.verticalCenter
+        anchors.top: localListView.top
 
         model: []
         delegate: Buzzon {
@@ -62,7 +58,22 @@ Room {
             enabled: !_loading
             onClicked: { _fetchOnline(modelData); }
         }
+    }
 
+    TexdInput {
+        id: replayIdInput
+        width: onlineListView.width
+        anchors.left: onlineListView.left
+        anchors.top: onlineListView.bottom
+        anchors.topMargin: global.size.space
+        hintText: "通过编号查看他人牌谱"
+        number: true
+        enabled: !_loading
+        onAccepted: {
+            _fetchOnline(text);
+            text = "";
+            removeFocus();
+        }
     }
 
     LisdView {
@@ -148,7 +159,7 @@ Room {
         }
 
         onPositionChanged: { // press and drag
-            var stride = width / 20;
+            var stride = width / 25;
             if (mouse.x - dragStartX > stride) { // right stride
                 dragStartX = mouseX;
                 _nextStep();
@@ -246,19 +257,6 @@ Room {
             color: "white"
             font.pixelSize: 0.1 * parent.height
             text: "正在从茫茫零食堆里捞出牌谱……"
-        }
-    }
-
-    TexdInput {
-        id: replayIdInput
-        visible: false
-        textLength: 8
-        anchors.centerIn: parent
-        hintText: "牌谱编号"
-        enabled: !_loading
-        onAccepted: {
-            visible = false;
-            _fetchOnline(text);
         }
     }
 
