@@ -54,12 +54,12 @@ Rectangle {
         delegate: MiddleNameBar {
             animEnabled: middle.animEnabled
             x: (middle.width - width) / 2
-            y: middle.height - height - 12
+            y: middle.height - height - 2 * global.size.space
             tw: middle.width / 6
             transform: Rotation {
                 angle: -90 * index
                 origin.x: width / 2
-                origin.y: 12 + height - middle.height / 2
+                origin.y: 2 * global.size.space + height - middle.height / 2
             }
         }
     }

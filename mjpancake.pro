@@ -132,15 +132,17 @@ HEADERS += \
 
 
 
-DISTFILES += \
-    android/AndroidManifest.xml \
-    android/gradle/wrapper/gradle-wrapper.jar \
-    android/gradlew \
-    android/res/values/libs.xml \
-    android/build.gradle \
-    android/gradle/wrapper/gradle-wrapper.properties \
-    android/gradlew.bat \
-    android/src/rolevax/sakilogy/ImagePickerActivity.java
+android {
+        DISTFILES += \
+                android/AndroidManifest.xml \
+                android/gradle/wrapper/gradle-wrapper.jar \
+                android/gradlew \
+                android/res/values/libs.xml \
+                android/build.gradle \
+                android/gradle/wrapper/gradle-wrapper.properties \
+                android/gradlew.bat \
+                android/src/rolevax/sakilogy/ImagePickerActivity.java
+}
 
 OTHER_FILES += \
     qrc/qml/*.qml \
@@ -158,4 +160,8 @@ OBJECTS_DIR = ./obj
 
 contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
     ANDROID_EXTRA_LIBS =
+}
+
+ios {
+    QMAKE_INFO_PLIST = ios/Info.plist
 }

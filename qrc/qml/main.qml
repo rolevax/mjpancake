@@ -8,7 +8,7 @@ import "widget"
 Window {
     id: window
 
-    readonly property bool mobile: Qt.platform.os === "android"
+    readonly property bool mobile: Qt.platform.os === "android" || Qt.platform.os === "ios"
 
     readonly property var global: {
         "version": "v" + PGlobal.version,

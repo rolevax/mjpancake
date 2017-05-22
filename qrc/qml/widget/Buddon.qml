@@ -18,7 +18,7 @@ Rectangle {
     height: 1.5 * fontSize
     color: "#333344"
     opacity: enabled ? 1.0 : 0.5
-    border.width: 0.03 * height
+    border.width: Math.max(0.03 * height, 1)
     border.color: "white"
 
     Rectangle {

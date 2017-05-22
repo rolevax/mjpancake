@@ -5,7 +5,7 @@ Item {
     id: frame
 
     property bool animEnabled: true
-    property int tw
+    property real tw
     property alias seatText: seatText
     property int point: 0
 
