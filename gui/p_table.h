@@ -34,7 +34,7 @@ public:
 
 signals:
     void onlineChanged();
-    void action(QString actStr, const QVariant &actArg);
+    void action(QString actStr, int actArg, const QString &actTile);
     void saveRecord();
     void tableEvent(Event type, const QVariantMap &args);
 

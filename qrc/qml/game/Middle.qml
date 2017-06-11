@@ -79,7 +79,7 @@ Rectangle {
         anchors.topMargin: parent.height / 18
         height: 0.15 * middle.height
         visible: false
-        mouseArea.onClicked: {
+        onClicked: {
             diceButton.visible = false;
             middle.diceRolled();
         }

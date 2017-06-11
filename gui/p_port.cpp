@@ -52,7 +52,17 @@ QStringList createTilesVar(const std::vector<saki::T37> &tiles)
     return list;
 }
 
-QVariant createTileStrsVar(const std::vector<saki::T34> &tiles)
+QStringList createTilesVar(const saki::util::Range<saki::T37> &tiles)
+{
+    QStringList list;
+
+    for (const saki::T37 &t : tiles)
+        list << createTileVar(t, false);
+
+    return list;
+}
+
+QVariant createTileStrsVar(const saki::util::Range<saki::T34> &tiles)
 {
     QVariantList list;
 
@@ -63,7 +73,7 @@ QVariant createTileStrsVar(const std::vector<saki::T34> &tiles)
 }
 
 unsigned createSwapMask(const saki::TileCount &count,
-                        const std::vector<saki::T37> &choices)
+                        const saki::util::Stactor<saki::T37, 13> &choices)
 {
     // assume 'choices' is 34-sorted
     std::bitset<13> mask;
@@ -122,7 +132,7 @@ QVariantMap createFormVar(const char *spell, const char *charge)
     return map;
 }
 
-QVariant createBarksVar(const std::vector<saki::M37> &ms)
+QVariant createBarksVar(const saki::util::Stactor<saki::M37, 4> &ms)
 {
     QVariantList list;
     for (const saki::M37 &m : ms)
@@ -166,7 +176,7 @@ QVariantMap createTableSnapMap(const saki::TableSnap &snap)
     for (int w = 0; w < 4; w++) {
         const saki::PlayerSnap &player = snap[w];
         QVariantMap playerMap;
-        playerMap.insert("hand", createTilesVar(player.hand));
+        playerMap.insert("hand", createTilesVar(player.hand.range()));
         playerMap.insert("barks", createBarksVar(player.barks));
         QVariantList river;
         for (int i = 0; i < int(player.river.size()); i++)
@@ -542,24 +552,25 @@ QJsonArray std2json(const T &arr) {
     return QJsonArray::fromVariantList(list);
 }
 
-saki::Action readAction(const QString &actStr, const QVariant &actArg)
+saki::Action readAction(const QString &actStr, int actArg, const QString &actTile)
 {
     using ActCode = saki::ActCode;
 
     ActCode act = saki::actCodeOf(actStr.toStdString().c_str());
     switch (act) {
     case ActCode::SWAP_OUT:
+    case ActCode::SWAP_RIICHI:
+        return saki::Action(act, saki::T37(actTile.toLatin1().data()));
     case ActCode::ANKAN:
-        return saki::Action(act, saki::T37(actArg.toString().toLatin1().data()));
+        return saki::Action(act, saki::T34(actTile.toLatin1().data()));
     case ActCode::CHII_AS_LEFT:
     case ActCode::CHII_AS_MIDDLE:
     case ActCode::CHII_AS_RIGHT:
     case ActCode::PON:
+        return saki::Action(act, actArg, saki::T37(actTile.toLatin1().data()));
     case ActCode::KAKAN:
     case ActCode::IRS_CHECK:
-        return saki::Action(act, actArg.toInt());
-    case ActCode::IRS_RIVAL:
-        return saki::Action(act, saki::Who(actArg.toInt()));
+        return saki::Action(act, static_cast<unsigned>(actArg));
     default:
         return saki::Action(act);
     }

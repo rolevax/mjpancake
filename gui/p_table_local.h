@@ -51,11 +51,14 @@ signals:
 public slots:
     void start(const QVariant &girlIdsVar, const QVariant &gameRule,
                int tempDelaer);
-    void action(QString actStr, const QVariant &actArg);
+    void action(QString actStr, int actArg, const QString &actTile);
     void saveRecord();
 
 private:
     void emitJustPause(int ms);
+    void activateDrawn(QVariantMap &map, const saki::TableView &view);
+    void activateBark(QVariantMap &map, const saki::TableView &view);
+    void activateIrsCheck(QVariantMap &map, const saki::TableView &view);
 
 private:
     std::unique_ptr<saki::Table> mTable;

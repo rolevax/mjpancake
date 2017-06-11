@@ -16,6 +16,7 @@ SOURCES += main.cpp \
     libsaki/ai_senriyama.cpp \
     libsaki/ai_shiraitodai.cpp \
     libsaki/ai_usuzan.cpp \
+    libsaki/choices.cpp \
     libsaki/explain.cpp \
     libsaki/form.cpp \
     libsaki/form_gb.cpp \
@@ -42,8 +43,6 @@ SOURCES += main.cpp \
     libsaki/table.cpp \
     libsaki/tableview.cpp \
     libsaki/test.cpp \
-    libsaki/ticketfolder.cpp \
-    libsaki/tilecount.cpp \
     gui/p_client.cpp \
     gui/p_eff.cpp \
     gui/p_eff_gb.cpp \
@@ -55,7 +54,8 @@ SOURCES += main.cpp \
     gui/p_table.cpp \
     gui/p_table_local.cpp \
     gui/p_json_tcp.cpp \
-    gui/p_image_settings.cpp
+    gui/p_image_settings.cpp \
+    libsaki/tile_count.cpp
 
 
 
@@ -80,6 +80,7 @@ HEADERS += \
     libsaki/ai_senriyama.h \
     libsaki/ai_usuzan.h \
     libsaki/assume.h \
+    libsaki/choices.h \
     libsaki/debug_cheat.h \
     libsaki/explain.h \
     libsaki/form.h \
@@ -112,10 +113,9 @@ HEADERS += \
     libsaki/tableobserver.h \
     libsaki/tableoperator.h \
     libsaki/test.h \
-    libsaki/ticketfolder.h \
-    libsaki/tilecount.h \
     libsaki/tile.h \
     libsaki/util.h \
+    libsaki/util_stactor.h \
     libsaki/who.h \
     gui/p_client.h \
     gui/p_eff.h \
@@ -128,7 +128,8 @@ HEADERS += \
     gui/p_port.h \
     gui/p_replay.h \
     gui/p_table.h \
-    gui/p_table_local.h
+    gui/p_table_local.h \
+    libsaki/tile_count.h
 
 
 

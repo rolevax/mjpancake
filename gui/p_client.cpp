@@ -214,13 +214,16 @@ QVariantList PClient::water() const
     return mWater;
 }
 
-void PClient::action(QString actStr, const QVariant &actArg)
+void PClient::action(QString actStr, int actArg, const QString &actTile)
 {
     QJsonObject req;
     req["Type"] = "t-action";
     req["Nonce"] = mLastNonce;
     req["ActStr"] = actStr;
-    req["ActArg"] = actArg.toString();
+    if (actArg != -1)
+        req["ActArg"] = actArg;
+    if (actTile.size() > 0)
+        req["ActTile"] = actTile;
     mSocket.send(req);
 }
 

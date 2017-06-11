@@ -1,13 +1,21 @@
 import QtQuick 2.7
+import "../widget"
 
 Row {
     id: actionButtonBar
 
-    property int buttonHeight
-
     signal actionTriggered(string actStr)
 
+    property real buttonHeight
+    readonly property bool riichi: riichiToggle.checked
+
     spacing: global.size.space
+
+    ActionToggle {
+        id: riichiToggle
+        height: buttonHeight
+        visible: false
+    }
 
     Repeater {
         id: repeater
@@ -16,7 +24,7 @@ Row {
         ActionButton {
             act: modelData
             height: buttonHeight
-            mouseArea.onClicked: _cb(act);
+            onClicked: { _cb(act); }
         }
     }
 
@@ -28,7 +36,13 @@ Row {
         repeater.model = repeater.model.concat(act);
     }
 
+    function enableRiichi() {
+        riichiToggle.visible = true;
+    }
+
     function clear() {
         repeater.model = [];
+        riichiToggle.checked = false;
+        riichiToggle.visible = false;
     }
 }

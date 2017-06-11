@@ -24,7 +24,7 @@ public:
     static QVariantList nanikiru(const saki::Hand &hand, const saki::Mount &mount);
 
     Q_INVOKABLE void deal();
-    Q_INVOKABLE void action(const QString &actStr, const QString &actArg);
+    Q_INVOKABLE void action(const QString &actStr, int actArg, const QString &actTile);
     Q_INVOKABLE QVariantList answer();
 
     bool uradora() const;

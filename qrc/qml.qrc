@@ -74,5 +74,6 @@
         <file>qml/widget/LisdView.qml</file>
         <file>qml/room/RoomQuit.qml</file>
         <file>qml/area/AreaTitle.qml</file>
+        <file>qml/game/ActionToggle.qml</file>
     </qresource>
 </RCC>
