@@ -45,9 +45,7 @@ Room {
         anchors.verticalCenter: parent.verticalCenter
         girlIds: PClient.playedGirlIds
         currGirlId: -2 // summary
-        onCurrGirlIdChanged: {
-            // FUCK
-        }
+        onCurrGirlIdChanged: {}
         Component.onCompleted: { currGirlIdChanged(); }
     }
 }

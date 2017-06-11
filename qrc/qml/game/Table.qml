@@ -390,10 +390,7 @@ Item {
         z: 3
         width: (table.width + 13 * twb) / 2;
         height: table.thb
-
-        onActionTriggered: {
-            table.action(actStr, actArg)
-        }
+        onActionTriggered: { table.action(actStr, actArg, actTile); }
     }
 
     TimeBar {
@@ -439,16 +436,19 @@ Item {
         playerControl.deactivate();
         for (var i = 0; i < 4; i++) {
             rivers.itemAt(i).clearCircles();
-            photos[i].deactivate();
         }
         logBox.clear();
     }
 
-    function action(actStr, actArg) {
+    function action(actStr, actArg, actTile) {
+        if (!actTile)
+            actTile = "";
+
         timeBar.cancel();
         table.deactivate();
+
         if (table._nonce < 0 || table._nonce === PClient.lastNonce)
-            pTable.action(actStr, actArg);
+            pTable.action(actStr, actArg, actTile);
     }
 
     function setGirlIds(girlIds) {
@@ -486,9 +486,6 @@ Item {
             middle.activateDice();
         } else if (action.IRS_CHECK) {
             irsCheckBox.activate(action);
-        } else if (action.IRS_RIVAL) {
-            for (var i = 0; i < action.IRS_RIVAL.length; i++)
-                photos[action.IRS_RIVAL[i]].activateIrsRival();
         } else {
             if (action.CHII_AS_LEFT || action.CHII_AS_MIDDLE || action.CHII_AS_RIGHT
                     || action.PON || action.DAIMINKAN || action.RON) {

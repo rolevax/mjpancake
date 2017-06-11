@@ -18,7 +18,7 @@ public:
     Q_PROPERTY(bool skill READ skill WRITE setSkill NOTIFY skillChanged)
 
     Q_INVOKABLE void deal();
-    Q_INVOKABLE void action(const QString &actStr, const QString &actArg);
+    Q_INVOKABLE void action(const QString &actStr, int actArg, const QString &actTile);
 
     bool skill() const;
     void setSkill(bool v);

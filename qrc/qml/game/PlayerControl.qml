@@ -5,7 +5,7 @@ import "../widget"
 Item {
     id: frame
 
-    signal actionTriggered(string actStr, var actArg)
+    signal actionTriggered(string actStr, int actArg, string actTile)
 
     property bool animEnabled: true
     property string tileSet: "std"
@@ -13,11 +13,17 @@ Item {
     property real twb
     property color backColor
     property bool face: true // false when no-ten at ryuukyoku
-    property var can: { "tsumokiri": false, "pass": false }
     property point outCoord
     property bool green: false
     property alias drawnStr: drawn.tileStr
-    property string _lastDiscardStr: ""
+
+    property bool _handActivated: false
+    property int _canSwapOutMask: 0
+    property int _canSwapRiichiMask: 0
+    property bool _canSpinOut: false
+    property bool _canSpinRiichi: false
+    property bool _canPass: false
+    property string _actBark: ""
 
     ActionButtonBar {
         id: actionButtons
@@ -26,7 +32,7 @@ Item {
         anchors.right: drawn.visible ? drawn.right : hand.right
         anchors.bottomMargin: global.size.space
         anchors.rightMargin: 1
-        onActionTriggered: { frame.actionTriggered(actStr, 777); }
+        onActionTriggered: { frame.actionTriggered(actStr, -1, ""); }
     }
 
     Tile {
@@ -38,9 +44,9 @@ Item {
         tileSet: frame.tileSet
         tileWidth: twb
         backColor: frame.backColor
-        onClicked: {
-            _handleDrawnClicked();
-        }
+        clickable: actionButtons.riichi ? _canSpinRiichi : _canSpinOut
+        dark: _handActivated && !clickable
+        onClicked: { _handleDrawnClicked(); }
         NumberAnimation {
             id: inAnim
             target: drawn
@@ -88,16 +94,6 @@ Item {
                 easing.type: Easing.Linear
             }
         }
-
-        function activate() {
-            drawn.dark = false;
-            drawn.clickable = true;
-        }
-
-        function deactivate() {
-            drawn.dark = false
-            drawn.clickable = false;
-        }
     }
 
     ListView {
@@ -112,16 +108,10 @@ Item {
             tileSet: frame.tileSet
             tileWidth: twb
             backColor: frame.backColor
-            onClicked: {
-                if (green)
-                    greenSwapAnim.start();
-                else
-                    swapOut(index)
-                frame.actionTriggered("SWAP_OUT", tileStr);
-            }
+            onClicked: { _handleHandClicked(index, tileStr, greenSwapAnim); }
             tileStr: frame.face && modelTileStr ? modelTileStr : "back"
-            dark: modelDark
-            clickable: modelClickable
+            dark: _handActivated && !clickable
+            clickable: _handActivated && _canSwapOutAt(index)
 
             FloatButton {
                 width: twb - 5
@@ -129,7 +119,22 @@ Item {
                 anchors.bottom: parent.bottom
                 actStr: modelFloatAct
                 onButtonPressed: {
-                    frame.actionTriggered(modelFloatAct, modelFloatArg);
+                    switch (modelFloatAct) {
+                    case "CHII_AS_LEFT":
+                    case "CHII_AS_MIDDLE":
+                    case "CHII_AS_RIGHT":
+                    case "PON":
+                        _enterBark(modelFloatAct, modelTileStr);
+                        break;
+                    case "DAIMINKAN":
+                        frame.actionTriggered("DAIMINKAN", -1, "");
+                        break;
+                    case "ANKAN":
+                        frame.actionTriggered("ANKAN", -1, modelTileStr);
+                        break;
+                    default:
+                        throw "hand-float-btn: unexpected actStr " + modelFloatAct;
+                    }
                 }
             }
 
@@ -207,20 +212,6 @@ Item {
                 }
             }
         }
-
-        function activate(mask) {
-            for (var i = 0; i < handModel.count; i++) {
-                var ok = !!(mask & (1 << i));
-                handModel.set(i, { modelDark: !ok, modelClickable: ok });
-            }
-        }
-
-        function deactivate() {
-            for (var i = 0; i < handModel.count; i++) {
-                handModel.set(i, { modelDark: false, modelClickable: false,
-                                   modelFloatAct: "", modelFloatArg: "-1" });
-            }
-        }
     } // end of hand
 
     ListView {
@@ -246,9 +237,7 @@ Item {
                 y: -(frame.tw / 2)
                 x:  meld.open === 0 ? 2 : (meld.open === 1 ? tw + 2 : tw * 2 + 2);
                 actStr: modelFloatAct
-                onButtonPressed: {
-                    frame.actionTriggered(modelFloatAct, modelFloatArg);
-                }
+                onButtonPressed: { frame.actionTriggered(modelFloatAct, index, ""); }
             }
         }
     }
@@ -263,10 +252,7 @@ Item {
         hand.model = []; // to trigger populate transition
         for (var i in init) {
             var model = {
-                modelDark: false,
-                modelClickable: false,
                 modelFloatAct: "",
-                modelFloatArg: "-1",
                 modelTileStr: init[i],
             };
             handModel.append(model);
@@ -277,58 +263,56 @@ Item {
     }
 
     function activate(action, lastDiscardStr) {
-        drawn.dark = true; // will be unset if needed
         for (var actStr in action) {
             switch (actStr) {
             case "SWAP_OUT":
-                hand.activate(action[actStr]);
+                _canSwapOutMask = action[actStr];
+                _handActivated = true;
                 break;
             case "SPIN_OUT":
-                frame.can.tsumokiri = true;
-                drawn.activate();
+                _canSpinOut = true;
+                _handActivated = true;
+                break;
+            case "SWAP_RIICHI":
+                actionButtons.enableRiichi();
+                _canSwapRiichiMask = action[actStr];
+                _handActivated = true; // assume no 'cannot dama' case
+                break;
+            case "SPIN_RIICHI":
+                actionButtons.enableRiichi();
+                _canSpinRiichi = true;
+                _handActivated = true; // assume no 'cannot dama' case
                 break;
             case "CHII_AS_LEFT":
-                handModel.set(_offIndexInHand34(lastDiscardStr, 1),
-                              { modelFloatAct: actStr, modelFloatArg: "2" });
+                handModel.set(_offIndexInHand34(lastDiscardStr, 1), { modelFloatAct: actStr });
                 break;
             case "CHII_AS_MIDDLE":
-                handModel.set(_offIndexInHand34(lastDiscardStr, -1),
-                              { modelFloatAct: actStr, modelFloatArg: "2" });
+                handModel.set(_offIndexInHand34(lastDiscardStr, -1), { modelFloatAct: actStr });
                 break;
             case "CHII_AS_RIGHT":
-                handModel.set(_offIndexInHand34(lastDiscardStr, -2),
-                              { modelFloatAct: actStr, modelFloatArg: "2" });
+                handModel.set(_offIndexInHand34(lastDiscardStr, -2), { modelFloatAct: actStr });
                 break;
             case "PON":
-                handModel.set(_indexInHand34(lastDiscardStr) + 1,
-                              { modelFloatAct: actStr, modelFloatArg: "2" });
+                handModel.set(_indexInHand34(lastDiscardStr) + 1, { modelFloatAct: actStr });
                 break;
             case "DAIMINKAN":
-                handModel.set(_indexInHand34(lastDiscardStr) + 2,
-                              { modelFloatAct: actStr, modelFloatArg: "2" });
+                handModel.set(_indexInHand34(lastDiscardStr) + 2, { modelFloatAct: actStr });
                 break;
             case "ANKAN":
                 for (var i = 0; i < action[actStr].length; i++) {
-                    handModel.set(_indexInHand34(action[actStr][i]) + 2,
-                                  { modelFloatAct: actStr, modelFloatArg: action[actStr][i] });
+                    handModel.set(_indexInHand34(action[actStr][i]) + 2, { modelFloatAct: actStr });
                 }
                 break;
             case "KAKAN":
                 for (var j = 0; j < action[actStr].length; j++) {
-                    var model = {
-                        modelFloatAct: actStr,
-                        // why string -> see deactivate()
-                        modelFloatArg: "" + action[actStr][j]
-                    };
-                    barksModel.set(action[actStr][j], model);
+                    barksModel.set(action[actStr][j], { modelFloatAct: "KAKAN" });
                 }
                 break;
             case "PASS":
-                frame.can.pass = true;
+                _canPass = true;
                 // fall through
             case "TSUMO":
             case "RON":
-            case "RIICHI":
             case "RYUUKYOKU":
             case "IRS_CLICK":
                 actionButtons.add(actStr);
@@ -340,25 +324,28 @@ Item {
     }
 
     function deactivate() {
-        frame.can.tsumokiri = false;
-        frame.can.pass = false;
-        hand.deactivate();
-        drawn.deactivate();
+        _handActivated = false;
+        _canPass = false;
+        _canSpinOut = false;
+        _canSpinRiichi = false;
+        _canSwapOutMask = 0;
+        _canSwapRiichiMask = 0;
         actionButtons.clear();
-        // using string as modelFloatArg since list model is kind of
-        // internally statically typed and say don't allow blablabla
+
+        for (var i = 0; i < handModel.count; i++)
+            handModel.set(i, { modelFloatAct: "" });
         for (var i = 0; i < barksModel.count; i++)
-            barksModel.set(i, { modelFloatAct: "", modelFloatArg: "-1" });
+            barksModel.set(i, { modelFloatAct: "" });
     }
 
     function draw(t) {
         drawn.tileStr = t;
-        // dark and clickable are initially set false
-        drawn.dark = false;
-        drawn.clickable = false;
-
         if (frame.animEnabled)
             drawn.inAnim.start();
+    }
+
+    function _canSwapOutAt(index) {
+        return !!((actionButtons.riichi ? _canSwapRiichiMask : _canSwapOutMask) & (1 << index));
     }
 
     function _handleDrawnClicked() {
@@ -366,12 +353,26 @@ Item {
             greenSpinAnim.start();
         else
             _spinOut();
-        frame.actionTriggered("SPIN_OUT", -1);
+        frame.actionTriggered(actionButtons.riichi ? "SPIN_RIICHI" : "SPIN_OUT", -1, "");
+    }
+
+    function _handleHandClicked(index, tileStr, greenSwapAnim) {
+        if (green)
+            greenSwapAnim.start();
+        else
+            swapOut(index)
+
+        var actStr = _actBark;
+        var actArg = !!_actBark ? 2 : -1;
+        _actBark = "";
+        if (!actStr)
+            actStr = actionButtons.riichi ? "SWAP_RIICHI" : "SWAP_OUT";
+
+        frame.actionTriggered(actStr, actArg, tileStr);
     }
 
     // called only by self and set-background-demo
     function swapOut(outPos) {
-        _lastDiscardStr = handModel.get(outPos).modelTileStr;
         outCoord = mapFromItem(frame, outPos * twb, 0);
         handModel.remove(outPos, 1);
         if (drawn.visible)
@@ -379,12 +380,11 @@ Item {
     }
 
     function _spinOut() {
-        _lastDiscardStr = drawn.tileStr;
         outCoord = mapFromItem(drawn, 0, 0);
         outAnim.start();
     }
 
-    function _offIndexInHand34(tileStr, off) {
+    function _t34Plus(tileStr, off) {
         var arr = [
             "1m", "2m", "3m", "4m", "5m", "6m", "7m", "8m", "9m",
             "1p", "2p", "3p", "4p", "5p", "6p", "7p", "8p", "9p",
@@ -392,7 +392,11 @@ Item {
         ];
         var ts = tileStr[0] === "0" ? ("5" + tileStr[1]) : tileStr;
         var id34 = arr.indexOf(ts);
-        return _indexInHand34(arr[id34 + off]);
+        return arr[id34 + off];
+    }
+
+    function _offIndexInHand34(tileStr, off) {
+        return _indexInHand34(_t34Plus(tileStr, off));
     }
 
     function _indexInHand37(tileStr) {
@@ -409,6 +413,84 @@ Item {
         }
 
         return _indexInHand37(tileStr);
+    }
+
+    function _tileInHand34(tileStr) {
+        return handModel.get(_indexInHand34(tileStr)).modelTileStr;
+    }
+
+    function _barkMask(banOne1, banOne2, banAll1, banAll2) {
+        var banOne1Used = false;
+        var banOne2Used = false;
+        var res = 0;
+        var banAll3 = "";
+
+        if (banAll1[0] === "5")
+            banAll3 = "0" + banAll1[1];
+        else if (banAll1[0] === "0")
+            banAll3 = "5" + banAll1[1];
+        else if (banAll2[0] === "5")
+            banAll3 = "0" + banAll2[1];
+        else if (banAll2[0] === "0")
+            banAll3 = "5" + banAll2[1];
+
+        for (var i = 0; i < handModel.count; i++) {
+            var tile = handModel.get(i).modelTileStr;
+            var bit = 1;
+
+            if (!banOne1Used && tile === banOne1) {
+                bit = 0;
+                banOne1Used = true;
+            } else if (!banOne2Used && tile === banOne2) {
+                bit = 0;
+                banOne2Used = true;
+            } else if (tile === banAll1 || tile === banAll2) {
+                bit = 0;
+            }
+
+            res |= bit << i;
+        }
+
+        return res;
+    }
+
+    function _enterBark(actStr, clickedTileStr) {
+        frame.deactivate();
+        _actBark = actStr;
+        var banOne1 = "";
+        var banOne2 = "";
+        var banAll1 = "";
+        var banAll2 = "";
+
+        switch (actStr) {
+        case "CHII_AS_LEFT":
+        case "CHII_AS_RIGHT":
+            banOne1 = clickedTileStr;
+            banOne2 = _tileInHand34(_t34Plus(clickedTileStr, +1)); // assume showAka5 == 2
+            banAll1 = _t34Plus(clickedTileStr, -1);
+            banAll2 = _t34Plus(clickedTileStr, +2);
+
+            // soslve t34-plush out of range
+            if (!banAll1)
+                banAll1 = banAll2;
+            if (!banAll2)
+                banAll2 = banAll1;
+
+            break;
+        case "CHII_AS_MIDDLE":
+            banOne1 = clickedTileStr;
+            banOne2 = _tileInHand34(_t34Plus(clickedTileStr, +2)); // assume showAka5 == 2
+            banAll1 = _t34Plus(clickedTileStr, +1);
+            break;
+        case "PON":
+            banAll1 = clickedTileStr;
+            break;
+        default:
+            throw "_enterBark: unexpected actStr " + actStr;
+        }
+
+        _canSwapOutMask = _barkMask(banOne1, banOne2, banAll1, banAll2);
+        _handActivated = true;
     }
 
     function bark(bark, spin) {
@@ -448,7 +530,6 @@ Item {
             var barkModel = {
                 modelMeld: bark,
                 modelFloatAct: "",
-                modelFloatArg: "-1",
                 modelIndex: -1
             };
             barksModel.append(barkModel);
@@ -461,7 +542,6 @@ Item {
             var barkModel = {
                 modelMeld: barks[i],
                 modelFloatAct: "",
-                modelFloatArg: "-1",
                 modelIndex: -1
             };
             barksModel.append(barkModel);
@@ -486,10 +566,7 @@ Item {
 
         var drawnModel = {
             modelTileStr: drawn.tileStr,
-            modelDark: drawn.dark,
-            modelClickable: drawn.clickable,
             modelFloatAct: "",
-            modelFloatArg: "-1"
         };
 
         handModel.insert(inPos, drawnModel);
@@ -497,10 +574,10 @@ Item {
     }
 
     function easyPass() {
-        if (frame.can.tsumokiri) {
+        if (drawn.clickable) {
             _handleDrawnClicked();
-        } else if (frame.can.pass) {
-            frame.actionTriggered("PASS", -765);
+        } else if (_canPass) {
+            frame.actionTriggered("PASS", -1, "");
         }
         // else do nothing
     }

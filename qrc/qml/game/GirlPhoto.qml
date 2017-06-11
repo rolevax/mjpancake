@@ -7,8 +7,6 @@ import "../widget"
 Item {
     id: frame
 
-    signal rivalShotted
-
     property int girlId: -1
     property var user: null
     property bool cache: true
@@ -75,17 +73,6 @@ Item {
         }
     }
 
-    ActionButton {
-        id: rivalButton
-        anchors.centerIn: parent
-        visible: false
-        act: "IRS_RIVAL"
-        mouseArea.onClicked: {
-            deactivate();
-            rivalShotted();
-        }
-    }
-
     function setBars(extra, deposit) {
         var i;
         deposit /= 1000;
@@ -118,13 +105,5 @@ Item {
 
     function removeBars() {
         barList.model.clear();
-    }
-
-    function activateIrsRival() {
-        rivalButton.visible = true;
-    }
-
-    function deactivate() {
-        rivalButton.visible = false;
     }
 }

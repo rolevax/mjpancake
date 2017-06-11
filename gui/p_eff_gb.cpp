@@ -31,14 +31,14 @@ void PEffGb::deal()
     draw();
 }
 
-void PEffGb::action(const QString &actStr, const QString &actArg)
+void PEffGb::action(const QString &actStr, int actArg, const QString &actTile)
 {
     using namespace saki;
-    Action action = readAction(actStr, actArg);
+    Action action = readAction(actStr, actArg, actTile);
     switch (action.act()) {
     case ActCode::SWAP_OUT:
         mInfo.duringKan = false;
-        mHand.swapOut(action.tile());
+        mHand.swapOut(action.t37());
         draw();
         break;
     case ActCode::SPIN_OUT:
@@ -47,7 +47,7 @@ void PEffGb::action(const QString &actStr, const QString &actArg)
         draw();
         break;
     case ActCode::ANKAN:
-        angang(action.tile());
+        angang(action.t34());
         break;
     case ActCode::TSUMO:
         zimo();
@@ -86,13 +86,13 @@ void PEffGb::draw()
     mInfo.emptyMount = mTurn == 27;
 
     QVariantMap actions;
-    std::vector<T34> ankanables;
+    saki::util::Stactor<T34, 3> ankanables;
     bool canTsumo = mHand.stepGb() == -1;
     bool canAnkan = mHand.canAnkan(ankanables, false);
     if (canTsumo)
         actions["TSUMO"] = true;
     if (canAnkan)
-        actions["ANKAN"] = createTileStrsVar(ankanables);
+        actions["ANKAN"] = createTileStrsVar(ankanables.range());
     actions["SPIN_OUT"] = true;
     actions["SWAP_OUT"] = 8191; // 0111_1111_1111
     emit activated(actions);

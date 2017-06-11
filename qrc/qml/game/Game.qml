@@ -51,10 +51,6 @@ PinchArea {
             anchors.left: parent.left
             anchors.topMargin: photoGap
             anchors.leftMargin: photoGap
-            onRivalShotted: {
-                table.deactivate();
-                table.pTable.action("IRS_RIVAL", 2);
-            }
         }
 
         GirlPhoto {
@@ -65,10 +61,6 @@ PinchArea {
             anchors.left: parent.left
             anchors.bottomMargin: photoGap
             anchors.leftMargin: photoGap
-            onRivalShotted: {
-                table.deactivate();
-                table.pTable.action("IRS_RIVAL", 3);
-            }
         }
 
         GirlPhoto {
@@ -79,10 +71,6 @@ PinchArea {
             anchors.right: parent.right
             anchors.topMargin: photoGap
             anchors.rightMargin: photoGap
-            onRivalShotted: {
-                table.deactivate();
-                table.pTable.action("IRS_RIVAL", 1);
-            }
         }
 
         GirlPhoto {
@@ -93,10 +81,6 @@ PinchArea {
             anchors.right: parent.right
             anchors.bottomMargin: photoGap
             anchors.rightMargin: photoGap
-            onRivalShotted: {
-                table.deactivate();
-                table.pTable.action("IRS_RIVAL", 0);
-            }
         }
 
         Table {

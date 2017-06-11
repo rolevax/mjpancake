@@ -185,7 +185,7 @@ void PTableLocal::onRoundEnded(const saki::Table &table, saki::RoundResult resul
     args["gunner"] = gunner.nobody() ? -1 : gunner.index();
     args["hands"] = handsList;
     args["forms"] = formsList;
-    args["urids"] = createTilesVar(table.getMount().getUrids());
+    args["urids"] = createTilesVar(table.getMount().getUrids().range());
     emit tableEvent(PTable::RoundEnded, args);
 }
 
@@ -228,79 +228,51 @@ void PTableLocal::onPoppedUp(const saki::Table &table, saki::Who who)
 void PTableLocal::onActivated(saki::Table &table)
 {
     using AC = saki::ActCode;
+    using Mode = saki::Choices::Mode;
 
     const saki::TableView view = table.getView(mSelf);
+    const saki::Choices &choices = view.myChoices();
 
-    if (table.riichiEstablished(mSelf) && view.iCanOnlySpin()) {
+    if (table.riichiEstablished(mSelf) && choices.spinOnly()) {
         emitJustPause(300); // a little pause
         table.action(mSelf, saki::Action(AC::SPIN_OUT));
         return;
     }
 
-    int focusWho;
-    if (view.iCan(AC::CHII_AS_LEFT)
-            || view.iCan(AC::CHII_AS_MIDDLE)
-            || view.iCan(AC::CHII_AS_RIGHT)
-            || view.iCan(AC::PON)
-            || view.iCan(AC::DAIMINKAN)
-            || view.iCan(AC::RON)) {
-        focusWho = view.getFocus().who().index();
-    } else {
-        focusWho = -1;
-    }
-
     QVariantMap map;
+    int focusWho = -1;
 
-    if (view.iCan(AC::SWAP_OUT)) {
-        map.insert(stringOf(AC::SWAP_OUT),
-                   createSwapMask(table.getHand(mSelf).closed(), view.mySwappables()));
+    switch (choices.mode()) {
+    case Mode::WATCH:
+        break;
+    case Mode::CUT:
+        activateIrsCheck(map, view);
+        break;
+    case Mode::DICE:
+        map.insert(stringOf(AC::DICE), true);
+        break;
+    case Mode::DRAWN:
+        activateDrawn(map, view);
+        break;
+    case Mode::BARK:
+        focusWho = view.getFocus().who().index();
+        activateBark(map, view);
+        break;
+    case Mode::END:
+        if (choices.can(AC::END_TABLE))
+            map.insert(stringOf(AC::END_TABLE), true);
+        if (choices.can(AC::NEXT_ROUND))
+            map.insert(stringOf(AC::NEXT_ROUND), true);
+        break;
     }
 
-    if (view.iCan(AC::ANKAN)) {
-        map.insert(stringOf(AC::ANKAN), createTileStrsVar(view.myAnkanables()));
-    }
-
-    if (view.iCan(AC::KAKAN)) {
-        QVariantList list;
-        for (int barkId : view.myKakanables())
-            list << barkId;
-        map.insert(stringOf(AC::KAKAN), QVariant::fromValue(list));
-    }
-
-    if (view.iCan(AC::IRS_CHECK)) {
-        const saki::Girl &girl = table.getGirl(mSelf);
-        int prediceCount = girl.irsCheckCount();
-        QVariantList list;
-        for (int i = 0; i < prediceCount; i++)
-            list << createIrsCheckRowVar(girl.irsCheckRow(i));
-        map.insert(stringOf(AC::IRS_CHECK), QVariant::fromValue(list));
-    }
-
-    if (view.iCan(AC::IRS_RIVAL)) {
-        const saki::Girl &girl = table.getGirl(mSelf);
-        QVariantList list;
-        for (int i = 0; i < 4; i++)
-            if (girl.irsRivalMask()[i])
-                list << i;
-        map.insert(stringOf(AC::IRS_RIVAL), QVariant::fromValue(list));
-    }
-
-    static const AC just[] = {
-        AC::PASS, AC::SPIN_OUT,
-        AC::CHII_AS_LEFT, AC::CHII_AS_MIDDLE, AC::CHII_AS_RIGHT,
-        AC::PON, AC::DAIMINKAN, AC::RIICHI,
-        AC::RON, AC::TSUMO, AC::RYUUKYOKU,
-        AC::END_TABLE, AC::NEXT_ROUND, AC::DICE, AC::IRS_CLICK
-    };
-
-    for (AC code : just)
-        if (view.iCan(code))
-            map.insert(stringOf(code), true);
+    if (choices.can(AC::IRS_CLICK))
+        map.insert(stringOf(AC::NEXT_ROUND), true);
 
     QVariantMap args;
     args["action"] = map;
     args["lastDiscarder"] = focusWho;
-    args["green"] = view.iForwardAll();
+    args["green"] = view.myChoices().forwardAll();
     args["nonce"] = -1;
     emit tableEvent(PTable::Activated, args);
 }
@@ -341,9 +313,9 @@ void PTableLocal::start(const QVariant &girlIdsVar, const QVariant &gameRule, in
     mTable->start();
 }
 
-void PTableLocal::action(QString actStr, const QVariant &actArg)
+void PTableLocal::action(QString actStr, int actArg, const QString &actTile)
 {
-    saki::Action action = readAction(actStr, actArg);
+    saki::Action action = readAction(actStr, actArg, actTile);
     mTable->action(saki::Who(0), action);
 }
 
@@ -381,6 +353,58 @@ void PTableLocal::emitJustPause(int ms)
     QVariantMap args;
     args["ms"] = ms;
     emit tableEvent(PTable::JustPause, args);
+}
+
+void PTableLocal::activateDrawn(QVariantMap &map, const saki::TableView &view)
+{
+    using AC = saki::ActCode;
+
+    for (AC ac : { AC::SPIN_OUT, AC::SPIN_RIICHI, AC::TSUMO, AC::RYUUKYOKU })
+        if (view.myChoices().can(ac))
+            map.insert(stringOf(ac), true);
+
+    const saki::Choices::ModeDrawn &mode = view.myChoices().drawn();
+
+    if (mode.swapOut)
+        map.insert(stringOf(AC::SWAP_OUT), (1 << 13) - 1);
+
+    if (!mode.swapRiichis.empty())
+        map.insert(stringOf(AC::SWAP_RIICHI), createSwapMask(view.myHand().closed(), mode.swapRiichis));
+
+    if (!mode.ankans.empty())
+        map.insert(stringOf(AC::ANKAN), createTileStrsVar(mode.ankans.range()));
+
+    if (!mode.kakans.empty()) {
+        QVariantList list;
+        for (int barkId : mode.kakans)
+            list << barkId;
+        map.insert(stringOf(AC::KAKAN), QVariant::fromValue(list));
+    }
+}
+
+void PTableLocal::activateBark(QVariantMap &map, const saki::TableView &view)
+{
+    using AC = saki::ActCode;
+
+    std::array<AC, 7> just {
+        AC::PASS,
+        AC::CHII_AS_LEFT, AC::CHII_AS_MIDDLE, AC::CHII_AS_RIGHT,
+        AC::PON, AC::DAIMINKAN, AC::RON
+    };
+
+    for (AC ac : just)
+        if (view.myChoices().can(ac))
+            map.insert(stringOf(ac), true);
+}
+
+void PTableLocal::activateIrsCheck(QVariantMap &map, const saki::TableView &view)
+{
+    const saki::Girl &girl = view.me();
+    int prediceCount = girl.irsCheckCount();
+    QVariantList list;
+    for (int i = 0; i < prediceCount; i++)
+        list << createIrsCheckRowVar(girl.irsCheckRow(i));
+    map.insert(stringOf(saki::ActCode::IRS_CHECK), QVariant::fromValue(list));
 }
 
 

@@ -1,7 +1,7 @@
 #ifndef P_PORT_H
 #define P_PORT_H
 
-#include "libsaki/tilecount.h"
+#include "libsaki/tile_count.h"
 #include "libsaki/form.h"
 #include "libsaki/replay.h"
 
@@ -27,11 +27,12 @@ namespace saki
 QString createTileVar(const saki::T37 &t, bool lay = false);
 QStringList createTilesVar(const saki::TileCount &count);
 QStringList createTilesVar(const std::vector<saki::T37> &tiles);
-QVariant createTileStrsVar(const std::vector<saki::T34> &tiles);
+QStringList createTilesVar(const saki::util::Range<saki::T37> &tiles);
+QVariant createTileStrsVar(const saki::util::Range<saki::T34> &tiles);
 unsigned createSwapMask(const saki::TileCount &count,
-                        const std::vector<saki::T37> &choices);
+                        const saki::util::Stactor<saki::T37, 13> &choices);
 QVariant createBarkVar(const saki::M37 &m);
-QVariant createBarksVar(const std::vector<saki::M37> &ms);
+QVariant createBarksVar(const saki::util::Stactor<saki::M37, 4> &ms);
 QVariantMap createFormVar(const char *spell, const char *charge);
 QVariant createIrsCheckRowVar(const saki::IrsCheckRow &row);
 
@@ -47,7 +48,7 @@ saki::RuleInfo readRuleJson(const QJsonObject &obj);
 saki::Replay::Round readRoundJson(const QJsonObject &obj);
 saki::Replay::Track readTrackJson(const QJsonObject &obj);
 
-saki::Action readAction(const QString &actStr, const QVariant &actArg);
+saki::Action readAction(const QString &actStr, int actArg, const QString &actTile);
 
 template<typename T>
 QJsonArray std2json(const T &arr);
