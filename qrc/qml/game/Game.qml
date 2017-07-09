@@ -5,6 +5,8 @@ import "../widget"
 PinchArea {
     id: frame
 
+    signal closed
+
     property alias table: table
 
     // 3 * photoGap + 2 * photoHeight == parent.height
@@ -14,12 +16,6 @@ PinchArea {
     property int photoGap: 0.02 * height
 
     anchors.fill: parent
-
-    Image{
-        id: background
-        anchors.fill: parent
-        source: "image://impro/background"
-    }
 
     MouseArea { // right/double-click to pass/tsumokiri
         anchors.fill: parent
@@ -100,6 +96,11 @@ PinchArea {
         }
     }
 
+    Connections {
+        target: table
+        onClosed: { frame.closed(); }
+    }
+
     onPinchStarted: {
         table.handlePinchStarted();
     }
@@ -123,6 +124,7 @@ PinchArea {
     function startSample() {
         // one uncahed image client to affect the image provider
         // across the whole program
+        // FUCK what's this...?? what did i mean above??
         background.cache = false;
         table.setGirlIds([ 713315, 713335, 713345, 713325 ]);
         table.pTable.startSample();

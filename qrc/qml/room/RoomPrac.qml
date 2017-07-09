@@ -11,37 +11,22 @@ Room {
         Buzzon {
             text: "AI战"
             textLength: 8
-            onClicked: { loader.source = "RoomGameFree.qml"; }
+            onClicked: { global.pushScene("room/RoomGameFree"); }
             anchors.horizontalCenter: parent.horizontalCenter
         }
 
         Buzzon {
             text: "牌效练习"
             textLength: 8
-            onClicked: { loader.source = "RoomEff.qml"; }
+            onClicked: { global.pushScene("room/RoomEff"); }
             anchors.horizontalCenter: parent.horizontalCenter
         }
 
         Buzzon {
             text: "国标练习"
             textLength: 8
-            onClicked: { loader.source = "RoomEffGB.qml"; }
+            onClicked: { global.pushScene("room/RoomEffGB"); }
             anchors.horizontalCenter: parent.horizontalCenter
         }
     }
-
-    Loader {
-        id: loader
-        anchors.fill: parent
-        onLoaded: {
-            room.focus = false;
-            loader.focus = true;
-            item.closed.connect(closeRoom);
-        }
-    }
-
-    function closeRoom() {
-        loader.source = "";
-    }
-
 }

@@ -114,6 +114,7 @@ HEADERS += \
     libsaki/tableoperator.h \
     libsaki/test.h \
     libsaki/tile.h \
+    libsaki/tile_count.h \
     libsaki/util.h \
     libsaki/util_stactor.h \
     libsaki/who.h \
@@ -128,8 +129,7 @@ HEADERS += \
     gui/p_port.h \
     gui/p_replay.h \
     gui/p_table.h \
-    gui/p_table_local.h \
-    libsaki/tile_count.h
+    gui/p_table_local.h
 
 
 
