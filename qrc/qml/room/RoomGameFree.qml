@@ -131,9 +131,10 @@ Room {
 
     function loadTable() {
         _shuffleRivals();
-        loader.source = "../game/Game.qml";
+        global.pushScene("game/Game");
     }
 
+    // deprecated
     function closeTable() {
         loader.source = "";
     }
@@ -162,6 +163,7 @@ Room {
         }
     }
 
+    /* FUCK
     Loader {
         id: loader
         anchors.fill: parent
@@ -178,7 +180,9 @@ Room {
             startTimer.start();
         }
     }
+    */
 
+    // FUCK move to Game.qml??? every one use inheritance?
     Timer {
         // delay one frame to solve android crash somehow
         id: startTimer

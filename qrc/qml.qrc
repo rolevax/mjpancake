@@ -42,11 +42,7 @@
         <file>qml/room/RoomClient.qml</file>
         <file>qml/room/RoomGameFree.qml</file>
         <file>qml/room/RoomGen.qml</file>
-        <file>qml/room/RoomHelp.qml</file>
-        <file>qml/room/RoomHelpFaq.qml</file>
-        <file>qml/room/RoomHelpGirls.qml</file>
         <file>qml/room/RoomHelpOp.qml</file>
-        <file>qml/room/RoomHelpRules.qml</file>
         <file>qml/room/RoomReplay.qml</file>
         <file>qml/room/RoomSettings.qml</file>
         <file>qml/room/RoomSignUp.qml</file>
@@ -59,10 +55,8 @@
         <file>qml/room/RoomEff.qml</file>
         <file>qml/room/RoomEffGB.qml</file>
         <file>qml/widget/Fligable.qml</file>
-        <file>qml/room/RoomHelpAdv.qml</file>
         <file>qml/area/AreaChoose.qml</file>
         <file>qml/widget/TimeBar.qml</file>
-        <file>qml/room/RoomHelpRank.qml</file>
         <file>qml/room/RoomTools.qml</file>
         <file>qml/game/Mount.qml</file>
         <file>qml/area/GirlMenu.qml</file>
@@ -75,5 +69,6 @@
         <file>qml/room/RoomQuit.qml</file>
         <file>qml/area/AreaTitle.qml</file>
         <file>qml/game/ActionToggle.qml</file>
+        <file>qml/room/RoomMain.qml</file>
     </qresource>
 </RCC>

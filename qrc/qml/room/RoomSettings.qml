@@ -64,11 +64,7 @@ Room {
         }
     }
 
-    Loader {
-        id: loader
-        anchors.fill: parent
-    }
-
+    // FUCK use an inherited GameBgConfig.qml
     Row {
         id: backgroundButtons
         spacing: global.size.space

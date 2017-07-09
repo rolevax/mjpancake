@@ -2,13 +2,12 @@ import QtQuick 2.7
 import rolevax.sakilogy 1.0
 import "../widget"
 
-Rectangle {
+Item {
     id: room
 
     signal closed
 
     anchors.fill: parent
-    color: PGlobal.themeBack
 
     MouseArea {
         anchors.fill: parent

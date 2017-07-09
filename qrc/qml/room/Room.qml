@@ -2,13 +2,13 @@ import QtQuick 2.7
 import rolevax.sakilogy 1.0
 import "../widget"
 
-Rectangle {
+Item {
     signal closed
 
     property int backButtonZ: 0
+    property bool showReturnButton: true
 
     anchors.fill: parent
-    color: PGlobal.themeBack
 
     MouseArea {
         // prevent click piercing
@@ -20,6 +20,7 @@ Rectangle {
     }
 
     Buzzon {
+        visible: showReturnButton
         anchors.left: parent.left
         anchors.bottom: parent.bottom
         anchors.margins: global.size.space
