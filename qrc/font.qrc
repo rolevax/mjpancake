@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>font/wqy-microhei.ttf</file>
+        <file>qml/room/RoomMain.qml</file>
     </qresource>
 </RCC>
