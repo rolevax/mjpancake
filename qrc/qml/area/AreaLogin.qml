@@ -5,7 +5,6 @@ import "../widget"
 Column {
     id: frame
 
-    signal signUpClicked
     property bool frozen: false
 
     spacing: global.size.space
@@ -52,15 +51,6 @@ Column {
             frozen = true;
             loginErrorText.text = "";
             PClient.login(unInput.text.trim(), pwInput.text);
-        }
-    }
-
-    Buzzon {
-        textLength: 8
-        text: "入坑"
-        visible: unInput.text === "" && pwInput.text === ""
-        onClicked: {
-            frame.signUpClicked();
         }
     }
 

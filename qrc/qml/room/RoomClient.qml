@@ -7,114 +7,56 @@ import "../game"
 Room {
     id: room
 
-    property var girlIds: [ 0, 0, 0, 0 ]
-    property var users: [ null, null, null, null ]
-    property int tempDealer
+    backButtonZ: 10
 
-    Column {
-        anchors.centerIn: parent
-        spacing: global.size.gap
+    property bool _playing: false
+    property bool _frozen: false
 
-        AreaTitle {
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
+    Game {
+        id: game
+        focus: true
+        table.tileSet: "std"
+    }
+
+    Rectangle {
+        visible: !_playing
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.margins: global.size.space
+        color: "#AA000000"
+        height: areaBook.height + 2 * global.size.gap
+        width: areaBook.width + 2 * global.size.gap
 
         Row {
-            anchors.horizontalCenter: parent.horizontalCenter
-            spacing: 2 * global.size.gap
+            id: areaBook
+            spacing: global.size.space
+            anchors.centerIn: parent
 
-            Column {
-                anchors.verticalCenter: parent.verticalCenter
-
-                Repeater {
-                    model: PClient.water
-                    delegate: Texd {
-                        text: modelData
-                    }
-                }
-
-                Texd {
-                    text: "在线人数: " + PClient.connCt
+            Buxxon {
+                id: singleButton
+                text: "单人战"
+                textLength: 6
+                image: "/pic/icon/book.png"
+                enabled: !_frozen
+                onClicked: {
+                    _frozen = true;
+                    PClient.sendRoomCreate();
                 }
             }
 
-            Rectangle {
-                width: 1
-                height: parent.height
-                color: PGlobal.themeText
-                opacity: 0.5
+            Buxxon {
+                text: "四人战"
+                enabled: false
+                textLength: 6
+                image: "/pic/icon/book.png"
             }
-
-            AreaOp {
-                id: areaOp
-                anchors.verticalCenter: parent.verticalCenter
-            }
-        }
-
-        Texd {
-            anchors.horizontalCenter: parent.horizontalCenter
-            horizontalAlignment: Text.AlignHCenter
-            text: "凑桌/讨论QQ群 253708512<br/>" +
-                  "目前整体人少，凑桌基本靠吼<br/>" +
-                  "约桌时间集中在晚上或周末"
-        }
-    }
-
-    function _closeTable() {
-        loader.source = "";
-    }
-
-    Loader {
-        id: loader
-        anchors.fill: parent
-        onLoaded: {
-            // need these to enable keyboard and android 'back' key inside table
-            room.focus = false;
-            loader.focus = true;
-
-            item.table.tileSet = "std";
-            item.table.setGirlIds(girlIds);
-            item.table.setUsers(users);
-            item.table.middle.setDealer(tempDealer, true);
-            item.table.closed.connect(_closeTable);
-
-            startTimer.start();
-        }
-    }
-
-    AreaStage {
-        id: areaStage
-        users: room.users
-        girlIds: room.girlIds
-        onReadyClicked: {
-            PClient.sendReady();
-        }
-    }
-
-    AreaChoose {
-        id: areaChoose
-        users: room.users
-        onChosen: {
-            PClient.sendChoose(girlIndex);
-        }
-    }
-
-    Timer {
-        id: startTimer
-        interval: 100 // make sure state splash animation has started
-        onTriggered: {
-            loader.item.startOnline(PClient);
-            if (areaStage.visible)
-                areaStage.showReady = true;
-            else
-                PClient.sendResume();
         }
     }
 
     Timer {
         interval: 5000
         repeat: true
-        running: loader.source == "" && !areaChoose.visible && !areaStage.visible
+        running: !_playing
         triggeredOnStart: true
         onTriggered: {
             PClient.lookAround();
@@ -124,39 +66,24 @@ Room {
     Connections {
         target: PClient
 
-        onChosenIn: {
-            room.girlIds = girlIds;
-            // somehow variants are not binded... fuck qml
-            areaStage.girlIds = room.girlIds;
-            areaStage.users = room.users;
-            areaChoose.visible = false;
-            areaStage.splash();
-
-            loader.source = "../game/Game.qml";
-        }
-
-        onResumeIn: {
-            loader.source = "../game/Game.qml";
-        }
-
-        onRemoteClosed: {
-            closed();
-        }
-
-        onTableEvent: {
-            areaStage.visible = false;
+        onSeatIn: {
+            handleSeatIn(room.Users, room.Gids, tempDealer);
         }
     }
 
-    function handleStartIn(tempDealer, users, choices) {
-        PClient.unbook(); // just pop book buttons
+    Component.onCompleted: {
+        game.table.setGirlIds([ global.currGirlId, -1, -1, -1 ]);
+    }
 
-        room.tempDealer = tempDealer;
+    function handleSeatIn(users, girlIds, tempDealer) {
+        _playing = true;
 
-        for (var i = 0; i < 4; i++)
-            room.users[i] = users[i];
-        areaChoose.users = room.users;
-        areaChoose.choices = choices;
-        areaChoose.splash();
+        game.table.setGirlIds(girlIds);
+        game.table.setUsers(users);
+        game.table.middle.setDealer(tempDealer, true);
+
+        game.startOnline(PClient);
+
+        PClient.sendSeat();
     }
 }

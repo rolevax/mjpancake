@@ -40,14 +40,6 @@ Room {
         }
 
         Buzzon {
-            text: PGlobal.nightMode ? "开灯" : "关灯"
-            textLength: 8
-            onClicked: {
-                PGlobal.nightMode = !PGlobal.nightMode;
-            }
-        }
-
-        Buzzon {
             text: PGlobal.savePassword ? "保存密码 O" : "保存密码 X"
             textLength: 8
             onClicked: {

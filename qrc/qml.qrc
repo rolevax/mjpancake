@@ -46,7 +46,6 @@
         <file>qml/room/RoomReplay.qml</file>
         <file>qml/room/RoomSettings.qml</file>
         <file>qml/room/RoomSignUp.qml</file>
-        <file>qml/room/RoomSplash.qml</file>
         <file>qml/area/AreaBookRow.qml</file>
         <file>qml/js/nettrans.js</file>
         <file>qml/area/AreaStage.qml</file>
@@ -63,12 +62,14 @@
         <file>qml/room/RoomSettingsPhoto.qml</file>
         <file>qml/widget/ChegList.qml</file>
         <file>qml/widget/TabBager.qml</file>
-        <file>qml/room/RoomStats.qml</file>
         <file>qml/area/AreaBigStats.qml</file>
         <file>qml/widget/LisdView.qml</file>
-        <file>qml/room/RoomQuit.qml</file>
         <file>qml/area/AreaTitle.qml</file>
         <file>qml/game/ActionToggle.qml</file>
         <file>qml/room/RoomMain.qml</file>
+        <file>qml/widget/Buxxon.qml</file>
+        <file>qml/room/RoomFuncs.qml</file>
+        <file>qml/room/RoomChoose.qml</file>
+        <file>qml/area/AreaProfile.qml</file>
     </qresource>
 </RCC>

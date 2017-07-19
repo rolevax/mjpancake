@@ -6,9 +6,9 @@ import "../widget"
 Item {
     id: frame
 
-    property int currGirlId: 0
+    readonly property int currGirlId: girlIds ? girlIds[currIndex] : -1
     property int currIndex: 0
-    property var girlIds: []
+    property var girlIds: null
 
     // height set by parent
     width: global.size.middleFont * 7

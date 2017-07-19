@@ -33,11 +33,11 @@ public:
     static PClient &instance();
 
     Q_INVOKABLE void login(const QString &username, const QString &password);
-    Q_INVOKABLE void signUp(const QString &username, const QString &password);
     Q_INVOKABLE void lookAround();
     Q_INVOKABLE void book(int bookType);
     Q_INVOKABLE void unbook();
-    Q_INVOKABLE void sendReady();
+    Q_INVOKABLE void sendRoomCreate();
+    Q_INVOKABLE void sendSeat();
     Q_INVOKABLE void sendChoose(int girlIndex);
     Q_INVOKABLE void sendResume();
 
@@ -61,7 +61,7 @@ signals:
     void remoteClosed();
     void connError();
     void authFailIn(const QString &reason);
-    void startIn(const QVariantList &users, const QVariantList &choices, int tempDealer);
+    void seatIn(const QVariantMap &room, int tempDealer);
     void chosenIn(const QVariantList &girlIds);
     void resumeIn();
     void replayListIn(const QVariantList &replayIds);
@@ -86,7 +86,6 @@ private slots:
     void heartbeat();
 
 private:
-    QString hash(const QString &password) const;
     void updateStats(const QVariantList &stats);
 
 private:
