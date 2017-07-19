@@ -7,7 +7,6 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
-#include <QCryptographicHash>
 #include <QDebug>
 
 #include <array>
@@ -50,23 +49,10 @@ void PClient::login(const QString &username, const QString &password)
     PGlobal::forceImmersive();
     mSocket.conn([=]() {
         QJsonObject req;
-        req["Type"] = "login";
+        req["Type"] = "auth";
         req["Version"] = PGlobal::version();
         req["Username"] = username;
-        req["Password"] = hash(password);
-        mSocket.send(req);
-    });
-}
-
-void PClient::signUp(const QString &username, const QString &password)
-{
-    PGlobal::forceImmersive();
-    mSocket.conn([=]() {
-        QJsonObject req;
-        req["Type"] = "sign-up";
-        req["Version"] = PGlobal::version();
-        req["Username"] = username;
-        req["Password"] = hash(password);
+        req["Password"] = password;
         mSocket.send(req);
     });
 }
@@ -100,10 +86,19 @@ void PClient::unbook()
     mSocket.send(req);
 }
 
-void PClient::sendReady()
+void PClient::sendRoomCreate()
 {
     QJsonObject req;
-    req["Type"] = "ready";
+    req["Type"] = "room-create";
+    req["AiNum"] = 2;
+    req["AiGids"] = QJsonArray{ 0, 0, 0 };
+    mSocket.send(req);
+}
+
+void PClient::sendSeat()
+{
+    QJsonObject req;
+    req["Type"] = "seat";
     mSocket.send(req);
 }
 
@@ -118,7 +113,7 @@ void PClient::sendChoose(int girlIndex)
 void PClient::sendResume()
 {
     QJsonObject req;
-    req["Type"] = "t-action";
+    req["Type"] = "action";
     req["ActStr"] = "RESUME";
     req["ActArg"] = "-1";
     req["Nonce"] = 0;
@@ -217,7 +212,7 @@ QVariantList PClient::water() const
 void PClient::action(QString actStr, int actArg, const QString &actTile)
 {
     QJsonObject req;
-    req["Type"] = "t-action";
+    req["Type"] = "action";
     req["Nonce"] = mLastNonce;
     req["ActStr"] = actStr;
     if (actArg != -1)
@@ -287,30 +282,30 @@ void PClient::onJsonReceived(const QJsonObject &msg)
 {
     QString type = msg["Type"].toString();
     if (type == "auth") {
-        bool ok = msg["Ok"].toBool(false);
-        if (ok) {
+        QString error = msg["Error"].toString();
+        if (error.isEmpty()) {
             mUser = msg["User"].toObject().toVariantMap();
             emit userChanged();
+            updateStats(msg["Stats"].toArray().toVariantList());
         } else {
             mUser.clear();
             emit userChanged();
-            emit authFailIn(msg["Reason"].toString());
+            emit authFailIn(error);
         }
     } else if (type == "look-around") {
         mConnCt = msg["Conn"].toInt();
         mBooks = msg["Books"].toArray().toVariantList();
         mWater = msg["Water"].toArray().toVariantList();
         emit lookedAround();
-    } else if (type == "start") {
+    } else if (type == "seat") {
         // wait for Qt 5.9 release,
         // and notify from background by Android service + Qt Remote Object
         //PGlobal::systemNotify();
         mLastNonce = 0;
         emit lastNonceChanged();
-        QJsonArray users = msg["Users"].toArray();
-        QJsonArray choices = msg["Choices"].toArray();
+        QJsonObject room = msg["Room"].toObject();
         int tempDealer = msg["TempDealer"].toInt();
-        emit startIn(users.toVariantList(), choices.toVariantList(), tempDealer);
+        emit seatIn(room.toVariantMap(), tempDealer);
     } else if (type == "chosen") {
         QJsonArray girlIds = msg["GirlIds"].toArray();
         emit chosenIn(girlIds.toVariantList());
@@ -318,7 +313,7 @@ void PClient::onJsonReceived(const QJsonObject &msg)
         mLastNonce = 0;
         emit lastNonceChanged();
         emit resumeIn();
-    } else if (type == "table") {
+    } else if (type == "table-event") {
         recvTableEvent(msg);
     } else if (type == "update-user") {
         mUser = msg["User"].toObject().toVariantMap();
@@ -359,122 +354,9 @@ void PClient::heartbeat()
     }
 }
 
-QString PClient::hash(const QString &password) const
-{
-    QCryptographicHash hasher(QCryptographicHash::Sha256);
-    hasher.addData(password.toUtf8());
-    return QString::fromUtf8(hasher.result().toBase64());
-}
-
 void PClient::updateStats(const QVariantList &stats)
 {
-    const std::array<const char*, 42> yakuKeys {
-        "Rci", "Ipt", "Tmo", "Tny", "Pnf",
-        "Y1y", "Y2y", "Y3y",
-        "Jk1", "Jk2", "Jk3", "Jk4", "Bk1", "Bk2", "Bk3", "Bk4",
-        "Ipk", "Rns", "Hai", "Hou", "Ckn", "Ss1", "It1", "Ct1",
-        "Wri", "Ss2", "It2", "Ct2",
-        "Toi", "Ctt", "Sak", "Skt",
-        "Stk", "Hrt", "S3g", "H1t", "Jc2",
-        "Mnh", "Jc3", "Rpk", "C1t", "Mnc"
-    };
-    const std::array<const char*, 42> yakuHans {
-        "RciHan", "IptHan", "TmoHan", "TnyHan", "PnfHan",
-        "Y1yHan", "Y2yHan", "Y3yHan",
-        "Jk1Han", "Jk2Han", "Jk3Han", "Jk4Han", "Bk1Han", "Bk2Han", "Bk3Han", "Bk4Han",
-        "IpkHan", "RnsHan", "HaiHan", "HouHan", "CknHan", "Ss1Han", "It1Han", "Ct1Han",
-        "WriHan", "Ss2Han", "It2Han", "Ct2Han",
-        "ToiHan", "CttHan", "SakHan", "SktHan",
-        "StkHan", "HrtHan", "S3gHan", "H1tHan", "Jc2Han",
-        "MnhHan", "Jc3Han", "RpkHan", "C1tHan", "MncHan"
-    };
-    const std::array<const char*, 16> yakumanKeys {
-        "X13", "Xd3", "X4a", "Xt1", "Xs4", "Xd4",
-        "Xcr", "Xr1", "Xth", "Xch", "X4k", "X9r",
-        "W13", "W4a", "W9r", "Kzeykm"
-    };
-
-    QVariantMap summary;
-
-    summary["GirlId"] = -2;
-    summary["Round"] = 0; // prevent undefined
-
-    QVariantList sumRanks { 0, 0, 0, 0 };
-    int sumPlay = 0;
-    double avgPoint = 0;
-    int sumWin = 0;
-    double avgWinPoint = 0;
-    double avgWinTurn = 0;
-
-    for (const auto &statRow : stats) {
-        const auto &rowMap = statRow.toMap();
-        const auto &ranks = rowMap["Ranks"].toList();
-        int currPlay = 0;
-        for (int i = 0; i < 4; i++) {
-            sumRanks[i] = sumRanks[i].toInt() + ranks.at(i).toInt();
-            currPlay += ranks.at(i).toInt();
-        }
-
-        auto add = [&](const char *key) {
-            int curr = rowMap[key].toInt();
-            summary[key] = summary[key].toInt(0) + curr;
-        };
-
-        auto addAndAvg = [&](const char *sumKey, const char *avgKey) {
-            int currCt = rowMap[sumKey].toInt();
-            int oldCt = summary[sumKey].toInt(0);
-            double oldVal = summary[avgKey].toDouble(0);
-            if (currCt > 0) {
-                double currVal = rowMap[avgKey].toDouble();
-                summary[avgKey] = (oldVal * oldCt + currVal * currCt) / (oldCt + currCt);
-                summary[sumKey] = oldCt + currCt;
-            } else {
-                // make sure not undefined
-                summary[avgKey] = oldVal;
-                summary[sumKey] = oldCt;
-            }
-        };
-
-        int currWin = rowMap["Win"].toInt();
-        // weighted average among all girls
-        avgPoint = (avgPoint * sumPlay + rowMap["AvgPoint"].toDouble() * currPlay)
-                / (sumPlay + currPlay);
-        if (currWin > 0) {
-            avgWinPoint = (avgWinPoint * sumWin + rowMap["WinPoint"].toDouble() * currWin)
-                    / (sumWin + currWin);
-            avgWinTurn = (avgWinTurn * sumWin + rowMap["WinTurn"].toDouble() * currWin)
-                    / (sumWin + currWin);
-        }
-
-        add("Round");
-        add("ATop");
-        add("ALast");
-        addAndAvg("Gun", "GunPoint");
-        addAndAvg("Bark", "BarkPoint");
-        addAndAvg("Riichi", "RiichiPoint");
-        addAndAvg("Ready", "ReadyTurn");
-
-        for (size_t i = 0; i < yakuKeys.size(); i++)
-            addAndAvg(yakuKeys[i], yakuHans[i]);
-
-        for (const char *key : yakumanKeys)
-            add(key);
-        for (const char *key : { "Dora", "Uradora", "Akadora", "Kandora", "Kanuradora" })
-            add(key);
-
-        sumPlay += currPlay;
-        sumWin += currWin;
-    }
-
-    summary["Ranks"] = sumRanks;
-    summary["AvgPoint"] = avgPoint;
-    summary["Win"] = sumWin;
-    summary["WinPoint"] = avgWinPoint;
-    summary["WinTurn"] = avgWinTurn;
-
     mStats = stats;
-    mStats.insert(0, summary);
-
     emit statsChanged();
 }
 

@@ -68,7 +68,7 @@ void PGlobal::systemNotify()
 
 QString PGlobal::version()
 {
-    return QString("0.8.2");
+    return QString("0.8.3");
 }
 
 QString PGlobal::configPath()
@@ -105,27 +105,14 @@ void PGlobal::setBackColors(const QVariant &v)
     emit backColorsChanged();
 }
 
-bool PGlobal::nightMode() const
-{
-    return mRoot["nightMode"].toBool();
-}
-
-void PGlobal::setNightMode(bool v)
-{
-    mRoot["nightMode"] = v;
-    emit nightModeChanged();
-    emit themeBackChanged();
-    emit themeTextChanged();
-}
-
 QColor PGlobal::themeBack() const
 {
-    return mRoot["nightMode"].toBool() ? QColor("#202030") : QColor("#FFFFFF");
+    return QColor("#202030");
 }
 
 QColor PGlobal::themeText() const
 {
-    return mRoot["nightMode"].toBool() ? QColor("#AAAAAA") : QColor("#111111");
+    return QColor("#AAAAAA");
 }
 
 QString PGlobal::savedUsername() const
@@ -201,14 +188,11 @@ void PGlobal::regulateRoot()
     if (!mRoot["backColors"].isArray())
         mRoot["backColors"] = QJsonArray{ "#DD9900", "#111166" };
 
-    if (!mRoot["nightMode"].isBool())
-        mRoot["nightMode"] = false;
-
     if (!mRoot["savedUsername"].isString())
         mRoot["savedUsername"] = QString();
 
     if (!mRoot["savePassword"].isBool())
-        mRoot["savePassword"] = false;
+        mRoot["savePassword"] = true;
 
     if (!mRoot["savedPassword"].isString())
         mRoot["savedPassword"] = QString();

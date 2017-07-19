@@ -11,6 +11,8 @@ Item {
     property var user: null
     property bool cache: true
 
+    visible: girlId !== -1
+
     Rectangle {
         anchors.fill: parent
         color: "#33AAAACC"

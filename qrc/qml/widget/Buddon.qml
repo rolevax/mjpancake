@@ -18,8 +18,15 @@ Rectangle {
     height: 1.5 * fontSize
     color: "#333344"
     opacity: enabled ? 1.0 : 0.5
-    border.width: Math.max(0.03 * height, 1)
+    border.width: Math.max(0.2 * global.size.space, 1)
     border.color: "white"
+
+    transform: Scale {
+        origin.x: width / 2
+        origin.y: height / 2
+        xScale: mouseArea.containsPress ? 0.95 : 1
+        yScale: mouseArea.containsPress ? 0.9 : 1
+    }
 
     Rectangle {
         anchors.fill: parent

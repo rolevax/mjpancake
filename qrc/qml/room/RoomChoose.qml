@@ -8,10 +8,6 @@ import "../game"
 Room {
     id: room
 
-    Connections {
-        target: PClient
-    }
-
     Item {
         anchors.left: parent.left
         anchors.right: girlMenu.left
@@ -22,17 +18,25 @@ Room {
         anchors.topMargin: 0.1 * parent.height
         anchors.bottomMargin: 0.1 * parent.height
 
-        AreaTitle {
-            id: title
-            anchors.top: parent.top
-            anchors.horizontalCenter: parent.horizontalCenter
+        AreaProfile {
+            visible: !diagStat.visible
+            anchors.fill: parent
+            anchors.margins: 0.05 * parent.width
+            girlId: girlMenu.currGirlId
+
+            onStatClicked: {
+                diagStat.visible = true;
+            }
+
+            onEnterClicked: {
+                global.pushScene("room/RoomClient");
+            }
         }
 
         AreaBigStats {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: title.bottom
-            anchors.bottom: parent.bottom
+            id: diagStat
+            visible: false
+            anchors.fill: parent
             currIndex: girlMenu.currIndex
         }
     }
@@ -44,8 +48,7 @@ Room {
         anchors.rightMargin: 0.05 * parent.width
         anchors.verticalCenter: parent.verticalCenter
         girlIds: PClient.playedGirlIds
-        currGirlId: -2 // summary
-        onCurrGirlIdChanged: {}
+        onCurrGirlIdChanged: { global.currGirlId = currGirlId; }
         Component.onCompleted: { currGirlIdChanged(); }
     }
 }
