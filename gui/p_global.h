@@ -17,7 +17,6 @@ public:
 
     Q_PROPERTY(QString version READ version NOTIFY versionChanged)
     Q_PROPERTY(QVariant backColors READ backColors WRITE setBackColors NOTIFY backColorsChanged)
-    Q_PROPERTY(bool nightMode READ nightMode WRITE setNightMode NOTIFY nightModeChanged)
     Q_PROPERTY(QColor themeBack READ themeBack NOTIFY themeBackChanged)
     Q_PROPERTY(QColor themeText READ themeText NOTIFY themeTextChanged)
     Q_PROPERTY(QString savedUsername READ savedUsername WRITE setSavedUsername\
@@ -40,9 +39,6 @@ public:
 
     QVariant backColors() const;
     void setBackColors(const QVariant &v);
-
-    bool nightMode() const;
-    void setNightMode(bool v);
 
     QColor themeBack() const;
     QColor themeText() const;
@@ -67,7 +63,6 @@ public:
 signals:
     void versionChanged(); // placeholder
     void backColorsChanged();
-    void nightModeChanged();
     void themeBackChanged();
     void themeTextChanged();
     void savedUsernameChanged();

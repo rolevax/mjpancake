@@ -259,11 +259,22 @@ Item {
         }
     }
 
-    TabBager {
-        id: tabPager
+    Row {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
-        model: [ "打麻", "将真", "ＴＭ", "开心" ]
+        spacing: global.size.gap
+
+        Buzzon {
+            text: "<"
+            onClicked: {
+                frame.visible = false;
+            }
+        }
+
+        TabBager {
+            id: tabPager
+            model: [ "打麻", "将真", "ＴＭ", "开心" ]
+        }
     }
 
     function _rankPercent(r) {
@@ -303,9 +314,9 @@ Item {
 
         var r = stat.Round;
         var keys = [
-            "X13", "Xd3", "X4a", "Xt1", "Xs4", "Xd4",
-            "Xcr", "Xr1", "Xth", "Xch", "X4k", "X9r",
-            "W13", "W4a", "W9r", "Kzeykm"
+            "YakuX13", "YakuXd3", "YakuX4a", "YakuXt1", "YakuXs4", "YakuXd4",
+            "YakuXcr", "YakuXr1", "YakuXth", "YakuXch", "YakuX4k", "YakuX9r",
+            "YakuW13", "YakuW4a", "YakuW9r", "Kzeykm"
         ];
         switch (index) {
         case 0:
@@ -355,12 +366,14 @@ Item {
         if (index < keys.length) {
             var key = keys[index];
             if (column === 0) { // count
+                key = "Yaku" + key;
                 return stat[key];
             } else if (column === 1) { // freq
+                key = "Yaku" + key;
                 var res = "" + (stat[key] / stat.Win).toFixed(3);
                 return res[0] === "1" ? "1.00" : res.substr(1);
             } else { // avg han
-                key += "Han";
+                key = "Han" + key;
                 return stat[key].toFixed(1);
             }
         } else {
@@ -391,9 +404,9 @@ Item {
             return 0;
 
         var keys = [
-            "X13", "Xd3", "X4a", "Xt1", "Xs4", "Xd4",
-            "Xcr", "Xr1", "Xth", "Xch", "X4k", "X9r",
-            "W13", "W4a", "W9r", "Kzeykm"
+            "YakuX13", "YakuXd3", "YakuX4a", "YakuXt1", "YakuXs4", "YakuXd4",
+            "YakuXcr", "YakuXr1", "YakuXth", "YakuXch", "YakuX4k", "YakuX9r",
+            "YakuW13", "YakuW4a", "YakuW9r", "Kzeykm"
         ];
 
         if (index < keys.length) {

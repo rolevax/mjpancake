@@ -1,14 +1,13 @@
 import QtQuick 2.7
-import rolevax.sakilogy 1.0
 
 Buddon {
     property bool redDot: false
 
-    textColor: PGlobal.themeText
+    textColor: global.color.text
     lightColor: "#44777777"
-    border.color: PGlobal.themeText
-    color: PGlobal.themeBack
-    radius: height / 3
+    border.color: global.color.text
+    color: global.color.back
+    radius: global.size.space
 
     Rectangle {
         visible: redDot

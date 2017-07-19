@@ -166,3 +166,7 @@ contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
 ios {
     QMAKE_INFO_PLIST = ios/Info.plist
 }
+
+DISTFILES += \
+    qrc/qml/room/RoomFuncs.qml \
+    qrc/qml/room/RoomChoose.qml

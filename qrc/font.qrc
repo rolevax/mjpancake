@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>font/wqy-microhei.ttf</file>
         <file>qml/room/RoomMain.qml</file>
+        <file>qml/widget/Buxxon.qml</file>
     </qresource>
 </RCC>

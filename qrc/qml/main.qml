@@ -22,6 +22,10 @@ Window {
             "space": (mobile ? 0.009 : 0.007) * window.height,
             "gap": (mobile ? 0.054 : 0.042) * window.height
         },
+        "color": {
+            "text": "#AAAAAA",
+            "back": "#22000000"
+        },
         "sound": {
             "button": soundButton,
             "toggle": soundToggle,
@@ -30,7 +34,7 @@ Window {
             "bell": soundBell
         },
         "pushScene": pushScene,
-        "rideHorse": rideHorse
+        "currGirlId": 0
     }
 
     property var _roomStack: []
@@ -40,16 +44,10 @@ Window {
     color: PGlobal.themeBack
     title: (PClient.loggedIn ? PClient.user.Username + "@" : "") + "松饼麻雀 " + global.version
 
-    Image{
+    Image {
         id: background
         anchors.fill: parent
         source: "image://impro/background"
-    }
-
-    SoundEffect {
-        id: soundHorse
-        source: "qrc:///sound/horse.wav"
-        onPlayingChanged: { if (!playing) Qt.quit(); }
     }
 
     SoundEffect { id: soundButton; muted: PGlobal.mute; source: "qrc:///sound/button.wav" }
@@ -69,38 +67,6 @@ Window {
         }
     }
 
-    Connections {
-        target: PClient
-
-        onStartIn: {
-            if (loader.source != Qt.resolvedUrl("room/RoomClient.qml"))
-                loader.source = "room/RoomClient.qml";
-
-            loader.item.handleStartIn(tempDealer, users, choices);
-        }
-    }
-
-    Buzzon {
-        id: bookingButton
-        textLength: 8
-        anchors.margins: global.size.space
-        anchors.right: parent.right
-        anchors.top: parent.top
-        visible: PClient.hasBooking
-        text: "预约中 " + formatElapse(bookTimer.elapse)
-        onClicked: { loader.source = "room/RoomClient.qml"; }
-
-        Timer {
-            id: bookTimer
-            property int elapse: 0
-            interval: 1000
-            repeat: true
-            onTriggered: { elapse++; }
-            running: bookingButton.visible
-            onRunningChanged: { if (!running) elapse = 0; }
-        }
-    }
-
     Shortcut {
         sequence: "F11"
         onActivated: {
@@ -111,17 +77,6 @@ Window {
         }
     }
 
-    onClosing: {
-        rideHorse();
-        close.accepted = false;
-    }
-
-    Timer {
-        id: horseTimer
-        interval: 3000
-        onTriggered: { Qt.quit(); }
-    }
-
     function pushScene(name) {
         _roomStack.push(loader.source);
         loader.source = name + ".qml";
@@ -130,20 +85,5 @@ Window {
     function popRoom() {
         var top = _roomStack.pop();
         loader.source = top;
-    }
-
-    function rideHorse() {
-        loader.source = "room/RoomQuit.qml";
-        if (PGlobal.mute) {
-            horseTimer.start();
-        } else {
-            soundHorse.play();
-        }
-    }
-
-    function formatElapse(elapse) {
-        var date = new Date(null);
-        date.setSeconds(elapse);
-        return date.toISOString().substr(14, 5);
     }
 }
