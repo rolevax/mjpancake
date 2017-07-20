@@ -16,6 +16,11 @@ Room {
         id: game
         focus: true
         table.tileSet: "std"
+        table.onClosed: {
+            // show 'loading' and wait for bonus
+            // display bonus
+            // clean-up table, set only-self girl id
+        }
     }
 
     Rectangle {

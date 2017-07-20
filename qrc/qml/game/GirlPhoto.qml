@@ -13,11 +13,6 @@ Item {
 
     visible: girlId !== -1
 
-    Rectangle {
-        anchors.fill: parent
-        color: "#33AAAACC"
-    }
-
     Image {
         source: "image://impro/photo/" + girlId
         anchors.fill: parent

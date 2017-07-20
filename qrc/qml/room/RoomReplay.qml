@@ -1,6 +1,7 @@
 import QtQuick 2.7
 import rolevax.sakilogy 1.0
 import "../widget"
+import "../game"
 
 Room {
     id: room
@@ -22,34 +23,21 @@ Room {
         }
 
         onOnlineReplayReady: {
-            loader.source = "../game/Game.qml";
+            _showGame();
         }
-    }
-
-    Texd {
-        font.pixelSize: global.size.middleFont
-        text: "段位牌谱"
-        anchors.bottom: onlineListView.top
-        anchors.bottomMargin: global.size.space
-        anchors.horizontalCenter: onlineListView.horizontalCenter
-    }
-
-    Texd {
-        font.pixelSize: global.size.middleFont
-        text: "单机牌谱"
-        anchors.bottom: localListView.top
-        anchors.bottomMargin: global.size.space
-        anchors.horizontalCenter: localListView.horizontalCenter
     }
 
     LisdView {
         id: onlineListView
 
-        width: parent.width * 0.3
-        height: parent.height * 0.8 - replayIdInput.height - global.size.space
-        anchors.left: parent.left
-        anchors.leftMargin: parent.width * 0.05
-        anchors.top: localListView.top
+        visible: !game.visible
+        spacing: global.size.space
+        width: 0.3 * room.width
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: global.size.gap
+        anchors.bottom: replayIdInput.top
+        anchors.bottomMargin: global.size.space
 
         model: []
         delegate: Buzzon {
@@ -62,10 +50,12 @@ Room {
 
     TexdInput {
         id: replayIdInput
-        width: onlineListView.width
-        anchors.left: onlineListView.left
-        anchors.top: onlineListView.bottom
-        anchors.topMargin: global.size.space
+        visible: !game.visible
+        width: 12 * global.size.middleFont
+        anchors.right: parent.right
+        anchors.rightMargin: global.size.space
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: global.size.space
         hintText: "通过编号查看他人牌谱"
         number: true
         enabled: !_loading
@@ -76,71 +66,48 @@ Room {
         }
     }
 
-    LisdView {
-        id: localListView
-
-        width: parent.width * 0.55
-        height: parent.height * 0.8
-        anchors.right: parent.right
-        anchors.rightMargin: parent.width * 0.05
-        anchors.verticalCenter: parent.verticalCenter
-        spacing: global.size.space
-
-        delegate: Item {
-            width: parent.width
-            height: viewButton.height
-
-            Buzzon {
-                id: viewButton
-                width: parent.width * 0.8
-                enabled: !_loading
-                text: modelData.substring(0, modelData.length - 9)
-                onClicked: {
-                    replayId = "";
-                    pReplay.load(modelData);
-                    loader.source = "../game/Game.qml";
-                }
-            }
-
-            Buzzon {
-                width: parent.width * 0.15
-                anchors.right: parent.right
-                enabled: !_loading
-                text: "删"
-                onClicked: {
-                    pReplay.rm(modelData);
-                    localListView.model = pReplay.ls();
-                }
-            }
-        }
-    }
-
-    Loader {
-        id: loader
+    Game {
+        id: game
+        visible: false
         anchors.fill: parent
-        onLoaded: {
-            loader.item.table.animEnabled = false;
-            loader.item.table.keepOpen = true;
 
-            var meta = pReplay.meta();
-            roundsGombo.model = meta.roundNames.map(_roundNameTr);
-            loader.item.table.setGirlIds(meta.girlIds);
-            tableSeed = meta.seed;
-            if (meta.users)
-                loader.item.table.setUsers(meta.users);
+        Rectangle {
+            color: "#99000000"
+            width: seedText.width + global.size.gap
+            height: seedText.height
+            anchors.left: parent.left
+            anchors.bottom: parent.bottom
+            Texd {
+                id: seedText
+                anchors.centerIn: parent
+                color: "white"
+                font.pixelSize: room.height / 30
+                text: "玄学码:" + tableSeed + "/" + roundSeed +
+                      (replayId === "" ? "" : " 牌谱编号:" + replayId)
+            }
+        }
 
-            currentTurn = 1; // show from first draw (dealer's 14th)
-            _updateSnap();
-            _loading = false;
+        Rectangle {
+            color: "#99000000"
+            width: versionText.width + global.size.gap
+            height: versionText.height
+            anchors.right: parent.right
+            anchors.top: parent.top
+            Texd {
+                id: versionText
+                anchors.centerIn: parent
+                color: "white"
+                font.pixelSize: room.height / 30
+                text: global.version + "-" + Qt.platform.os
+            }
         }
     }
-
 
     MouseArea {
         property real dragStartX
 
         anchors.fill: parent
-        enabled: replayControl.visible
+        enabled: game.visible
 
         onWheel: {
             var dy = wheel.angleDelta.y;
@@ -171,14 +138,13 @@ Room {
     }
 
     Row {
-        id: replayControl
-        visible: loader.source == Qt.resolvedUrl("../game/Game.qml")
+        visible: game.visible
         spacing: global.size.space
 
         Buzzon {
             text: "已阅"
             smallFont: true
-            onClicked: { loader.source = ""; }
+            onClicked: { game.visible = false; }
         }
 
         GomboMenu {
@@ -190,7 +156,7 @@ Room {
             id: persGombo
             model: [ "视角0", "视角1", "视角2", "视角3" ]
             onActivated: {
-                if (replayControl.visible) {
+                if (game.visible) {
                     var meta = pReplay.meta();
                     for (var i = 0; i < currentIndex; i++) {
                         var temp;
@@ -202,46 +168,13 @@ Room {
                         }
                     }
 
-                    loader.item.table.setGirlIds(meta.girlIds);
+                    game.table.setGirlIds(meta.girlIds);
                     if (meta.users)
-                        loader.item.table.setUsers(meta.users);
+                        game.table.setUsers(meta.users);
 
                     _updateSnap();
                 }
             }
-        }
-    }
-
-    Rectangle {
-        color: "#99000000"
-        visible: replayControl.visible
-        width: seedText.width + global.size.gap
-        height: seedText.height
-        anchors.left: parent.left
-        anchors.bottom: parent.bottom
-        Texd {
-            id: seedText
-            anchors.centerIn: parent
-            color: "white"
-            font.pixelSize: room.height / 30
-            text: "玄学码:" + tableSeed + "/" + roundSeed +
-                  (replayId === "" ? "" : " 牌谱编号:" + replayId)
-        }
-    }
-
-    Rectangle {
-        color: "#99000000"
-        visible: replayControl.visible
-        width: versionText.width + global.size.gap
-        height: versionText.height
-        anchors.right: parent.right
-        anchors.top: parent.top
-        Texd {
-            id: versionText
-            anchors.centerIn: parent
-            color: "white"
-            font.pixelSize: room.height / 30
-            text: global.version + "-" + Qt.platform.os
         }
     }
 
@@ -260,13 +193,27 @@ Room {
         }
     }
 
-    Component.onCompleted: {
-        localListView.model = pReplay.ls();
-    }
-
     onCurrentRoundIdChanged: {
         currentTurn = 1;
         _updateSnap();
+    }
+
+    function _showGame() {
+        game.visible = true;
+
+        game.table.animEnabled = false;
+        game.table.keepOpen = true;
+
+        var meta = pReplay.meta();
+        roundsGombo.model = meta.roundNames.map(_roundNameTr);
+        game.table.setGirlIds(meta.girlIds);
+        tableSeed = meta.seed;
+        if (meta.users)
+            game.table.setUsers(meta.users);
+
+        currentTurn = 1; // show from first draw (dealer's 14th)
+        _updateSnap();
+        _loading = false;
     }
 
     function _nextStep() {
@@ -296,7 +243,7 @@ Room {
         var snap = pReplay.look(currentRoundId, currentTurn);
         roundSeed = snap.state;
         endOfRound = snap.endOfRound;
-        loader.item.showSnap(snap, persGombo.currentIndex);
+        game.showSnap(snap, persGombo.currentIndex);
     }
 
     function _fetchOnline(id) {
