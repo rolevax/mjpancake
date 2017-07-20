@@ -24,8 +24,6 @@ PGlobal::PGlobal(QObject *parent) : QObject(parent)
         file.close();
         QJsonDocument d = QJsonDocument::fromJson(val.toUtf8());
         mRoot = d.object();
-        if (mRoot["photoMap"].isObject())
-            mCachedPhotoMap = mRoot["photoMap"].toObject();
     }
 
     regulateRoot();
@@ -38,8 +36,6 @@ PGlobal::~PGlobal()
 
 void PGlobal::save()
 {
-    mRoot["photoMap"] = mCachedPhotoMap;
-
     QFile file(configPath() + "/settings.json");
 
     file.open(QIODevice::WriteOnly | QIODevice::Text);
@@ -172,17 +168,6 @@ void PGlobal::setMute(bool v)
     emit muteChanged();
 }
 
-QVariantMap PGlobal::photoMap() const
-{
-    return mCachedPhotoMap.toVariantMap();
-}
-
-void PGlobal::setPhoto(const QString &girlId, int value)
-{
-    mCachedPhotoMap[girlId] = value;
-    emit photoMapChanged();
-}
-
 void PGlobal::regulateRoot()
 {
     if (!mRoot["backColors"].isArray())
@@ -202,9 +187,6 @@ void PGlobal::regulateRoot()
 
     if (!mRoot["mute"].isBool())
         mRoot["mute"] = false;
-
-    if (!mRoot["photoMap"].isObject())
-        mRoot["photoMap"] = QJsonObject();
 }
 
 QObject *pGlobalSingletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine)

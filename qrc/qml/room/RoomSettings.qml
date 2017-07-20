@@ -31,15 +31,6 @@ Room {
         }
 
         Buzzon {
-            text: "选择角色头像"
-            textLength: 8
-            onClicked: {
-                loader.source = "RoomSettingsPhoto.qml";
-                loader.item.closed.connect(closeRoom);
-            }
-        }
-
-        Buzzon {
             text: PGlobal.savePassword ? "保存密码 O" : "保存密码 X"
             textLength: 8
             onClicked: {

@@ -21,12 +21,7 @@ QImage PImageProvider::requestImage(const QString &id, QSize *size,
             image = QImage(":/pic/default_bg.png");
     } else if (id.startsWith("photo/")) {
         QStringList parts = id.split('/');
-
-        if (parts[2] == "0") // photo/710111/0 -> custom, "user/photos/710111"
-            image = QImage(PGlobal::photoPath() + "/" + parts[1]);
-        else // photo/710111/1 -> built-in, ":/pic/girl/710111/1"
-            image = QImage(":/pic/girl/" + parts[1] + "/" + parts[2]);
-
+        image = QImage(PGlobal::photoPath() + "/" + parts[1]);
         if (image.isNull()) // fallback to placeholder photo
             image = QImage(":/pic/girl/default.png");
     }

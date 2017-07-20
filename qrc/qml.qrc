@@ -59,7 +59,6 @@
         <file>qml/room/RoomTools.qml</file>
         <file>qml/game/Mount.qml</file>
         <file>qml/area/GirlMenu.qml</file>
-        <file>qml/room/RoomSettingsPhoto.qml</file>
         <file>qml/widget/ChegList.qml</file>
         <file>qml/widget/TabBager.qml</file>
         <file>qml/area/AreaBigStats.qml</file>
