@@ -569,6 +569,7 @@ saki::Action readAction(const QString &actStr, int actArg, const QString &actTil
     case ActCode::PON:
         return saki::Action(act, actArg, saki::T37(actTile.toLatin1().data()));
     case ActCode::KAKAN:
+        return saki::Action(act, actArg);
     case ActCode::IRS_CHECK:
         return saki::Action(act, static_cast<unsigned>(actArg));
     default:
