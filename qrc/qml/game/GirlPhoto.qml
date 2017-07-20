@@ -19,8 +19,7 @@ Item {
     }
 
     Image {
-        source: "image://impro/photo/" + girlId + "/" +
-                (PGlobal.photoMap[girlId] ? PGlobal.photoMap[girlId] : "0")
+        source: "image://impro/photo/" + girlId
         anchors.fill: parent
         cache: frame.cache
     }

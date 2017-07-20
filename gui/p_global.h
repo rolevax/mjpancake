@@ -26,7 +26,6 @@ public:
                NOTIFY savedPasswordChanged)
     Q_PROPERTY(QVariantList redDots READ redDots WRITE setRedDots NOTIFY redDotsChanged)
     Q_PROPERTY(bool mute READ mute WRITE setMute NOTIFY muteChanged)
-    Q_PROPERTY(QVariantMap photoMap READ photoMap NOTIFY photoMapChanged)
 
     Q_INVOKABLE void save();
     Q_INVOKABLE static void forceImmersive();
@@ -57,9 +56,6 @@ public:
     bool mute() const;
     void setMute(bool v);
 
-    QVariantMap photoMap() const;
-    Q_INVOKABLE void setPhoto(const QString &girlId, int value);
-
 signals:
     void versionChanged(); // placeholder
     void backColorsChanged();
@@ -70,7 +66,6 @@ signals:
     void savedPasswordChanged();
     void redDotsChanged();
     void muteChanged();
-    void photoMapChanged();
 
 public slots:
 
@@ -79,7 +74,6 @@ private:
 
 private:
     QJsonObject mRoot;
-    QJsonObject mCachedPhotoMap; // Qt cannot modify nested object, fuck
 };
 
 QObject *pGlobalSingletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine);

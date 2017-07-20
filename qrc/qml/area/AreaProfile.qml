@@ -1,4 +1,6 @@
 import QtQuick 2.7
+import QtQuick.Dialogs 1.2
+import rolevax.sakilogy 1.0
 import "../widget"
 import "../game"
 
@@ -9,6 +11,16 @@ Item {
 
     signal statClicked
     signal enterClicked
+
+    PImageSettings {
+        id: pImageSettings
+
+        onPhotoCopied: {
+            // force reload
+            photo.girlId = -1;
+            photo.girlId = Qt.binding(function() { return girlId; });
+        }
+    }
 
     GirlPhoto {
         id: photo
@@ -61,6 +73,11 @@ Item {
             text: "换肤"
             textLength: 6
             onClicked: {
+                if (global.mobile) {
+                    pImageSettings.setPhotoByAndroidGallery(girlMenu.currGirlId);
+                } else {
+                    fileDialog.open()
+                }
             }
         }
 
@@ -71,6 +88,20 @@ Item {
             onClicked: {
                 enterClicked();
             }
+        }
+    }
+
+    FileDialog {
+        id: fileDialog
+        title: "选图片啦"
+        folder: shortcuts.pictures
+        nameFilters: [ "图片文件 (*.jpg *.jpeg *.png *.gif *.bmp)" ]
+        onAccepted: {
+            // slice() to get rid of "file://" prefix
+            // in Windoge's case, slice one more character
+            // to get rid of the initial '/' and make it "C:/..."
+            var filename = fileUrl.toString().slice(global.windows ? 8 : 7);
+            pImageSettings.setPhoto(girlMenu.currGirlId, filename);
         }
     }
 }
