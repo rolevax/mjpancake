@@ -39,6 +39,7 @@ Item {
     }
 
     function cancelHandler() {
-        closed();
+        if (showReturnButton)
+            closed();
     }
 }

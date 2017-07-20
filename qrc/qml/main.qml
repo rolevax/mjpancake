@@ -77,6 +77,15 @@ Window {
         }
     }
 
+    Connections {
+        target: PClient
+
+        onRemoteClosed: {
+            _roomStack = [];
+            loader.source = "room/RoomMain.qml";
+        }
+    }
+
     function pushScene(name) {
         _roomStack.push(loader.source);
         loader.source = name + ".qml";
