@@ -1,11 +1,14 @@
 #include "p_image_provider.h"
 #include "p_global.h"
 
+#include <QtGlobal>
+#include <QDateTime>
 #include <iostream> // debug
 
 PImageProvider::PImageProvider()
     : QQuickImageProvider(QQuickImageProvider::Image)
 {
+    qsrand(QDateTime::currentDateTime().toMSecsSinceEpoch());
 }
 
 QImage PImageProvider::requestImage(const QString &id, QSize *size,
@@ -22,8 +25,15 @@ QImage PImageProvider::requestImage(const QString &id, QSize *size,
     } else if (id.startsWith("photo/")) {
         QStringList parts = id.split('/');
         image = QImage(PGlobal::photoPath() + "/" + parts[1]);
-        if (image.isNull()) // fallback to placeholder photo
-            image = QImage(":/pic/girl/default.png");
+        if (image.isNull()) { // fallback to placeholder photo
+            int r = 16 + qrand() % 127;
+            int g = 16 + qrand() % 127;
+            int b = 16 + qrand() % 127;
+            QColor color(r, g, b, 64);
+            QPixmap pixmap(1, 1);
+            pixmap.fill(color);
+            image = pixmap.toImage();
+        }
     }
 
     return image;

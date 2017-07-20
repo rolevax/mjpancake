@@ -11,29 +11,15 @@ Room {
         Buzzon {
             text: "牌谱"
             textLength: 8
-            onClicked: { loader.source = "RoomReplay.qml"; }
+            onClicked: { global.pushScene("room/RoomReplay"); }
             anchors.horizontalCenter: parent.horizontalCenter
         }
 
         Buzzon {
             text: "牌型生成"
             textLength: 8
-            onClicked: { loader.source = "RoomGen.qml"; }
+            onClicked: { global.pushScene("room/RoomGen"); }
             anchors.horizontalCenter: parent.horizontalCenter
         }
-    }
-
-    Loader {
-        id: loader
-        anchors.fill: parent
-        onLoaded: {
-            room.focus = false;
-            loader.focus = true;
-            item.closed.connect(closeRoom);
-        }
-    }
-
-    function closeRoom() {
-        loader.source = "";
     }
 }
