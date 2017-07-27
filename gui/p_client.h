@@ -36,7 +36,7 @@ public:
     Q_INVOKABLE void lookAround();
     Q_INVOKABLE void book(int bookType);
     Q_INVOKABLE void unbook();
-    Q_INVOKABLE void sendRoomCreate();
+    Q_INVOKABLE void sendRoomCreate(int girlId, const QVariantList &aiGids);
     Q_INVOKABLE void sendSeat();
     Q_INVOKABLE void sendChoose(int girlIndex);
     Q_INVOKABLE void sendResume();

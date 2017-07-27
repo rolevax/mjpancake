@@ -34,6 +34,7 @@ Room {
 
         Row {
             id: areaBook
+            visible: !rivalChooser.visible
             spacing: global.size.space
             anchors.centerIn: parent
 
@@ -44,8 +45,7 @@ Room {
                 image: "/pic/icon/book.png"
                 enabled: !_frozen
                 onClicked: {
-                    _frozen = true;
-                    PClient.sendRoomCreate();
+                    rivalChooser.visible = true;
                 }
             }
 
@@ -54,6 +54,52 @@ Room {
                 enabled: false
                 textLength: 6
                 image: "/pic/icon/book.png"
+            }
+        }
+
+        Column {
+            id: rivalChooser
+            visible: false
+            spacing: global.size.space
+            anchors.centerIn: parent
+
+            GirlBox {
+                id: girlBox1
+                z: 3
+                mark: "对手1"
+            }
+
+            GirlBox {
+                id: girlBox2
+                z: 2
+                mark: "对手2"
+            }
+
+            GirlBox {
+                id: girlBox3
+                z: 1
+                mark: "对手3"
+            }
+
+            Item {
+                width: 1
+                height: 3 * global.size.space
+            }
+
+            Buzzon {
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: "开始"
+                onClicked: {
+                    rivalChooser.visible = false;
+                    var aiGids = [
+                        girlBox1.currGirlId,
+                        girlBox2.currGirlId,
+                        girlBox3.currGirlId
+                    ];
+
+                    _frozen = true;
+                    PClient.sendRoomCreate(global.currGirlId, aiGids);
+                }
             }
         }
     }
