@@ -3,14 +3,17 @@ import "../widget"
 import "../js/girlnames.js" as Names
 
 Row {
-    signal choosen(int girlId)
+    signal choosen(int girlId) // deprecated
+
+    property int currGirlId
     property string mark
     property int defaultIndex: 0
+
+    spacing: global.size.gap
 
     Texd {
         anchors.verticalCenter: parent.verticalCenter
         font.pixelSize: combo.buddon.fontSize
-        width: 2.2 * combo.buddon.fontSize;
         text: mark
     }
 
@@ -18,7 +21,12 @@ Row {
         id: combo
         model: Names.availNames
         textLength: 7
-        onActivated: { choosen(Names.availIds[index]); }
+
+        onActivated: {
+            currGirlId = Names.availIds[index];
+            choosen(currGirlId);
+        }
+
         Component.onCompleted: {
             currentIndex = defaultIndex;
             activated(currentIndex);

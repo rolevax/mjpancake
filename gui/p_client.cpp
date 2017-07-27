@@ -86,12 +86,13 @@ void PClient::unbook()
     mSocket.send(req);
 }
 
-void PClient::sendRoomCreate()
+void PClient::sendRoomCreate(int girlId, const QVariantList &aiGids)
 {
     QJsonObject req;
     req["Type"] = "room-create";
     req["AiNum"] = 2;
-    req["AiGids"] = QJsonArray{ 0, 0, 0 };
+    req["GirlId"] = girlId;
+    req["AiGids"] = QJsonArray::fromVariantList(aiGids);
     mSocket.send(req);
 }
 
