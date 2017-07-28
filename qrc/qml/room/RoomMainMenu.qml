@@ -5,15 +5,18 @@ import "../widget"
 Room {
     showReturnButton: false
 
-    Row {
+    Grid {
         anchors.centerIn: parent
+        columns: 4
         spacing: global.size.space
 
         Repeater {
             model: [
-                { text: "剧情", enabled: false, load: "" },
+                { text: "主剧情", enabled: false, load: "" },
                 { text: "挑战赛", enabled: true, load: "Choose" },
                 { text: "团体战", enabled: false, load: "" },
+                { text: "便利店", enabled: true, load: "Shop" },
+                { text: "牌谱", enabled: true, load: "Replay" },
                 { text: "工具", enabled: true, load: "Tools" },
                 { text: "设置", enabled: true, load: "Settings" }
             ]

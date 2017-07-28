@@ -65,10 +65,11 @@
         <file>qml/widget/LisdView.qml</file>
         <file>qml/area/AreaTitle.qml</file>
         <file>qml/game/ActionToggle.qml</file>
-        <file>qml/room/RoomMain.qml</file>
         <file>qml/widget/Buxxon.qml</file>
-        <file>qml/room/RoomFuncs.qml</file>
         <file>qml/room/RoomChoose.qml</file>
         <file>qml/area/AreaProfile.qml</file>
+        <file>qml/room/RoomLogin.qml</file>
+        <file>qml/room/RoomMainMenu.qml</file>
+        <file>qml/room/RoomShop.qml</file>
     </qresource>
 </RCC>

@@ -59,7 +59,7 @@ Window {
     Loader {
         id: loader
         anchors.fill: parent
-        source: "room/RoomMain.qml"
+        source: "room/RoomLogin.qml"
         onLoaded: {
             PGlobal.forceImmersive();
             loader.focus = true;
@@ -82,7 +82,7 @@ Window {
 
         onRemoteClosed: {
             _roomStack = [];
-            loader.source = "room/RoomMain.qml";
+            loader.source = "room/RoomLogin.qml";
         }
     }
 

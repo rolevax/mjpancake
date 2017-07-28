@@ -65,6 +65,7 @@ Item {
             Texd {
                 anchors.horizontalCenter: parent.horizontalCenter
                 font.pixelSize: frame.fontSize
+                horizontalAlignment: Text.AlignHCenter
                 color: frame.textColor
                 text: frame.text
             }

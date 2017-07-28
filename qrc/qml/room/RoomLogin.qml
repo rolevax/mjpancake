@@ -14,7 +14,7 @@ Room {
 
         onUserChanged: {
             if (PClient.loggedIn) {
-                global.pushScene("room/RoomFuncs");
+                global.pushScene("room/RoomMainMenu");
             }
         }
     }

@@ -43,6 +43,7 @@ SOURCES += main.cpp \
     libsaki/table.cpp \
     libsaki/tableview.cpp \
     libsaki/test.cpp \
+    libsaki/tile_count.cpp \
     gui/p_client.cpp \
     gui/p_eff.cpp \
     gui/p_eff_gb.cpp \
@@ -54,8 +55,7 @@ SOURCES += main.cpp \
     gui/p_table.cpp \
     gui/p_table_local.cpp \
     gui/p_json_tcp.cpp \
-    gui/p_image_settings.cpp \
-    libsaki/tile_count.cpp
+    gui/p_image_settings.cpp
 
 
 
@@ -134,15 +134,15 @@ HEADERS += \
 
 
 android {
-        DISTFILES += \
-                android/AndroidManifest.xml \
-                android/gradle/wrapper/gradle-wrapper.jar \
-                android/gradlew \
-                android/res/values/libs.xml \
-                android/build.gradle \
-                android/gradle/wrapper/gradle-wrapper.properties \
-                android/gradlew.bat \
-                android/src/rolevax/sakilogy/ImagePickerActivity.java
+    DISTFILES += \
+        android/AndroidManifest.xml \
+        android/gradle/wrapper/gradle-wrapper.jar \
+        android/gradlew \
+        android/res/values/libs.xml \
+        android/build.gradle \
+        android/gradle/wrapper/gradle-wrapper.properties \
+        android/gradlew.bat \
+        android/src/rolevax/sakilogy/ImagePickerActivity.java
 }
 
 OTHER_FILES += \
@@ -167,6 +167,4 @@ ios {
     QMAKE_INFO_PLIST = ios/Info.plist
 }
 
-DISTFILES += \
-    qrc/qml/room/RoomFuncs.qml \
-    qrc/qml/room/RoomChoose.qml
+
