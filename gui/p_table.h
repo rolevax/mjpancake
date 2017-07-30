@@ -25,6 +25,7 @@ public:
 
     Q_PROPERTY(bool online READ online NOTIFY onlineChanged)
 
+    Q_INVOKABLE void startPrac(const int &girlId);
     Q_INVOKABLE void startLocal(const QVariant &girlIds, const QVariant &gameRule,
                                 int tempDealer);
     Q_INVOKABLE void startOnline(PClient *client);
@@ -34,14 +35,17 @@ public:
 
 signals:
     void onlineChanged();
-    void action(QString actStr, int actArg, const QString &actTile);
+    void action(const QString &actStr, int actArg, const QString &actTile);
     void saveRecord();
     void tableEvent(Event type, const QVariantMap &args);
 
 public slots:
 
 private:
-    QThread workThread;
+    void clearLogicFeeds();
+
+private:
+    QThread mWorkThread;
     bool mOnline = false;
 };
 

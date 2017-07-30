@@ -359,6 +359,7 @@ Item {
         model: 3
         z: 3
         OppoControl {
+            visible: photos[index + 1].visible
             z: 2
             animEnabled: table.animEnabled
             keepOpen: table.keepOpen

@@ -20,6 +20,7 @@ namespace saki
 {
     class IrsCheckRow;
     enum class RoundResult;
+    class TableView;
 }
 
 
@@ -42,6 +43,8 @@ QJsonObject createReplayJson(const saki::Replay &replay);
 QJsonObject createRuleJson(const saki::RuleInfo &rule);
 QJsonObject createRoundJson(const saki::Replay::Round &round);
 QJsonObject createTrackJson(const saki::Replay::Track &track);
+
+QVariantMap createActivation(const saki::TableView &view);
 
 saki::Replay readReplayJson(const QJsonObject &obj);
 saki::RuleInfo readRuleJson(const QJsonObject &obj);

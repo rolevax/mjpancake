@@ -118,15 +118,15 @@ Room {
         target: PClient
 
         onSeatIn: {
-            handleSeatIn(room.Users, room.Gids, tempDealer);
+            _handleSeatIn(room.Users, room.Gids, tempDealer);
         }
     }
 
     Component.onCompleted: {
-        game.table.setGirlIds([ global.currGirlId, -1, -1, -1 ]);
+        _showPrac();
     }
 
-    function handleSeatIn(users, girlIds, tempDealer) {
+    function _handleSeatIn(users, girlIds, tempDealer) {
         _playing = true;
 
         game.table.setGirlIds(girlIds);
@@ -136,5 +136,10 @@ Room {
         game.startOnline(PClient);
 
         PClient.sendSeat();
+    }
+
+    function _showPrac() {
+        game.table.setGirlIds([ global.currGirlId, -1, -1, -1 ]);
+        game.table.pTable.startPrac(global.currGirlId);
     }
 }

@@ -1,5 +1,6 @@
 #include "gui/p_port.h"
 #include "libsaki/tableobserver.h"
+#include "libsaki/tableview.h"
 #include "libsaki/girl.h"
 #include "libsaki/replay.h"
 #include "libsaki/string_enum.h"
@@ -374,6 +375,104 @@ QJsonObject createTrackJson(const saki::Replay::Track &track)
     obj["out"] = outArr;
 
     return obj;
+}
+
+void activateDrawn(QVariantMap &map, const saki::TableView &view)
+{
+    using AC = saki::ActCode;
+
+    for (AC ac : { AC::SPIN_OUT, AC::SPIN_RIICHI, AC::TSUMO, AC::RYUUKYOKU })
+        if (view.myChoices().can(ac))
+            map.insert(stringOf(ac), true);
+
+    const saki::Choices::ModeDrawn &mode = view.myChoices().drawn();
+
+    if (mode.swapOut)
+        map.insert(stringOf(AC::SWAP_OUT), (1 << 13) - 1);
+
+    if (!mode.swapRiichis.empty())
+        map.insert(stringOf(AC::SWAP_RIICHI), createSwapMask(view.myHand().closed(), mode.swapRiichis));
+
+    if (!mode.ankans.empty())
+        map.insert(stringOf(AC::ANKAN), createTileStrsVar(mode.ankans.range()));
+
+    if (!mode.kakans.empty()) {
+        QVariantList list;
+        for (int barkId : mode.kakans)
+            list << barkId;
+        map.insert(stringOf(AC::KAKAN), QVariant::fromValue(list));
+    }
+}
+
+void activateBark(QVariantMap &map, const saki::TableView &view)
+{
+    using AC = saki::ActCode;
+
+    std::array<AC, 7> just {
+        AC::PASS,
+        AC::CHII_AS_LEFT, AC::CHII_AS_MIDDLE, AC::CHII_AS_RIGHT,
+        AC::PON, AC::DAIMINKAN, AC::RON
+    };
+
+    for (AC ac : just)
+        if (view.myChoices().can(ac))
+            map.insert(stringOf(ac), true);
+}
+
+void activateIrsCheck(QVariantMap &map, const saki::TableView &view)
+{
+    const saki::Girl &girl = view.me();
+    int prediceCount = girl.irsCheckCount();
+    QVariantList list;
+    for (int i = 0; i < prediceCount; i++)
+        list << createIrsCheckRowVar(girl.irsCheckRow(i));
+    map.insert(stringOf(saki::ActCode::IRS_CHECK), QVariant::fromValue(list));
+}
+
+QVariantMap createActivation(const saki::TableView &view)
+{
+    using AC = saki::ActCode;
+    using Mode = saki::Choices::Mode;
+
+    const saki::Choices &choices = view.myChoices();
+
+    QVariantMap map;
+    int focusWho = -1;
+
+    switch (choices.mode()) {
+    case Mode::WATCH:
+        break;
+    case Mode::CUT:
+        activateIrsCheck(map, view);
+        break;
+    case Mode::DICE:
+        map.insert(stringOf(AC::DICE), true);
+        break;
+    case Mode::DRAWN:
+        activateDrawn(map, view);
+        break;
+    case Mode::BARK:
+        focusWho = view.getFocus().who().index();
+        activateBark(map, view);
+        break;
+    case Mode::END:
+        if (choices.can(AC::END_TABLE))
+            map.insert(stringOf(AC::END_TABLE), true);
+        if (choices.can(AC::NEXT_ROUND))
+            map.insert(stringOf(AC::NEXT_ROUND), true);
+        break;
+    }
+
+    if (choices.can(AC::IRS_CLICK))
+        map.insert(stringOf(AC::NEXT_ROUND), true);
+
+    QVariantMap args;
+    args["action"] = map;
+    args["lastDiscarder"] = focusWho;
+    args["green"] = view.myChoices().forwardAll();
+    args["nonce"] = -1;
+
+    return args;
 }
 
 

@@ -76,7 +76,7 @@ signals:
     void tableEvent(PTable::Event type, const QVariantMap &args);
 
 public slots:
-    void action(QString actStr, int actArg, const QString &actTile);
+    void action(const QString &actStr, int actArg, const QString &actTile);
 
 private slots:
     static PTable::Event eventOf(const QString &event);

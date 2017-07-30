@@ -49,21 +49,19 @@ signals:
     void tableEvent(PTable::Event type, const QVariantMap &args);
 
 public slots:
-    void start(const QVariant &girlIdsVar, const QVariant &gameRule,
-               int tempDelaer);
-    void action(QString actStr, int actArg, const QString &actTile);
+    void start(const QVariant &girlIdsVar, const QVariant &gameRule, int tempDelaer);
+    void startPrac(int girlId);
+    void action(const QString &actStr, int actArg, const QString &actTile);
     void saveRecord();
 
 private:
     void emitJustPause(int ms);
-    void activateDrawn(QVariantMap &map, const saki::TableView &view);
-    void activateBark(QVariantMap &map, const saki::TableView &view);
-    void activateIrsCheck(QVariantMap &map, const saki::TableView &view);
 
 private:
     std::unique_ptr<saki::Table> mTable;
     std::array<std::unique_ptr<saki::Ai>, 3> mAis;
     saki::Replay mReplay;
+    bool mPrac;
 };
 
 #endif // P_TABLE_LOCAL_H
