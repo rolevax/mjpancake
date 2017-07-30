@@ -210,7 +210,7 @@ QVariantList PClient::water() const
     return mWater;
 }
 
-void PClient::action(QString actStr, int actArg, const QString &actTile)
+void PClient::action(const QString &actStr, int actArg, const QString &actTile)
 {
     QJsonObject req;
     req["Type"] = "action";

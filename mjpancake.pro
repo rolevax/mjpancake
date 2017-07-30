@@ -16,6 +16,7 @@ SOURCES += main.cpp \
     libsaki/ai_senriyama.cpp \
     libsaki/ai_shiraitodai.cpp \
     libsaki/ai_usuzan.cpp \
+    libsaki/ai_stub.cpp \
     libsaki/choices.cpp \
     libsaki/explain.cpp \
     libsaki/form.cpp \
@@ -79,6 +80,7 @@ HEADERS += \
     libsaki/ai_shiraitodai.h \
     libsaki/ai_senriyama.h \
     libsaki/ai_usuzan.h \
+    libsaki/ai_stub.h \
     libsaki/assume.h \
     libsaki/choices.h \
     libsaki/debug_cheat.h \

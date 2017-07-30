@@ -15,18 +15,35 @@ PTable::PTable(QObject *parent)
 
 PTable::~PTable()
 {
-    workThread.quit();
-    workThread.wait();
+    clearLogicFeeds();
+}
+
+void PTable::startPrac(const int &girlId)
+{
+    clearLogicFeeds();
+
+    PTableLocal *table = new PTableLocal;
+    table->moveToThread(&mWorkThread);
+    mWorkThread.start();
+
+    connect(&mWorkThread, &QThread::finished, table, &PTableLocal::deleteLater);
+
+    connect(this, &PTable::action, table, &PTableLocal::action);
+    connect(table, &PTableLocal::tableEvent, this, &PTable::tableEvent);
+
+    table->startPrac(girlId);
 }
 
 void PTable::startLocal(const QVariant &girlIdsVar, const QVariant &gameRule,
                               int tempDealer)
 {
-    PTableLocal *table = new PTableLocal;
-    table->moveToThread(&workThread);
-    workThread.start();
+    clearLogicFeeds();
 
-    connect(&workThread, &QThread::finished, table, &PTableLocal::deleteLater);
+    PTableLocal *table = new PTableLocal;
+    table->moveToThread(&mWorkThread);
+    mWorkThread.start();
+
+    connect(&mWorkThread, &QThread::finished, table, &PTableLocal::deleteLater);
 
     connect(this, &PTable::action, table, &PTableLocal::action);
     connect(this, &PTable::saveRecord, table, &PTableLocal::saveRecord);
@@ -38,6 +55,8 @@ void PTable::startLocal(const QVariant &girlIdsVar, const QVariant &gameRule,
 void PTable::startOnline(PClient *client)
 {
     assert(client != nullptr);
+
+    clearLogicFeeds();
 
     mOnline = true;
 
@@ -159,6 +178,15 @@ void PTable::startSample()
 bool PTable::online() const
 {
     return mOnline;
+}
+
+void PTable::clearLogicFeeds()
+{
+    // clear table-local
+    if (mWorkThread.isRunning()) {
+        mWorkThread.quit();
+        mWorkThread.wait();
+    }
 }
 
 

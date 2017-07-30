@@ -4,6 +4,7 @@
 
 #include "libsaki/rand.h"
 #include "libsaki/string_enum.h"
+#include "libsaki/ai_stub.h"
 #include "libsaki/util.h"
 
 #include <QFile>
@@ -20,7 +21,6 @@
 PTableLocal::PTableLocal(QObject *parent)
     : QObject(parent)
     , TableOperator(saki::Who(saki::Who::HUMAN))
-    , mTable(nullptr)
 {
 }
 
@@ -85,6 +85,9 @@ void PTableLocal::onFlipped(const saki::Table &table)
 
 void PTableLocal::onDrawn(const saki::Table &table, saki::Who who)
 {
+    if (mPrac && who != mSelf)
+        return;
+
     QVariantMap args;
     args["who"] = who.index();
     args["tile"] = createTileVar(table.getHand(who).drawn());
@@ -95,6 +98,9 @@ void PTableLocal::onDrawn(const saki::Table &table, saki::Who who)
 void PTableLocal::onDiscarded(const saki::Table &table, bool spin)
 {
     saki::Who who = table.getFocus().who();
+    if (mPrac && who != mSelf)
+        return;
+
     const saki::T37 &outTile = table.getFocusTile();
     bool lay = table.lastDiscardLay();
 
@@ -227,58 +233,26 @@ void PTableLocal::onPoppedUp(const saki::Table &table, saki::Who who)
 
 void PTableLocal::onActivated(saki::Table &table)
 {
-    using AC = saki::ActCode;
-    using Mode = saki::Choices::Mode;
-
     const saki::TableView view = table.getView(mSelf);
-    const saki::Choices &choices = view.myChoices();
 
-    if (table.riichiEstablished(mSelf) && choices.spinOnly()) {
+    if (table.riichiEstablished(mSelf) && view.myChoices().spinOnly()) {
         emitJustPause(300); // a little pause
-        table.action(mSelf, saki::Action(AC::SPIN_OUT));
+        table.action(mSelf, saki::Action(saki::ActCode::SPIN_OUT));
         return;
     }
 
-    QVariantMap map;
-    int focusWho = -1;
-
-    switch (choices.mode()) {
-    case Mode::WATCH:
-        break;
-    case Mode::CUT:
-        activateIrsCheck(map, view);
-        break;
-    case Mode::DICE:
-        map.insert(stringOf(AC::DICE), true);
-        break;
-    case Mode::DRAWN:
-        activateDrawn(map, view);
-        break;
-    case Mode::BARK:
-        focusWho = view.getFocus().who().index();
-        activateBark(map, view);
-        break;
-    case Mode::END:
-        if (choices.can(AC::END_TABLE))
-            map.insert(stringOf(AC::END_TABLE), true);
-        if (choices.can(AC::NEXT_ROUND))
-            map.insert(stringOf(AC::NEXT_ROUND), true);
-        break;
+    if (mPrac && view.myChoices().can(saki::ActCode::PASS)) {
+        table.action(mSelf, saki::Action(saki::ActCode::PASS));
+        return;
     }
 
-    if (choices.can(AC::IRS_CLICK))
-        map.insert(stringOf(AC::NEXT_ROUND), true);
-
-    QVariantMap args;
-    args["action"] = map;
-    args["lastDiscarder"] = focusWho;
-    args["green"] = view.myChoices().forwardAll();
-    args["nonce"] = -1;
-    emit tableEvent(PTable::Activated, args);
+    emit tableEvent(PTable::Activated, createActivation(view));
 }
 
 void PTableLocal::start(const QVariant &girlIdsVar, const QVariant &gameRule, int tempDelaer)
 {
+    mPrac = false;
+
     QVariantList list = girlIdsVar.toList();
     std::array<int, 4> girlIds {
         list[0].toInt(), list[1].toInt(), list[2].toInt(), list[3].toInt()
@@ -313,7 +287,34 @@ void PTableLocal::start(const QVariant &girlIdsVar, const QVariant &gameRule, in
     mTable->start();
 }
 
-void PTableLocal::action(QString actStr, int actArg, const QString &actTile)
+void PTableLocal::startPrac(int girlId)
+{
+    mPrac = true;
+
+    std::array<int, 4> girlIds { girlId, 0, 0, 0 };
+    saki::RuleInfo rule;
+
+    std::array<int, 4> points {
+        rule.returnLevel - rule.hill / 4,
+        rule.returnLevel - rule.hill / 4,
+        rule.returnLevel - rule.hill / 4,
+        rule.returnLevel - rule.hill / 4,
+    };
+
+    for (int w = 1; w < 4; w++)
+        mAis[w - 1].reset(new saki::AiStub(saki::Who(w)));
+    std::array<saki::TableOperator*, 4> operators {
+        this, mAis.at(0).get(), mAis.at(1).get(), mAis.at(2).get()
+    };
+
+    std::vector<saki::TableObserver*> observers { this };
+
+    mTable.reset(new saki::Table(points, girlIds, operators, observers,
+                                 rule, saki::Who(0)));
+    mTable->start();
+}
+
+void PTableLocal::action(const QString &actStr, int actArg, const QString &actTile)
 {
     saki::Action action = readAction(actStr, actArg, actTile);
     mTable->action(saki::Who(0), action);
@@ -321,6 +322,9 @@ void PTableLocal::action(QString actStr, int actArg, const QString &actTile)
 
 void PTableLocal::saveRecord()
 {
+    if (mPrac)
+        return;
+
     QString path(PGlobal::replayPath());
 
     QString datetime(QDateTime::currentDateTime().toString("yyMMdd_HHmm"));
@@ -353,58 +357,6 @@ void PTableLocal::emitJustPause(int ms)
     QVariantMap args;
     args["ms"] = ms;
     emit tableEvent(PTable::JustPause, args);
-}
-
-void PTableLocal::activateDrawn(QVariantMap &map, const saki::TableView &view)
-{
-    using AC = saki::ActCode;
-
-    for (AC ac : { AC::SPIN_OUT, AC::SPIN_RIICHI, AC::TSUMO, AC::RYUUKYOKU })
-        if (view.myChoices().can(ac))
-            map.insert(stringOf(ac), true);
-
-    const saki::Choices::ModeDrawn &mode = view.myChoices().drawn();
-
-    if (mode.swapOut)
-        map.insert(stringOf(AC::SWAP_OUT), (1 << 13) - 1);
-
-    if (!mode.swapRiichis.empty())
-        map.insert(stringOf(AC::SWAP_RIICHI), createSwapMask(view.myHand().closed(), mode.swapRiichis));
-
-    if (!mode.ankans.empty())
-        map.insert(stringOf(AC::ANKAN), createTileStrsVar(mode.ankans.range()));
-
-    if (!mode.kakans.empty()) {
-        QVariantList list;
-        for (int barkId : mode.kakans)
-            list << barkId;
-        map.insert(stringOf(AC::KAKAN), QVariant::fromValue(list));
-    }
-}
-
-void PTableLocal::activateBark(QVariantMap &map, const saki::TableView &view)
-{
-    using AC = saki::ActCode;
-
-    std::array<AC, 7> just {
-        AC::PASS,
-        AC::CHII_AS_LEFT, AC::CHII_AS_MIDDLE, AC::CHII_AS_RIGHT,
-        AC::PON, AC::DAIMINKAN, AC::RON
-    };
-
-    for (AC ac : just)
-        if (view.myChoices().can(ac))
-            map.insert(stringOf(ac), true);
-}
-
-void PTableLocal::activateIrsCheck(QVariantMap &map, const saki::TableView &view)
-{
-    const saki::Girl &girl = view.me();
-    int prediceCount = girl.irsCheckCount();
-    QVariantList list;
-    for (int i = 0; i < prediceCount; i++)
-        list << createIrsCheckRowVar(girl.irsCheckRow(i));
-    map.insert(stringOf(saki::ActCode::IRS_CHECK), QVariant::fromValue(list));
 }
 
 
