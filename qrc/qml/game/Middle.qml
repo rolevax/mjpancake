@@ -93,6 +93,21 @@ Rectangle {
         }
     }
 
+    function reset() {
+        removeBars();
+        setPoints([ 0, 0, 0, 0 ]);
+        for (var i = 0; i < 4; i++) {
+            repeater.itemAt(i).seatText.text = "";
+        }
+
+        prevRound = 0;
+        dealer = -1;
+        die1 = 0;
+        die2 = 0;
+        roundText.text = "";
+        remainText.text = "";
+    }
+
     function setDealer(d, isTemp) {
         dealer = d;
         var val = isTemp ? ["仮", "", "", ""] : ["東", "南", "西", "北"];

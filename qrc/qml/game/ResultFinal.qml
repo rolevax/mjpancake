@@ -52,7 +52,10 @@ Rectangle {
         Buddon {
             text: "咕"
             anchors.horizontalCenter: parent.horizontalCenter
-            onClicked: { frame.closed(); }
+            onClicked: {
+                frame.visible = false;
+                frame.closed();
+            }
         }
     }
 

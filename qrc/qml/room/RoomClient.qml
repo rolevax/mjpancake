@@ -16,11 +16,7 @@ Room {
         id: game
         focus: true
         table.tileSet: "std"
-        table.onClosed: {
-            // show 'loading' and wait for bonus
-            // display bonus
-            // clean-up table, set only-self girl id
-        }
+        table.onClosed: { _playing = false; }
     }
 
     Rectangle {
@@ -39,8 +35,18 @@ Room {
             anchors.centerIn: parent
 
             Buxxon {
+                text: "摸打练习"
+                textLength: 6
+                image: "/pic/icon/book.png"
+                enabled: !_frozen
+                onClicked: {
+                    _showPrac();
+                }
+            }
+
+            Buxxon {
                 id: singleButton
-                text: "单人战"
+                text: "AI战"
                 textLength: 6
                 image: "/pic/icon/book.png"
                 enabled: !_frozen
@@ -50,7 +56,7 @@ Room {
             }
 
             Buxxon {
-                text: "四人战"
+                text: "好友战"
                 enabled: false
                 textLength: 6
                 image: "/pic/icon/book.png"
@@ -122,10 +128,6 @@ Room {
         }
     }
 
-    Component.onCompleted: {
-        _showPrac();
-    }
-
     function _handleSeatIn(users, girlIds, tempDealer) {
         _playing = true;
 
@@ -139,6 +141,8 @@ Room {
     }
 
     function _showPrac() {
+        _playing = true;
+
         game.table.setGirlIds([ global.currGirlId, -1, -1, -1 ]);
         game.table.pTable.startPrac(global.currGirlId);
     }
