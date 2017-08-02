@@ -4,7 +4,7 @@ Buddon {
     property bool redDot: false
 
     textColor: global.color.text
-    lightColor: "#44777777"
+    lightColor: global.color.light
     border.color: global.color.text
     color: global.color.back
     radius: global.size.space

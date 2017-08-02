@@ -7,13 +7,15 @@ import "../game"
 Room {
     id: room
 
-    backButtonZ: 10
-
     property bool _playing: false
     property bool _frozen: false
 
+    backButtonZ: 10
+    showReturnButton: !_playing
+
     Game {
         id: game
+        visible: _playing
         focus: true
         table.tileSet: "std"
         table.onClosed: { _playing = false; }
@@ -21,9 +23,7 @@ Room {
 
     Rectangle {
         visible: !_playing
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.margins: global.size.space
+        anchors.centerIn: parent
         color: "#AA000000"
         height: areaBook.height + 2 * global.size.gap
         width: areaBook.width + 2 * global.size.gap

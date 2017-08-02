@@ -7,11 +7,11 @@ Rectangle {
     signal clicked
     property string text
 
-    color: PGlobal.themeBack
+    color: global.color.back
 
     Rectangle {
         anchors.fill: parent
-        color: "#44777777"
+        color: global.color.light
         visible: mouseArea.containsMouse
     }
 

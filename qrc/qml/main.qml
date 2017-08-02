@@ -23,8 +23,9 @@ Window {
             "gap": (mobile ? 0.054 : 0.042) * window.height
         },
         "color": {
-            "text": "#AAAAAA",
-            "back": "#22000000"
+            "text": "#BBBBBB",
+            "back": "#99000000",
+            "light": "#44AAAAAA"
         },
         "sound": {
             "button": soundButton,
@@ -34,6 +35,7 @@ Window {
             "bell": soundBell
         },
         "pushScene": pushScene,
+        "reloadBackground": reloadBackground,
         "currGirlId": 0
     }
 
@@ -47,6 +49,7 @@ Window {
     Image {
         id: background
         anchors.fill: parent
+        cache: false
         source: "image://impro/background"
     }
 
@@ -63,7 +66,7 @@ Window {
         onLoaded: {
             PGlobal.forceImmersive();
             loader.focus = true;
-            item.closed.connect(popRoom);
+            item.closed.connect(popScene);
         }
     }
 
@@ -91,8 +94,14 @@ Window {
         loader.source = name + ".qml";
     }
 
-    function popRoom() {
+    function popScene() {
         var top = _roomStack.pop();
         loader.source = top;
+    }
+
+    function reloadBackground() {
+        var bak = background.source;
+        background.source = "";
+        background.source = bak;
     }
 }

@@ -163,7 +163,7 @@ Room {
         }
     }
 
-    /* FUCK
+    /* FUCK unuse loader and use Game
     Loader {
         id: loader
         anchors.fill: parent
@@ -182,7 +182,6 @@ Room {
     }
     */
 
-    // FUCK move to Game.qml??? every one use inheritance?
     Timer {
         // delay one frame to solve android crash somehow
         id: startTimer

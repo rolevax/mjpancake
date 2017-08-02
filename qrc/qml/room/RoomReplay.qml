@@ -15,6 +15,8 @@ Room {
 
     property bool _loading: false
 
+    showReturnButton: !game.visible
+
     PReplay {
         id: pReplay
 

@@ -71,5 +71,6 @@
         <file>qml/room/RoomLogin.qml</file>
         <file>qml/room/RoomMainMenu.qml</file>
         <file>qml/room/RoomShop.qml</file>
+        <file>qml/room/RoomBackground.qml</file>
     </qresource>
 </RCC>

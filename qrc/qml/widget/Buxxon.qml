@@ -10,7 +10,7 @@ Item {
     property url image
     property string text
     property color textColor: global.color.text
-    property color lightColor: "#44777777"
+    property color lightColor: global.color.light
     property bool enabled: true
     property real textLength: 4.0
     property int fontSize: global.size.middleFont

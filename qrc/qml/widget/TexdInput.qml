@@ -1,5 +1,4 @@
 import QtQuick 2.7
-import rolevax.sakilogy 1.0
 
 Rectangle {
     id: frame
@@ -20,9 +19,9 @@ Rectangle {
 
     width: textLength * fontSize
     height: 1.5 * fontSize
-    color: PGlobal.themeBack
+    color: global.color.back
     border.width: 0.03 * height
-    border.color: PGlobal.themeText
+    border.color: global.color.text
     opacity: enabled ? 1.0 : 0.5
 
     Texd {
@@ -38,7 +37,7 @@ Rectangle {
         anchors.fill: parent
         font.pixelSize: fontSize
         horizontalAlignment: TextInput.AlignHCenter
-        color: PGlobal.themeText
+        color: global.color.text
         focus: false
         font.family: wqy.name
         inputMethodHints: number ? Qt.ImhDigitsOnly : Qt.ImhNoAutoUppercase
