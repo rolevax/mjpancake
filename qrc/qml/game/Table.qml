@@ -69,16 +69,7 @@ Item {
                 };
                 break;
             case PTable.Cleaned:
-                cb = function() {
-                    playerControl.clear();
-                    logBox.clear();
-                    mount.clear();
-                    var i;
-                    for (i = 0; i < 3; i++)
-                        oppoControls.itemAt(i).clear();
-                    for (i = 0; i < 4; i++)
-                        rivers.itemAt(i).clear();
-                };
+                cb = _handleTableEventCleaned;
                 break;
             case PTable.Diced:
                 cb = function() {
@@ -305,6 +296,15 @@ Item {
         visible: false
         height: (global.mobile ? 0.65 : 0.55) * table.height
         onClosed: {
+            _handleTableEventCleaned();
+
+            mount.visible = false;
+            middle.reset();
+            setGirlIds([ -1, -1, -1, -1]);
+            setUsers([ null, null, null, null]);
+            for (var i = 0; i < 4; i++)
+                photos[i].removeBars();
+
             pTable.saveRecord();
             table.closed();
         }
@@ -692,6 +692,17 @@ Item {
             o = (o + 4 - pers) % 4;
             snap.openers[i] = o;
         }
+    }
+
+    function _handleTableEventCleaned() {
+        playerControl.clear();
+        logBox.clear();
+        mount.clear();
+        var i;
+        for (i = 0; i < 3; i++)
+            oppoControls.itemAt(i).clear();
+        for (i = 0; i < 4; i++)
+            rivers.itemAt(i).clear();
     }
 
     function handlePinchStarted() {
