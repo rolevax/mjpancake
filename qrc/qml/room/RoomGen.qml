@@ -122,8 +122,10 @@ Room {
             horizontalAlignment: Text.AlignHCenter
             height: 3 * global.size.middleFont
             font.pixelSize: global.size.middleFont
-            color: PGlobal.themeText
+            color: global.color.text
             text: ""
+            shade: true
+            shadePaddings: global.size.space
         }
 
         Buzzon {

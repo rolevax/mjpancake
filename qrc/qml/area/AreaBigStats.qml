@@ -7,6 +7,11 @@ Item {
 
     property int currIndex: 0
 
+    Rectangle {
+        anchors.fill: parent
+        color: global.color.back
+    }
+
     Column {
         visible: tabPager.currIndex === 0
         anchors.centerIn: parent
@@ -265,7 +270,8 @@ Item {
         spacing: global.size.gap
 
         Buzzon {
-            text: "<"
+            text: "< 统计阅毕"
+            textLength: 6
             onClicked: {
                 frame.visible = false;
             }
@@ -273,7 +279,7 @@ Item {
 
         TabBager {
             id: tabPager
-            model: [ "打麻", "将真", "ＴＭ", "开心" ]
+            model: [ "概览", "手役", "宝牌", "役满" ]
         }
     }
 

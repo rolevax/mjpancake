@@ -42,6 +42,8 @@ Item {
             horizontalAlignment: Text.AlignHCenter
             text: "N段 233/2333Pt\nR1500\n第xxx名"
             font.pixelSize: 2 * global.size.middleFont
+            shade: true
+            shadePaddings: global.size.gap
         }
     }
 
