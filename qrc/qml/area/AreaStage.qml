@@ -14,7 +14,7 @@ Rectangle {
     signal readyClicked
 
     anchors.fill: parent
-    color: PGlobal.themeBack
+    color: global.color.back
     visible: false
 
     Row {

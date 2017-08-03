@@ -96,7 +96,7 @@ Room {
         id: authOkScreen
         visible: false
         anchors.fill: parent
-        color: PGlobal.themeBack
+        color: global.color.back
         Texd {
             anchors.centerIn: parent
             horizontalAlignment: Text.AlignHCenter

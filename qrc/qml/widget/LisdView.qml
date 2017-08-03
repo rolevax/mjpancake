@@ -32,7 +32,7 @@ Item {
         height: hori ? global.size.space : frame.height
         anchors.right: parent.right
         anchors.bottom: parent.bottom
-        color: PGlobal.themeText
+        color: global.color.text
         opacity: 0.4
     }
 
@@ -44,7 +44,7 @@ Item {
                 : barBack.x
         y: hori ? barBack.y
                 : list.contentY / (list.contentHeight - list.height) * (barBack.height - height)
-        color: PGlobal.themeText
+        color: global.color.text
         opacity: 0.8
     }
 

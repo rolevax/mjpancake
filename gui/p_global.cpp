@@ -101,16 +101,6 @@ void PGlobal::setBackColors(const QVariant &v)
     emit backColorsChanged();
 }
 
-QColor PGlobal::themeBack() const
-{
-    return QColor("#202030");
-}
-
-QColor PGlobal::themeText() const
-{
-    return QColor("#AAAAAA");
-}
-
 QString PGlobal::savedUsername() const
 {
     return mRoot["savedUsername"].toString();
@@ -146,17 +136,6 @@ void PGlobal::setSavedPassword(const QString &password)
     emit savedPasswordChanged();
 }
 
-QVariantList PGlobal::redDots() const
-{
-    return mRoot["redDots"].toArray().toVariantList();
-}
-
-void PGlobal::setRedDots(const QVariantList &v)
-{
-    mRoot["redDots"] = QJsonArray::fromVariantList(v);
-    emit redDotsChanged();
-}
-
 bool PGlobal::mute() const
 {
     return mRoot["mute"].toBool();
@@ -181,9 +160,6 @@ void PGlobal::regulateRoot()
 
     if (!mRoot["savedPassword"].isString())
         mRoot["savedPassword"] = QString();
-
-    if (!(mRoot["redDots"].isArray() && mRoot["redDots"].toArray().size() == 6))
-        mRoot["redDots"] = QJsonArray{ true, false, false, false, false, false };
 
     if (!mRoot["mute"].isBool())
         mRoot["mute"] = false;

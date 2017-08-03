@@ -16,7 +16,7 @@ Rectangle {
     signal chosen(int girlIndex)
 
     anchors.fill: parent
-    color: PGlobal.themeBack
+    color: global.color.back
     visible: false
 
     Row {

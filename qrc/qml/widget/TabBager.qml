@@ -31,7 +31,7 @@ Column {
         width: currIndex < repSelect.count ? repSelect.itemAt(currIndex).width : 0
         height: 0.25 * global.size.middleFont
         radius: 0.5 * height
-        color: PGlobal.themeText
+        color: global.color.text
         opacity: 0.5
 
         Behavior on x {

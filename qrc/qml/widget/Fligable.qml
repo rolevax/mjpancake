@@ -30,7 +30,7 @@ Item {
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        color: PGlobal.themeText
+        color: global.color.text
         opacity: 0.4
     }
 
@@ -39,7 +39,7 @@ Item {
         width: barBack.width
         anchors.horizontalCenter: barBack.horizontalCenter
         height: (flick.height / flick.contentHeight) * barBack.height
-        color: PGlobal.themeText
+        color: global.color.text
         opacity: 0.8
         y: flick.contentY / (flick.contentHeight - flick.height) * (barBack.height - height)
     }

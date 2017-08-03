@@ -17,7 +17,7 @@ Column {
 
             Rectangle {
                 anchors.fill: parent
-                color: PGlobal.themeText
+                color: global.color.text
                 opacity: 0.2
                 visible: global.mobile ? mouseArea.containsPress : mouseArea.containsMouse
             }
@@ -30,7 +30,7 @@ Column {
                     width: global.size.middleFont
                     height: width
                     radius: 0.5 * width
-                    border.color: PGlobal.themeText
+                    border.color: global.color.text
                     border.width: 0.1 * width
                     color: "transparent"
 
@@ -39,7 +39,7 @@ Column {
                         height: width
                         radius: 0.5 * width
                         anchors.centerIn: parent
-                        color: PGlobal.themeText
+                        color: global.color.text
                         visible: currIndex === index
                     }
                 }

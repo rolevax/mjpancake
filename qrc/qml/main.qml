@@ -43,7 +43,7 @@ Window {
 
     visible: true
     width: 1207; height: 679
-    color: PGlobal.themeBack
+    color: global.color.back
     title: (PClient.loggedIn ? PClient.user.Username + "@" : "") + "松饼麻雀 " + global.version
 
     Image {

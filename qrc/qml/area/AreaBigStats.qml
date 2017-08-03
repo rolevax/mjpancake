@@ -239,8 +239,8 @@ Item {
         width: 0.7 * parent.width
         height: 0.7 * parent.height
         border.width: 1
-        border.color: PGlobal.themeText
-        color: PGlobal.themeBack
+        border.color: global.color.text
+        color: global.color.back
 
         Column {
             anchors.centerIn: parent
