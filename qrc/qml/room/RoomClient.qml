@@ -40,7 +40,8 @@ Room {
                 image: "/pic/icon/book.png"
                 enabled: !_frozen
                 onClicked: {
-                    _showPrac();
+                    _playing = true;
+                    game.startPrac();
                 }
             }
 
@@ -138,12 +139,5 @@ Room {
         game.startOnline(PClient);
 
         PClient.sendSeat();
-    }
-
-    function _showPrac() {
-        _playing = true;
-
-        game.table.setGirlIds([ global.currGirlId, -1, -1, -1 ]);
-        game.table.pTable.startPrac(global.currGirlId);
     }
 }

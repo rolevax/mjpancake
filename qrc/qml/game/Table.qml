@@ -296,15 +296,7 @@ Item {
         visible: false
         height: (global.mobile ? 0.65 : 0.55) * table.height
         onClosed: {
-            _handleTableEventCleaned();
-
-            mount.visible = false;
-            middle.reset();
-            setGirlIds([ -1, -1, -1, -1]);
-            setUsers([ null, null, null, null]);
-            for (var i = 0; i < 4; i++)
-                photos[i].removeBars();
-
+            reset();
             pTable.saveRecord();
             table.closed();
         }
@@ -707,6 +699,17 @@ Item {
 
     function handlePinchStarted() {
         _prevTwb = twb;
+    }
+
+    function reset() {
+        _handleTableEventCleaned();
+
+        mount.visible = false;
+        middle.reset();
+        setGirlIds([ -1, -1, -1, -1]);
+        setUsers([ null, null, null, null]);
+        for (var i = 0; i < 4; i++)
+            photos[i].removeBars();
     }
 
     function handlePinchUpdated(scale) {

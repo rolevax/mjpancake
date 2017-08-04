@@ -114,14 +114,23 @@ PinchArea {
     }
 
     function startLocal(girlIds, gameRule, tempDealer) {
+        table.reset();
         table.pTable.startLocal(girlIds, gameRule, tempDealer);
     }
 
+    function startPrac() {
+        table.reset();
+        table.setGirlIds([ global.currGirlId, -1, -1, -1 ]);
+        table.pTable.startPrac(global.currGirlId);
+    }
+
     function startOnline(pClient) {
+        table.reset();
         table.pTable.startOnline(pClient);
     }
 
     function startSample() {
+        table.reset();
         table.setGirlIds([ 713315, 713335, 713345, 713325 ]);
         table.pTable.startSample();
     }
