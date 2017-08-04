@@ -96,6 +96,15 @@ PinchArea {
         }
     }
 
+    Dialok {
+        id: dialogOpHint
+        hint: "op"
+        fontSize: 2 * global.size.middleFont
+        horizontalAlignment: Text.AlignHCenter
+        text: "手牌太小 → 通过触屏手势缩放\n" +
+              "双击或右击可摸切/跳过"
+    }
+
     Connections {
         target: table
         onClosed: { frame.closed(); }

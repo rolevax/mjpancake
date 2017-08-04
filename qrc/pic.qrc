@@ -95,5 +95,6 @@
         <file>pic/dice/dice6.png</file>
         <file>pic/title_en.png</file>
         <file>pic/girl/default.png</file>
+        <file>qml/widget/Dialok.qml</file>
     </qresource>
 </RCC>

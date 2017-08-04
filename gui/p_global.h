@@ -23,6 +23,7 @@ public:
     Q_PROPERTY(QString savedPassword READ savedPassword WRITE setSavedPassword\
                NOTIFY savedPasswordChanged)
     Q_PROPERTY(bool mute READ mute WRITE setMute NOTIFY muteChanged)
+    Q_PROPERTY(QVariantMap hints READ hints WRITE setHints NOTIFY hintsChanged)
 
     Q_INVOKABLE void save();
     Q_INVOKABLE static void forceImmersive();
@@ -47,6 +48,9 @@ public:
     bool mute() const;
     void setMute(bool v);
 
+    QVariantMap hints() const;
+    void setHints(const QVariantMap &v);
+
 signals:
     void versionChanged(); // placeholder
     void backColorsChanged();
@@ -54,6 +58,7 @@ signals:
     void savePasswordChanged();
     void savedPasswordChanged();
     void muteChanged();
+    void hintsChanged();
 
 public slots:
 

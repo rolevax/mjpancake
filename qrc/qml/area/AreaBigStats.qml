@@ -232,36 +232,16 @@ Item {
         }
     }
 
-    Rectangle {
+    Dialok {
         id: rectExplain
-        visible: false
-        anchors.centerIn: parent
-        width: 0.7 * parent.width
-        height: 0.7 * parent.height
-        border.width: 1
-        border.color: global.color.text
-        color: global.color.back
-
-        Column {
-            anchors.centerIn: parent
-            spacing: global.size.gap
-
-            Texd {
-                text: "平顺：平均顺位\n" +
-                      "终素：终局时平均素点\n" +
-                      "三杀：他三家计分点以下A-top频率\n" +
-                      "独沉：他三家计分点以上一人沉频率\n" +
-                      "和/铳点：和了/放铳平均点数\n" +
-                      "副/立期：副露/立直后点数得失期望值\n" +
-                      "和/听巡：平均和了/听牌巡目\n"
-            }
-
-            Buzzon {
-                anchors.horizontalCenter: parent.horizontalCenter
-                text: "喵"
-                onClicked: { rectExplain.visible = false; }
-            }
-        }
+        width: parent.width
+        text: "平顺：平均顺位\n" +
+              "终素：终局时平均素点\n" +
+              "三杀：他三家计分点以下A-top频率\n" +
+              "独沉：他三家计分点以上一人沉频率\n" +
+              "和/铳点：和了/放铳平均点数\n" +
+              "副/立期：副露/立直后点数得失期望值\n" +
+              "和/听巡：平均和了/听牌巡目\n"
     }
 
     Row {

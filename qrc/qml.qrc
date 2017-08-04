@@ -72,5 +72,7 @@
         <file>qml/room/RoomMainMenu.qml</file>
         <file>qml/room/RoomShop.qml</file>
         <file>qml/room/RoomBackground.qml</file>
+        <file>qml/widget/Dialok.qml</file>
+        <file>qml/widget/ChegBox.qml</file>
     </qresource>
 </RCC>

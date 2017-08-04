@@ -147,6 +147,17 @@ void PGlobal::setMute(bool v)
     emit muteChanged();
 }
 
+QVariantMap PGlobal::hints() const
+{
+    return mRoot["hints"].toObject().toVariantMap();
+}
+
+void PGlobal::setHints(const QVariantMap &v)
+{
+    mRoot["hints"] = QJsonObject::fromVariantMap(v);
+    emit hintsChanged();
+}
+
 void PGlobal::regulateRoot()
 {
     if (!mRoot["backColors"].isArray())
@@ -163,6 +174,12 @@ void PGlobal::regulateRoot()
 
     if (!mRoot["mute"].isBool())
         mRoot["mute"] = false;
+
+    if (!mRoot["hints"].isObject()) {
+        mRoot["hints"] = QJsonObject{
+            { "op", true }
+        };
+    }
 }
 
 QObject *pGlobalSingletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine)
