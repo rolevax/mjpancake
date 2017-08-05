@@ -22,6 +22,10 @@ Item {
 
         model: frame.model
         delegate: frame.delegate
+
+        Behavior on contentX {
+            PropertyAnimation { duration: 60 }
+        }
     }
 
     Rectangle {
@@ -56,16 +60,21 @@ Item {
         onWheel: {
             var dy = wheel.angleDelta.y;
             if (dy !== 0) {
-                wheel.accepted = true;
+                var next;
+
                 if (dy < 0) { // scroll down
-                    list.contentX += 0.1 * parent.width;
-                    if (list.contentX > list.contentWidth - list.width)
-                        list.contentX = list.contentWidth - list.width;
+                    next = list.contentX + 0.1 * parent.width;
+                    if (next > list.contentWidth - list.width)
+                        next = list.contentWidth - list.width;
                 } else if (dy > 0) { // scroll up
-                    list.contentX -= 0.1 * parent.width;
-                    if (list.contentX < 0)
-                        list.contentX = 0;
+                    next = list.contentX - 0.1 * parent.width;
+                    if (next < 0)
+                        next = 0;
                 }
+
+                list.contentX = next;
+
+                wheel.accepted = true;
             }
         }
     }
