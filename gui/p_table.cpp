@@ -21,6 +21,7 @@ PTable::~PTable()
 void PTable::startPrac(const int &girlId)
 {
     clearLogicFeeds();
+    mOnline = false;
 
     PTableLocal *table = new PTableLocal;
     table->moveToThread(&mWorkThread);
@@ -38,6 +39,7 @@ void PTable::startLocal(const QVariant &girlIdsVar, const QVariant &gameRule,
                               int tempDealer)
 {
     clearLogicFeeds();
+    mOnline = false;
 
     PTableLocal *table = new PTableLocal;
     table->moveToThread(&mWorkThread);
@@ -57,7 +59,6 @@ void PTable::startOnline(PClient *client)
     assert(client != nullptr);
 
     clearLogicFeeds();
-
     mOnline = true;
 
     connect(this, &PTable::action, client, &PClient::action);
@@ -66,6 +67,9 @@ void PTable::startOnline(PClient *client)
 
 void PTable::startSample()
 {
+    clearLogicFeeds();
+    mOnline = false;
+
     std::vector<std::pair<Event, const char*>> scene {
         { PointsChanged, R"({"points":[105700,90300,35800,168200]})" },
         { Cleaned, "" },

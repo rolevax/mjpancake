@@ -296,7 +296,6 @@ Item {
         visible: false
         height: (global.mobile ? 0.65 : 0.55) * table.height
         onClosed: {
-            reset();
             pTable.saveRecord();
             table.closed();
         }
@@ -420,6 +419,10 @@ Item {
                 table.closed();
             }
         }
+    }
+
+    onClosed: {
+        reset();
     }
 
     function deactivate() {
@@ -703,6 +706,7 @@ Item {
 
     function reset() {
         _handleTableEventCleaned();
+        animBuf.clear();
 
         mount.visible = false;
         middle.reset();

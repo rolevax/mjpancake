@@ -16,7 +16,7 @@ Room {
     Game {
         id: game
         visible: _playing
-        focus: true
+        focus: _playing
         table.tileSet: "std"
         table.onClosed: { _playing = false; }
     }

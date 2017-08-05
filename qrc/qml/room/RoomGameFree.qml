@@ -2,6 +2,7 @@ import QtQuick 2.7
 import rolevax.sakilogy 1.0
 import "../area"
 import "../widget"
+import "../game"
 import "../js/girlnames.js" as Names
 
 Room {
@@ -10,12 +11,14 @@ Room {
     property var girlIds: [ 0, 0, 0, 0 ]
     property var shuffledGirlIds: [ 0, 0, 0, 0 ]
     property int tempDealer
-    property string tileSet: "std"
     property bool shuffleSeat: false
+    property bool _playing: false
 
     Column {
+        visible: !_playing
         spacing: global.size.gap
         anchors.centerIn: parent
+
         Row {
             id: configBoxes
             spacing: global.size.gap
@@ -78,12 +81,10 @@ Room {
             }
 
             GomboToggle {
+                id: toggleTileSet
                 model: [ "普通牌", "纸制牌" ]
-                onActivated: {
-                    room.tileSet = index === 1 ? "paper" : "std";
-                }
             }
-        } // end of image button row
+        }
 
         Texd {
             id: hintText
@@ -97,6 +98,7 @@ Room {
     }
 
     Buzzon {
+        visible: !_playing
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         anchors.margins: global.size.space
@@ -108,8 +110,20 @@ Room {
             } else {
                 hintText.text = "";
                 PGlobal.save();
-                loadTable();
+                _shuffleRivals();
+                _playing = true;
+                game.startLocal(shuffledGirlIds, ruleConfig.gameRule, tempDealer);
             }
+        }
+    }
+
+    Game {
+        id: game
+        visible: _playing
+        focus: _playing
+        table.tileSet: [ "std", "paper" ][toggleTileSet.currentIndex]
+        table.onClosed: {
+            room._playing = false;
         }
     }
 
@@ -127,16 +141,6 @@ Room {
                 if (dupId(girlIds[i], girlIds[j]))
                     return true;
         return false;
-    }
-
-    function loadTable() {
-        _shuffleRivals();
-        global.pushScene("game/Game");
-    }
-
-    // deprecated
-    function closeTable() {
-        loader.source = "";
     }
 
     function _shuffleRivals() {
@@ -160,32 +164,6 @@ Room {
             tempDealer = Math.floor(Math.random() * 4);
         } else {
             tempDealer = 0;
-        }
-    }
-
-    /* FUCK unuse loader and use Game
-    Loader {
-        id: loader
-        anchors.fill: parent
-        onLoaded: {
-            // need these to enable keyboard and android 'back' key inside table
-            room.focus = false;
-            loader.focus = true;
-
-            item.table.tileSet = room.tileSet;
-            item.table.closed.connect(closeTable);
-
-            startTimer.start();
-        }
-    }
-    */
-
-    Timer {
-        // delay one frame to solve android crash somehow
-        id: startTimer
-        interval: 17
-        onTriggered: {
-            loader.item.startLocal(shuffledGirlIds, ruleConfig.gameRule, tempDealer);
         }
     }
 }

@@ -31,6 +31,11 @@ Item {
         _dispatch();
     }
 
+    function clear() {
+        head.stop();
+        _buf = [];
+    }
+
     function _dispatch() {
         if (_buf.length > 0 && !head.running) {
             var patch = _buf.shift();
