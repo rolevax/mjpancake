@@ -175,10 +175,14 @@ void PGlobal::regulateRoot()
     if (!mRoot["mute"].isBool())
         mRoot["mute"] = false;
 
-    if (!mRoot["hints"].isObject()) {
-        mRoot["hints"] = QJsonObject{
-            { "op", true }
-        };
+    QJsonObject hints {
+        { "op", true },
+        { "replay", true }
+    };
+
+    if (!(mRoot["hints"].isObject()
+          && mRoot["hints"].toObject().size() == hints.size())) {
+        mRoot["hints"] = hints;
     }
 }
 

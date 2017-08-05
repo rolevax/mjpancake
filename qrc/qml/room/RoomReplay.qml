@@ -195,6 +195,12 @@ Room {
         }
     }
 
+    Dialok {
+        id: dialogOpHint
+        fontSize: 2 * global.size.middleFont
+        text: "左右滑动屏幕，或上下滚动鼠标滚轮以播放牌谱"
+    }
+
     onCurrentRoundIdChanged: {
         currentTurn = 1;
         _updateSnap();
@@ -202,6 +208,7 @@ Room {
 
     function _showGame() {
         game.visible = true;
+        dialogOpHint.hint = "replay";
 
         game.table.animEnabled = false;
         game.table.keepOpen = true;

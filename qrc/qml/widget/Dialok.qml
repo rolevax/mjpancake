@@ -35,7 +35,10 @@ Rectangle {
                 onClicked: {
                     frame.visible = false;
                     if (checkBoxNoMoreHint.checked) {
-                        //
+                        var hints = PGlobal.hints;
+                        hints[frame.hint] = false;
+                        PGlobal.hints = hints;
+                        PGlobal.save();
                     }
                 }
             }

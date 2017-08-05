@@ -41,7 +41,7 @@ Room {
                 enabled: !_frozen
                 onClicked: {
                     _playing = true;
-                    game.startPrac();
+                    game.startPrac(global.currGirlId);
                 }
             }
 
@@ -131,13 +131,7 @@ Room {
 
     function _handleSeatIn(users, girlIds, tempDealer) {
         _playing = true;
-
-        game.table.setGirlIds(girlIds);
-        game.table.setUsers(users);
-        game.table.middle.setDealer(tempDealer, true);
-
-        game.startOnline(PClient);
-
+        game.startOnline(PClient, girlIds, users, tempDealer);
         PClient.sendSeat();
     }
 }

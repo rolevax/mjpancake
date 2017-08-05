@@ -98,7 +98,6 @@ PinchArea {
 
     Dialok {
         id: dialogOpHint
-        hint: "op"
         fontSize: 2 * global.size.middleFont
         horizontalAlignment: Text.AlignHCenter
         text: "手牌太小 → 通过触屏手势缩放\n" +
@@ -123,22 +122,35 @@ PinchArea {
     }
 
     function startLocal(girlIds, gameRule, tempDealer) {
+        dialogOpHint.hint = "op";
+
         table.reset();
+        table.setGirlIds(girlIds);
+        table.middle.setDealer(tempDealer, true);
+
         table.pTable.startLocal(girlIds, gameRule, tempDealer);
     }
 
-    function startPrac() {
+    function startPrac(girlId) {
+        dialogOpHint.hint = "op";
         table.reset();
-        table.setGirlIds([ global.currGirlId, -1, -1, -1 ]);
-        table.pTable.startPrac(global.currGirlId);
+        table.setGirlIds([ girlId, -1, -1, -1 ]);
+        table.pTable.startPrac(girlId);
     }
 
-    function startOnline(pClient) {
+    function startOnline(pClient, girlIds, users, tempDealer) {
+        dialogOpHint.hint = "op";
+
         table.reset();
+        table.setGirlIds(girlIds);
+        table.setUsers(users);
+        table.middle.setDealer(tempDealer, true);
+
         table.pTable.startOnline(pClient);
     }
 
     function startSample() {
+        dialogOpHint.hint = "";
         table.reset();
         table.setGirlIds([ 713315, 713335, 713345, 713325 ]);
         table.pTable.startSample();

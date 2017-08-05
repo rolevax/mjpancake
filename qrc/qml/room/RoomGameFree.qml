@@ -173,8 +173,6 @@ Room {
             loader.focus = true;
 
             item.table.tileSet = room.tileSet;
-            item.table.setGirlIds(shuffledGirlIds);
-            item.table.middle.setDealer(tempDealer, true);
             item.table.closed.connect(closeTable);
 
             startTimer.start();
