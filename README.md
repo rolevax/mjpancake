@@ -1,7 +1,7 @@
 # Pancake Mahjong
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mjpancake)
-[![Build Status](https://travis-ci.org/mjpancake/mjpancake.svg?branch=develop)](https://travis-ci.org/mjpancake/mjpancake)
+[![Build Status](https://travis-ci.org/rolevax/mjpancake.svg?branch=develop)](https://travis-ci.org/rolevax/mjpancake)
 
 Pancake Mahjong is an inofficial Saki mahjong game
 with high-quality occult implementation.
@@ -20,7 +20,7 @@ We will also test supporting for iOS in the future.
 To obtain an executable client, build it either by the Qt Creator or from the command line:
 
 ```
-git clone --recursive https://github.com/mjpancake/mjpancake.git
+git clone --recursive https://github.com/rolevax/mjpancake.git
 mkdir build && cd build
 qmake -config release ../mjpancake
 make (or nmake, or mingw32-make according to your platform)

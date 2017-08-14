@@ -18,7 +18,10 @@ Room {
         visible: _playing
         focus: _playing
         table.tileSet: "std"
-        table.onClosed: { _playing = false; }
+        table.onClosed: {
+            _playing = false;
+            _frozen = false;
+        }
     }
 
     Rectangle {
