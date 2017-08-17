@@ -30,29 +30,49 @@ Room {
     }
 
     LisdView {
-        id: onlineListView
+        id: localListView
 
         visible: !game.visible
         spacing: global.size.space
-        width: 0.3 * room.width
+        width: 0.4 * room.width
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: global.size.gap
         anchors.bottom: replayIdInput.top
         anchors.bottomMargin: global.size.space
 
-        model: []
-        delegate: Buzzon {
+        model: pReplay.ls()
+        delegate: Item {
             width: parent.width
-            text: modelData
-            enabled: !_loading
-            onClicked: { _fetchOnline(modelData); }
+            height: buttonDelegate.height
+
+            Buzzon {
+                id: buttonDelegate
+                width: 0.85 * parent.width
+                text: modelData
+                enabled: !_loading
+                onClicked: {
+                    pReplay.load(modelData);
+                    _showGame();
+                }
+            }
+
+            Buzzon {
+                anchors.right: parent.right
+                width: 0.13 * parent.width
+                text: "删"
+                enabled: !_loading
+                onClicked: {
+                    pReplay.rm(modelData);
+                    localListView.model = pReplay.ls();
+                }
+            }
         }
     }
 
     TexdInput {
         id: replayIdInput
-        visible: !game.visible
+        visible: false // feature hidden
         width: 12 * global.size.middleFont
         anchors.right: parent.right
         anchors.rightMargin: global.size.space

@@ -14,6 +14,8 @@ Room {
     property bool shuffleSeat: false
     property bool _playing: false
 
+    showReturnButton: !_playing
+
     Column {
         visible: !_playing
         spacing: global.size.gap

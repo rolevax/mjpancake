@@ -10,7 +10,7 @@ Room {
         spacing: global.size.space
 
         Buzzon {
-            text: "更改牌桌背景"
+            text: "背景"
             textLength: 8
             onClicked: {
                 global.pushScene("room/RoomBackground");
@@ -18,10 +18,10 @@ Room {
         }
 
         Buzzon {
-            text: PGlobal.savePassword ? "保存密码 O" : "保存密码 X"
+            text: "头像"
             textLength: 8
             onClicked: {
-                PGlobal.savePassword = !PGlobal.savePassword;
+                global.pushScene("room/RoomPhoto");
             }
         }
 

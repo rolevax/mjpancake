@@ -9,9 +9,10 @@ Item {
     readonly property int currGirlId: girlIds ? girlIds[currIndex] : -1
     property int currIndex: 0
     property var girlIds: null
+    property real textLength: 7.5
 
     // height set by parent
-    width: global.size.middleFont * 7
+    width: global.size.middleFont * textLength
 
     Texd {
         anchors.bottom: parent.top
@@ -40,7 +41,7 @@ Item {
             Buzzon {
                 id: girlButton
                 text: Names.names[modelData]
-                textLength: 7
+                textLength: frame.textLength
                 onClicked: {
                     currIndex = index;
                     currGirlId = modelData;

@@ -14,12 +14,5 @@ Room {
             onClicked: { global.pushScene("room/RoomGen"); }
             anchors.horizontalCenter: parent.horizontalCenter
         }
-
-        Buzzon {
-            text: "自由测试"
-            textLength: 8
-            onClicked: { global.pushScene("room/RoomGameFree"); }
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
     }
 }

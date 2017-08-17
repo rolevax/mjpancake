@@ -74,5 +74,6 @@
         <file>qml/room/RoomBackground.qml</file>
         <file>qml/widget/Dialok.qml</file>
         <file>qml/widget/ChegBox.qml</file>
+        <file>qml/room/RoomPhoto.qml</file>
     </qresource>
 </RCC>
