@@ -5,9 +5,11 @@ Item {
     id: frame
 
     property bool animEnabled: true
+    property bool showPointDiff: false
     property real tw
     property alias seatText: seatText
     property int point: 0
+    property int myPoint: 0
 
     width: 4 * tw
     height: tw / 3 * 2
@@ -31,6 +33,7 @@ Item {
 
     Texd {
         id: pointText
+        visible: !showPointDiff
         width: frame.width - seatBox.width - frame.height / 4
         anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
@@ -39,6 +42,18 @@ Item {
         verticalAlignment: Text.AlignVCenter
         color: "black"
         text: point
+    }
+
+    Texd {
+        id: diffText
+        visible: showPointDiff
+        width: pointText.width
+        anchors.centerIn: pointText
+        font.pixelSize: pointText.font.pixelSize
+        horizontalAlignment: pointText.horizontalAlignment
+        verticalAlignment: pointText.verticalAlignment
+        color: pointText.color
+        text: (myPoint - point > 0 ? "+" : "") + (myPoint - point)
     }
 
     Item {

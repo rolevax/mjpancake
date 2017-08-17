@@ -52,6 +52,7 @@ Rectangle {
         id: repeater
         model: 4
         delegate: MiddleNameBar {
+            showPointDiff: middle.pointed
             animEnabled: middle.animEnabled
             x: (middle.width - width) / 2
             y: middle.height - height - 2 * global.size.space
@@ -140,6 +141,7 @@ Rectangle {
     function setPoints(points) {
         for (var i = 0; i < 4; i++) {
             repeater.itemAt(i).point = points[i];
+            repeater.itemAt(i).myPoint = points[0];
         }
     }
 
