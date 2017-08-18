@@ -6,18 +6,20 @@
 Pancake Mahjong is an inofficial Saki mahjong game
 with high-quality occult implementation.
 
-## Features
-
-- (TODO)
+Visit [https://mjpancake.github.io] for more information.
 
 ## Build
 
 The client can be built on Linux, Windows, or macOS with
-Qt 5.7.1 or later installed.
-The target platform can be Linux, Windows, macOS, or Android. 
-We will also test supporting for iOS in the future.
+Qt (community version) installed, 
+The least required version is Qt 5.7.1, 
+but it is recommended to use the lastest Qt 5.9.1
+to obtain a probably better performance.
+The target platform can be Linux, Windows, macOS, Android, or iOS. 
+Visit [https://www.qt.io/] to learn about Qt.
 
-To obtain an executable client, build it either by the Qt Creator or from the command line:
+To obtain an executable client,
+build it either by the Qt Creator (easier) or from the command line:
 
 ```
 git clone --recursive https://github.com/rolevax/mjpancake.git
@@ -25,19 +27,6 @@ mkdir build && cd build
 qmake -config release ../mjpancake
 make (or nmake, or mingw32-make according to your platform)
 ```
-
-## Contributing
-
-We love help of any kind, including but not limited to:
-
-- Introducing and/or implementing new ideas
-- Reporting and/or fixing bugs and improving the code quality
-- Handling known issues
-- Artwork and design
-- Documentation
-- Translation and internationalization
-
-Just contact us on [Gitter](https://gitter.im/mjpancake)!
 
 ## License
 
