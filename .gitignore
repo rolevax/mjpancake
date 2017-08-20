@@ -1,4 +1,5 @@
 *.log
 *.aux
 *.user
+*.properties~
 

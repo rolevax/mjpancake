@@ -464,7 +464,7 @@ QVariantMap createActivation(const saki::TableView &view)
     }
 
     if (choices.can(AC::IRS_CLICK))
-        map.insert(stringOf(AC::NEXT_ROUND), true);
+        map.insert(stringOf(AC::IRS_CLICK), true);
 
     QVariantMap args;
     args["action"] = map;
