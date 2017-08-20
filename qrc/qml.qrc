@@ -75,5 +75,6 @@
         <file>qml/widget/Dialok.qml</file>
         <file>qml/widget/ChegBox.qml</file>
         <file>qml/room/RoomPhoto.qml</file>
+        <file>qml/room/RoomNetError.qml</file>
     </qresource>
 </RCC>

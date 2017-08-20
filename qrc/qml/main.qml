@@ -68,6 +68,12 @@ Window {
             loader.focus = true;
             item.closed.connect(popScene);
         }
+
+        onStatusChanged: {
+            if (status == Loader.Error && (source == "qrc:/qml/room/RoomLogin.qml")) {
+                setSource("room/RoomNetError.qml");
+            }
+        }
     }
 
     Shortcut {
