@@ -135,6 +135,10 @@ function logtr(str) {
 
 function skilltr(str) {
     var dict = {
+        SUMIRE_A: "射贯",
+        SUMIRE_A_R: "下家",
+        SUMIRE_A_C: "对面",
+        SUMIRE_A_L: "上家",
         AWAI_DABURI: "☆☆☆☆☆☆",
         KASUMI_ZIM: "降神",
         SAWAYA_C_BLUE: "青云",

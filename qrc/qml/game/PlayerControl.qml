@@ -243,6 +243,7 @@ Item {
     }
 
     function clear() {
+        deactivate();
         handModel.clear();
         barksModel.clear();
         drawn.tileStr = "hide";

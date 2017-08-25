@@ -233,20 +233,20 @@ void PTableLocal::onPoppedUp(const saki::Table &table, saki::Who who)
 
 void PTableLocal::onActivated(saki::Table &table)
 {
-    const saki::TableView view = table.getView(mSelf);
+    const std::unique_ptr<saki::TableView> view = table.getView(mSelf);
 
-    if (table.riichiEstablished(mSelf) && view.myChoices().spinOnly()) {
+    if (table.riichiEstablished(mSelf) && view->myChoices().spinOnly()) {
         emitJustPause(300); // a little pause
         table.action(mSelf, saki::Action(saki::ActCode::SPIN_OUT));
         return;
     }
 
-    if (mPrac && view.myChoices().can(saki::ActCode::PASS)) {
+    if (mPrac && view->myChoices().can(saki::ActCode::PASS)) {
         table.action(mSelf, saki::Action(saki::ActCode::PASS));
         return;
     }
 
-    emit tableEvent(PTable::Activated, createActivation(view));
+    emit tableEvent(PTable::Activated, createActivation(*view));
 }
 
 void PTableLocal::start(const QVariant &girlIdsVar, const QVariant &gameRule, int tempDelaer)

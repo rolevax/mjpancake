@@ -42,7 +42,8 @@ SOURCES += main.cpp \
     libsaki/replay.cpp \
     libsaki/string_enum.cpp \
     libsaki/table.cpp \
-    libsaki/tableview.cpp \
+    libsaki/table_view_hand.cpp \
+    libsaki/table_view_real.cpp \
     libsaki/test.cpp \
     libsaki/tile_count.cpp \
     gui/p_client.cpp \
@@ -109,11 +110,13 @@ HEADERS += \
     libsaki/rand.h \
     libsaki/replay.h \
     libsaki/string_enum.h \
-    libsaki/tablefocus.h \
     libsaki/table.h \
-    libsaki/tableview.h \
-    libsaki/tableobserver.h \
-    libsaki/tableoperator.h \
+    libsaki/table_view.h \
+    libsaki/table_view_hand.h \
+    libsaki/table_view_real.h \
+    libsaki/table_observer.h \
+    libsaki/table_focus.h \
+    libsaki/table_operator.h \
     libsaki/test.h \
     libsaki/tile.h \
     libsaki/tile_count.h \
@@ -163,6 +166,10 @@ OBJECTS_DIR = ./obj
 
 contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
     ANDROID_EXTRA_LIBS =
+}
+
+mac {
+    QMAKE_CXXFLAGS_WARN_ON = -Wall -Wextra -Wno-missing-braces
 }
 
 ios {
