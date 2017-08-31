@@ -24,7 +24,7 @@ Room {
 
                 Texd {
                     anchors.horizontalCenter: parent.horizontalCenter
-                    text: modelData.role
+                    text: "[" + modelData.role + "]"
                     font.pixelSize: global.size.middleFont
                 }
 
