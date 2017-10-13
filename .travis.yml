@@ -9,8 +9,8 @@ before_install:
   - sudo apt-get update -qq
 
 install:
-  - sudo apt-get -y install -qq g++-6
-  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 90
+  - sudo apt-get -y install -qq g++-7
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 90
   - sudo apt-get -y install qt59-meta-full
 
 script:
