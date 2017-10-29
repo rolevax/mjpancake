@@ -1,6 +1,5 @@
 import QtQuick 2.7
 import "../widget"
-import "http://118.89.219.207/ih.js" as Ih
 
 Room {
     showReturnButton: false
@@ -17,7 +16,19 @@ Room {
         spacing: global.size.space
 
         Repeater {
-            model: Ih.staffs
+            model: [
+                { "role": "开发", "names": [ "rolevax" ] },
+                {
+                    "role": "参谋/校正",
+                    "names": [
+                        "Yoarkisess",
+                        "百度没留电话的小喵",
+                        "花鹿水",
+                        "九月",
+                        "临海小红帽"
+                    ]
+                }
+            ]
 
             delegate: Column {
                 anchors.horizontalCenter: parent.horizontalCenter

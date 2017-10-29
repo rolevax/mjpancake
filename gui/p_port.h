@@ -18,7 +18,7 @@
 
 namespace saki
 {
-    class IrsCheckRow;
+    struct IrsCheckRow;
     enum class RoundResult;
     class TableView;
 }
