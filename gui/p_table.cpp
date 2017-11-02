@@ -3,10 +3,16 @@
 #include "p_client.h"
 #include "p_port.h"
 
-#include "libsaki/string_enum.h"
-#include "libsaki/util.h"
+#include "libsaki/util/string_enum.h"
+#include "libsaki/util/misc.h"
 
 #include <QEventLoop>
+
+
+
+using namespace saki;
+
+
 
 PTable::PTable(QObject *parent)
     : QObject(parent)
@@ -86,21 +92,21 @@ void PTable::startSample()
         emit tableEvent(pair.first, args);
     }
 
-    auto myInOut = [this](const saki::T37 &tin, const saki::T37 &tout, int outPos) {
+    auto myInOut = [this](const T37 &tin, const T37 &tout, int outPos) {
         emit tableEvent(Drawn, QVariantMap { { "who", 0 }, { "tile", tin.str() } });
         emit tableEvent(JustPause, QVariantMap { { "ms", 300 } });
         emit tableEvent(JustSetOutPos, QVariantMap { { "outPos", outPos } });
         emit tableEvent(Discarded, QVariantMap { {"who", 0 }, { "tile", tout.str() } });
     };
 
-    auto oppoOut = [this](int w, const saki::T37 &tout, bool spin) {
+    auto oppoOut = [this](int w, const T37 &tout, bool spin) {
         emit tableEvent(Drawn, QVariantMap { { "who", w } });
         emit tableEvent(JustPause, QVariantMap { { "ms", 300 } });
         QVariantMap args { {"who", w }, { "tile", tout.str() }, { "spin", spin } };
         emit tableEvent(Discarded, args);
     };
 
-    using namespace saki::tiles37;
+    using namespace tiles37;
 
     oppoOut(1, 3_f, false);
     oppoOut(2, 4_f, false);
@@ -141,15 +147,15 @@ void PTable::startSample()
     oppoOut(2, 7_p, true);
     oppoOut(3, 1_p, true);
 
-    saki::M37 kan1 = saki::M37::daiminkan(1_p, 1_p, 1_p, 1_p, 0);
-    saki::M37 kan2 = saki::M37::ankan(2_p, 2_p, 2_p, 2_p);
-    saki::M37 kan3 = saki::M37::ankan(3_p, 3_p, 3_p, 3_p);
+    M37 kan1 = M37::daiminkan(1_p, 1_p, 1_p, 1_p, 0);
+    M37 kan2 = M37::ankan(2_p, 2_p, 2_p, 2_p);
+    M37 kan3 = M37::ankan(3_p, 3_p, 3_p, 3_p);
 
     emit tableEvent(JustPause, QVariantMap { { "ms", 500 } });
     QVariantMap args1 {
         { "who", 0 },
         { "fromWhom", 3 },
-        { "actStr", QString(saki::stringOf(kan1.type())) },
+        { "actStr", QString(util::stringOf(kan1.type())) },
         { "bark", createBarkVar(kan1) }
     };
     emit tableEvent(Barked, args1);
@@ -159,7 +165,7 @@ void PTable::startSample()
     QVariantMap args2 {
         { "who", 0 },
         { "fromWhom", -1 },
-        { "actStr", QString(saki::stringOf(kan2.type())) },
+        { "actStr", QString(util::stringOf(kan2.type())) },
         { "bark", createBarkVar(kan2) }
     };
     emit tableEvent(Barked, args2);
@@ -171,7 +177,7 @@ void PTable::startSample()
     QVariantMap args3 {
         { "who", 0 },
         { "fromWhom", -1 },
-        { "actStr", QString(saki::stringOf(kan3.type())) },
+        { "actStr", QString(util::stringOf(kan3.type())) },
         { "bark", createBarkVar(kan3) }
     };
     emit tableEvent(Barked, args3);

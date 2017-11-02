@@ -3,9 +3,9 @@
 
 #include "p_table.h"
 
-#include "libsaki/table.h"
-#include "libsaki/ai.h"
-#include "libsaki/replay.h"
+#include "libsaki/table/table.h"
+#include "libsaki/ai/ai.h"
+#include "libsaki/app/replay.h"
 
 #include <QObject>
 #include <QVariantList>

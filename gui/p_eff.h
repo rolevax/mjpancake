@@ -1,8 +1,8 @@
 #ifndef P_EFF_H
 #define P_EFF_H
 
-#include "libsaki/mount.h"
-#include "libsaki/hand.h"
+#include "libsaki/table/mount.h"
+#include "libsaki/form/hand.h"
 
 #include <QObject>
 #include <QVariantList>
@@ -59,9 +59,9 @@ private:
     void tsumo();
 
 private:
-    saki::RuleInfo mRule;
-    saki::PointInfo mInfo;
-    saki::Rand mRand;
+    saki::Rule mRule;
+    saki::FormCtx mFormCtx;
+    saki::util::Rand mRand;
     saki::Mount mMount;
     saki::Hand mHand;
     int mTurn;

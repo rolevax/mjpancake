@@ -1,7 +1,7 @@
 #include "gui/p_gen.h"
 #include "gui/p_port.h"
 
-#include "libsaki/gen.h"
+#include "libsaki/app/gen.h"
 
 #include <QVariantMap>
 #include <iostream>

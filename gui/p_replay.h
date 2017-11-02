@@ -1,7 +1,7 @@
 #ifndef P_REPLAY_H
 #define P_REPLAY_H
 
-#include "libsaki/replay.h"
+#include "libsaki/app/replay.h"
 
 #include <QObject>
 #include <QVariantList>

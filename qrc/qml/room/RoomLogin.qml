@@ -15,42 +15,24 @@ Room {
         anchors.centerIn: parent
         spacing: global.size.space
 
+        Texd {
+            anchors.horizontalCenter: parent.horizontalCenter
+            text: "[贡献者]"
+            font.pixelSize: global.size.middleFont
+        }
+
         Repeater {
             model: [
-                { "role": "开发", "names": [ "rolevax" ] },
-                {
-                    "role": "参谋/校正",
-                    "names": [
-                        "Yoarkisess",
-                        "百度没留电话的小喵",
-                        "花鹿水",
-                        "九月",
-                        "临海小红帽"
-                    ]
-                }
+                "Yoarkisess",
+                "百度没留电话的小喵",
+                "花鹿水",
+                "九月",
+                "临海小红帽"
             ]
 
-            delegate: Column {
-                anchors.horizontalCenter: parent.horizontalCenter
-
-                Texd {
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    text: "[" + modelData.role + "]"
-                    font.pixelSize: global.size.middleFont
-                }
-
-                Row {
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    spacing: global.size.space
-
-                    Repeater {
-                        model: modelData.names
-                        Texd {
-                            text: modelData
-                            font.pixelSize: global.size.middleFont
-                        }
-                    }
-                }
+            delegate:  Texd {
+                text: modelData
+                font.pixelSize: global.size.middleFont
             }
         }
     }

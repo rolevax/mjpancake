@@ -1,10 +1,10 @@
 #include "gui/p_port.h"
-#include "libsaki/table_observer.h"
-#include "libsaki/table_view.h"
-#include "libsaki/girl.h"
-#include "libsaki/replay.h"
-#include "libsaki/string_enum.h"
-#include "libsaki/util.h"
+#include "libsaki/table/table_observer.h"
+#include "libsaki/table/table_view.h"
+#include "libsaki/girl/girl.h"
+#include "libsaki/app/replay.h"
+#include "libsaki/util/string_enum.h"
+#include "libsaki/util/misc.h"
 
 #include <bitset>
 #include <sstream>
@@ -13,7 +13,9 @@
 
 
 
-QString createTileVar(const saki::T37 &t, bool lay)
+using namespace saki;
+
+QString createTileVar(const T37 &t, bool lay)
 {
     QString res(t.str());
     if (lay)
@@ -21,11 +23,11 @@ QString createTileVar(const saki::T37 &t, bool lay)
     return res;
 }
 
-QStringList createTilesVar(const saki::TileCount &count)
+QStringList createTilesVar(const TileCount &count)
 {
     QStringList list;
     for (int ti = 0; ti < 34; ti++) {
-        saki::T37 tile(ti);
+        T37 tile(ti);
         if (tile.val() == 5) {
             int red = count.ct(tile.toAka5());
             int black = count.ct(tile);
@@ -43,45 +45,45 @@ QStringList createTilesVar(const saki::TileCount &count)
     return list;
 }
 
-QStringList createTilesVar(const std::vector<saki::T37> &tiles)
+QStringList createTilesVar(const std::vector<T37> &tiles)
 {
     QStringList list;
 
-    for (const saki::T37 &t : tiles)
+    for (const T37 &t : tiles)
         list << createTileVar(t, false);
 
     return list;
 }
 
-QStringList createTilesVar(const saki::util::Range<saki::T37> &tiles)
+QStringList createTilesVar(const util::Range<T37> &tiles)
 {
     QStringList list;
 
-    for (const saki::T37 &t : tiles)
+    for (const T37 &t : tiles)
         list << createTileVar(t, false);
 
     return list;
 }
 
-QVariant createTileStrsVar(const saki::util::Range<saki::T34> &tiles)
+QVariant createTileStrsVar(const util::Range<T34> &tiles)
 {
     QVariantList list;
 
-    for (saki::T34 t : tiles)
+    for (T34 t : tiles)
         list << QString(t.str());
 
     return QVariant::fromValue(list);
 }
 
-unsigned createSwapMask(const saki::TileCount &count,
-                        const saki::util::Stactor<saki::T37, 13> &choices)
+unsigned createSwapMask(const TileCount &count,
+                        const util::Stactor<T37, 13> &choices)
 {
     // assume 'choices' is 34-sorted
     std::bitset<13> mask;
     int i = 0; // next bit to write
 
     auto it = choices.begin();
-    for (const saki::T37 &t : saki::tiles37::ORDER37) {
+    for (const T37 &t : tiles37::ORDER37) {
         if (it == choices.end())
             break;
         int ct = count.ct(t);
@@ -96,13 +98,13 @@ unsigned createSwapMask(const saki::TileCount &count,
     return mask.to_ulong();
 }
 
-QVariant createBarkVar(const saki::M37 &m)
+QVariant createBarkVar(const M37 &m)
 {
     QVariantMap map;
 
     // save typing
-    using Type = saki::M37::Type;
-    saki::M37::Type type = m.type();
+    using Type = M37::Type;
+    M37::Type type = m.type();
 
     map.insert("type", type == Type::CHII ? 1 : (type == Type::PON ? 3 : 4));
     int open = m.layIndex();
@@ -133,15 +135,15 @@ QVariantMap createFormVar(const char *spell, const char *charge)
     return map;
 }
 
-QVariant createBarksVar(const saki::util::Stactor<saki::M37, 4> &ms)
+QVariant createBarksVar(const util::Stactor<M37, 4> &ms)
 {
     QVariantList list;
-    for (const saki::M37 &m : ms)
+    for (const M37 &m : ms)
         list << createBarkVar(m);
     return QVariant::fromValue(list);
 }
 
-QVariant createIrsCheckRowVar(const saki::IrsCheckRow &row)
+QVariant createIrsCheckRowVar(const IrsCheckRow &row)
 {
     QVariantMap map;
 
@@ -156,7 +158,7 @@ QVariant createIrsCheckRowVar(const saki::IrsCheckRow &row)
 
 
 
-QVariantMap createTableSnapMap(const saki::TableSnap &snap)
+QVariantMap createTableSnapMap(const TableSnap &snap)
 {
     QVariantMap map;
 
@@ -175,7 +177,7 @@ QVariantMap createTableSnapMap(const saki::TableSnap &snap)
 
     QVariantList players;
     for (int w = 0; w < 4; w++) {
-        const saki::PlayerSnap &player = snap[w];
+        const PlayerSnap &player = snap[w];
         QVariantMap playerMap;
         playerMap.insert("hand", createTilesVar(player.hand.range()));
         playerMap.insert("barks", createBarksVar(player.barks));
@@ -197,15 +199,15 @@ QVariantMap createTableSnapMap(const saki::TableSnap &snap)
     map.insert("state", snap.state);
     map.insert("die1", snap.die1);
     map.insert("die2", snap.die2);
-    map.insert("result", QString(saki::stringOf(snap.result)));
+    map.insert("result", QString(util::stringOf(snap.result)));
     map.insert("endOfRound", snap.endOfRound);
     map.insert("gunner", snap.gunner.somebody() ? snap.gunner.index() : -1);
-    using RR = saki::RoundResult;
+    using RR = RoundResult;
     if (snap.endOfRound && (snap.result == RR::RON || snap.result == RR::SCHR))
         map.insert("cannon", createTileVar(snap.cannon));
 
     QVariantList openers;
-    for (saki::Who opener : snap.openers)
+    for (Who opener : snap.openers)
         openers << opener.index();
     map.insert("openers", openers);
 
@@ -220,14 +222,14 @@ QVariantMap createTableSnapMap(const saki::TableSnap &snap)
 
 
 
-QJsonObject createReplayJson(const saki::Replay &replay)
+QJsonObject createReplayJson(const Replay &replay)
 {
     QJsonObject root;
 
     root["version"] = 3;
 
     QVariantList girls;
-    for (saki::Girl::Id v : replay.girls)
+    for (Girl::Id v : replay.girls)
         girls << static_cast<int>(v);
     root["girls"] = QJsonArray::fromVariantList(girls);
 
@@ -236,14 +238,14 @@ QJsonObject createReplayJson(const saki::Replay &replay)
     root["seed"] = QString::number(replay.seed);
 
     QJsonArray arr;
-    for (const saki::Replay::Round &round : replay.rounds)
+    for (const Replay::Round &round : replay.rounds)
         arr.append(createRoundJson(round));
     root["rounds"] = arr;
 
     return root;
 }
 
-QJsonObject createRuleJson(const saki::RuleInfo &rule)
+QJsonObject createRuleJson(const Rule &rule)
 {
     QJsonObject obj;
 
@@ -262,7 +264,7 @@ QJsonObject createRuleJson(const saki::RuleInfo &rule)
     return obj;
 }
 
-QJsonObject createRoundJson(const saki::Replay::Round &round)
+QJsonObject createRoundJson(const Replay::Round &round)
 {
     QJsonObject obj;
 
@@ -274,7 +276,7 @@ QJsonObject createRoundJson(const saki::Replay::Round &round)
     obj["state"] = QString::number(round.state);
     obj["die1"] = round.die1;
     obj["die2"] = round.die2;
-    obj["result"] = saki::stringOf(round.result);
+    obj["result"] = util::stringOf(round.result);
     obj["resultPoints"] = std2json(round.resultPoints);
 
     QJsonArray spells;
@@ -288,12 +290,12 @@ QJsonObject createRoundJson(const saki::Replay::Round &round)
     obj["charges"] = charges;
 
     QJsonArray drids;
-    for (const saki::T37 &t : round.drids)
+    for (const T37 &t : round.drids)
         drids.append(t.str());
     obj["drids"] = drids;
 
     QJsonArray urids;
-    for (const saki::T37 &t : round.urids)
+    for (const T37 &t : round.urids)
         urids.append(t.str());
     obj["urids"] = urids;
 
@@ -305,10 +307,10 @@ QJsonObject createRoundJson(const saki::Replay::Round &round)
     return obj;
 }
 
-QJsonObject createTrackJson(const saki::Replay::Track &track)
+QJsonObject createTrackJson(const Replay::Track &track)
 {
-    auto inJson = [](saki::Replay::InAct inAct) {
-        using In = saki::Replay::In;
+    auto inJson = [](Replay::InAct inAct) {
+        using In = Replay::In;
         switch (inAct.act) {
         case In::DRAW:
             return QString(inAct.t37.str());
@@ -331,8 +333,8 @@ QJsonObject createTrackJson(const saki::Replay::Track &track)
         }
     };
 
-    auto outJson = [](saki::Replay::OutAct outAct) {
-        using Out = saki::Replay::Out;
+    auto outJson = [](Replay::OutAct outAct) {
+        using Out = Replay::Out;
         switch (outAct.act) {
         case Out::ADVANCE:
             return QString(outAct.t37.str());
@@ -360,53 +362,53 @@ QJsonObject createTrackJson(const saki::Replay::Track &track)
     QJsonObject obj;
 
     QJsonArray initArr;
-    for (const saki::T37 &t : track.init)
+    for (const T37 &t : track.init)
         initArr.append(t.str());
     obj["init"] = initArr;
 
     QJsonArray inArr;
-    for (const saki::Replay::InAct &inAct : track.in)
+    for (const Replay::InAct &inAct : track.in)
         inArr.append(inJson(inAct));
     obj["in"] = inArr;
 
     QJsonArray outArr;
-    for (const saki::Replay::OutAct &outAct : track.out)
+    for (const Replay::OutAct &outAct : track.out)
         outArr.append(outJson(outAct));
     obj["out"] = outArr;
 
     return obj;
 }
 
-void activateDrawn(QVariantMap &map, const saki::TableView &view)
+void activateDrawn(QVariantMap &map, const TableView &view)
 {
-    using AC = saki::ActCode;
+    using AC = ActCode;
 
     for (AC ac : { AC::SPIN_OUT, AC::SPIN_RIICHI, AC::TSUMO, AC::RYUUKYOKU })
         if (view.myChoices().can(ac))
-            map.insert(stringOf(ac), true);
+            map.insert(util::stringOf(ac), true);
 
-    const saki::Choices::ModeDrawn &mode = view.myChoices().drawn();
+    const Choices::ModeDrawn &mode = view.myChoices().drawn();
 
     if (mode.swapOut)
-        map.insert(stringOf(AC::SWAP_OUT), (1 << 13) - 1);
+        map.insert(util::stringOf(AC::SWAP_OUT), (1 << 13) - 1);
 
     if (!mode.swapRiichis.empty())
-        map.insert(stringOf(AC::SWAP_RIICHI), createSwapMask(view.myHand().closed(), mode.swapRiichis));
+        map.insert(util::stringOf(AC::SWAP_RIICHI), createSwapMask(view.myHand().closed(), mode.swapRiichis));
 
     if (!mode.ankans.empty())
-        map.insert(stringOf(AC::ANKAN), createTileStrsVar(mode.ankans.range()));
+        map.insert(util::stringOf(AC::ANKAN), createTileStrsVar(mode.ankans.range()));
 
     if (!mode.kakans.empty()) {
         QVariantList list;
         for (int barkId : mode.kakans)
             list << barkId;
-        map.insert(stringOf(AC::KAKAN), QVariant::fromValue(list));
+        map.insert(util::stringOf(AC::KAKAN), QVariant::fromValue(list));
     }
 }
 
-void activateBark(QVariantMap &map, const saki::TableView &view)
+void activateBark(QVariantMap &map, const TableView &view)
 {
-    using AC = saki::ActCode;
+    using AC = ActCode;
 
     std::array<AC, 7> just {
         AC::PASS,
@@ -416,25 +418,25 @@ void activateBark(QVariantMap &map, const saki::TableView &view)
 
     for (AC ac : just)
         if (view.myChoices().can(ac))
-            map.insert(stringOf(ac), true);
+            map.insert(util::stringOf(ac), true);
 }
 
-void activateIrsCheck(QVariantMap &map, const saki::TableView &view)
+void activateIrsCheck(QVariantMap &map, const TableView &view)
 {
-    const saki::Girl &girl = view.me();
+    const Girl &girl = view.me();
     int prediceCount = girl.irsCheckCount();
     QVariantList list;
     for (int i = 0; i < prediceCount; i++)
         list << createIrsCheckRowVar(girl.irsCheckRow(i));
-    map.insert(stringOf(saki::ActCode::IRS_CHECK), QVariant::fromValue(list));
+    map.insert(util::stringOf(ActCode::IRS_CHECK), QVariant::fromValue(list));
 }
 
-QVariantMap createActivation(const saki::TableView &view)
+QVariantMap createActivation(const TableView &view)
 {
-    using AC = saki::ActCode;
-    using Mode = saki::Choices::Mode;
+    using AC = ActCode;
+    using Mode = Choices::Mode;
 
-    const saki::Choices &choices = view.myChoices();
+    const Choices &choices = view.myChoices();
 
     QVariantMap map;
     int focusWho = -1;
@@ -446,7 +448,7 @@ QVariantMap createActivation(const saki::TableView &view)
         activateIrsCheck(map, view);
         break;
     case Mode::DICE:
-        map.insert(stringOf(AC::DICE), true);
+        map.insert(util::stringOf(AC::DICE), true);
         break;
     case Mode::DRAWN:
         activateDrawn(map, view);
@@ -457,14 +459,14 @@ QVariantMap createActivation(const saki::TableView &view)
         break;
     case Mode::END:
         if (choices.can(AC::END_TABLE))
-            map.insert(stringOf(AC::END_TABLE), true);
+            map.insert(util::stringOf(AC::END_TABLE), true);
         if (choices.can(AC::NEXT_ROUND))
-            map.insert(stringOf(AC::NEXT_ROUND), true);
+            map.insert(util::stringOf(AC::NEXT_ROUND), true);
         break;
     }
 
     if (choices.can(AC::IRS_CLICK))
-        map.insert(stringOf(AC::IRS_CLICK), true);
+        map.insert(util::stringOf(AC::IRS_CLICK), true);
 
     QVariantMap args;
     args["action"] = map;
@@ -477,13 +479,13 @@ QVariantMap createActivation(const saki::TableView &view)
 
 
 
-saki::Replay readReplayJson(const QJsonObject &obj)
+Replay readReplayJson(const QJsonObject &obj)
 {
-    saki::Replay replay;
+    Replay replay;
 
     assert(obj["version"].toInt() == 3);
     for (int i = 0; i < 4; i++) {
-        replay.girls[i] = saki::Girl::Id(obj["girls"].toArray().at(i).toInt());
+        replay.girls[i] = Girl::Id(obj["girls"].toArray().at(i).toInt());
         replay.initPoints[i] = obj["initPoints"].toArray().at(i).toInt();
     }
 
@@ -497,9 +499,9 @@ saki::Replay readReplayJson(const QJsonObject &obj)
     return replay;
 }
 
-saki::RuleInfo readRuleJson(const QJsonObject &obj)
+Rule readRuleJson(const QJsonObject &obj)
 {
-    saki::RuleInfo rule;
+    Rule rule;
 
     rule.fly = obj["fly"].toBool();
     rule.headJump = obj["headJump"].toBool();
@@ -507,7 +509,7 @@ saki::RuleInfo readRuleJson(const QJsonObject &obj)
     rule.ippatsu = obj["ippatsu"].toBool();
     rule.uradora = obj["uradora"].toBool();
     rule.kandora = obj["kandora"].toBool();
-    rule.akadora = saki::TileCount::AkadoraCount(obj["akadora"].toInt());
+    rule.akadora = TileCount::AkadoraCount(obj["akadora"].toInt());
     // no pao in version <= 0.6.3, so use default 'false'
     rule.daiminkanPao = obj["daiminkanPao"].toBool(false);
     rule.hill = obj["hill"].toInt();
@@ -517,20 +519,20 @@ saki::RuleInfo readRuleJson(const QJsonObject &obj)
     return rule;
 }
 
-saki::Replay::Round readRoundJson(const QJsonObject &obj)
+Replay::Round readRoundJson(const QJsonObject &obj)
 {
-    saki::Replay::Round round;
+    Replay::Round round;
 
     round.round = obj["round"].toInt();
     round.extraRound = obj["extraRound"].toInt();
-    round.dealer = saki::Who(obj["dealer"].toInt());
+    round.dealer = Who(obj["dealer"].toInt());
     round.allLast = obj["allLast"].toBool();
     round.deposit = obj["deposit"].toInt();
     round.state = obj["state"].toString().toUInt(); // assume UInt work with uint32_t
     round.die1 = obj["die1"].toInt();
     round.die2 = obj["die2"].toInt();
 
-    round.result = saki::roundResultOf(obj["result"].toString().toLatin1().data());
+    round.result = util::roundResultOf(obj["result"].toString().toLatin1().data());
 
     for (int i = 0; i < 4; i++)
         round.resultPoints[i] = obj["resultPoints"].toArray().at(i).toInt();
@@ -558,16 +560,16 @@ saki::Replay::Round readRoundJson(const QJsonObject &obj)
     return round;
 }
 
-saki::Replay::Track readTrackJson(const QJsonObject &obj)
+Replay::Track readTrackJson(const QJsonObject &obj)
 {
     auto inAct = [](const QString &qstr) {
-        using In = saki::Replay::In;
-        using InAct = saki::Replay::InAct;
+        using In = Replay::In;
+        using InAct = Replay::InAct;
         QByteArray ba = qstr.toLatin1();
         const char *str = ba.data();
 
         if (std::isdigit(str[0])) {
-            return InAct(In::DRAW, saki::T37(str));
+            return InAct(In::DRAW, T37(str));
         } else if (str[0] == 'b') {
             return InAct(In::CHII_AS_LEFT, str[1] - '0');
         } else if (str[0] == 'm') {
@@ -589,13 +591,13 @@ saki::Replay::Track readTrackJson(const QJsonObject &obj)
     };
 
     auto outAct = [](const QString &qstr) {
-        using Out = saki::Replay::Out;
-        using OutAct = saki::Replay::OutAct;
+        using Out = Replay::Out;
+        using OutAct = Replay::OutAct;
         QByteArray ba = qstr.toLatin1();
         const char *str = ba.data();
 
         if (std::isdigit(str[0])) {
-            return OutAct(Out::ADVANCE, saki::T37(str));
+            return OutAct(Out::ADVANCE, T37(str));
         } else if (str[0] == '-') {
             if (str[1] == '>') {
                 return OutAct(Out::SPIN);
@@ -609,12 +611,12 @@ saki::Replay::Track readTrackJson(const QJsonObject &obj)
                 return OutAct(Out::RIICHI_SPIN);
             } else {
                 assert(std::isdigit(str[1]));
-                return OutAct(Out::RIICHI_ADVANCE, saki::T37(str + 1));
+                return OutAct(Out::RIICHI_ADVANCE, T37(str + 1));
             }
         } else if (str[0] == 'a') {
-            return OutAct(Out::ANKAN, saki::T37(str + 1));
+            return OutAct(Out::ANKAN, T37(str + 1));
         } else if (str[0] == 'k') {
-            return OutAct(Out::KAKAN, saki::T37(str + 1));
+            return OutAct(Out::KAKAN, T37(str + 1));
         } else if (str[0] == '~') {
             return OutAct(Out::RYUUKYOKU);
         } else if (str[0] == 't') {
@@ -624,11 +626,11 @@ saki::Replay::Track readTrackJson(const QJsonObject &obj)
         }
     };
 
-    saki::Replay::Track track;
+    Replay::Track track;
 
     QJsonArray init = obj["init"].toArray();
     for (int i = 0; i < init.size(); i++)
-        track.init[i] = saki::T37(init[i].toString().toLatin1().data());
+        track.init[i] = T37(init[i].toString().toLatin1().data());
 
     QJsonArray in = obj["in"].toArray();
     for (auto it = in.begin(); it != in.end(); ++it)
@@ -651,28 +653,28 @@ QJsonArray std2json(const T &arr) {
     return QJsonArray::fromVariantList(list);
 }
 
-saki::Action readAction(const QString &actStr, int actArg, const QString &actTile)
+Action readAction(const QString &actStr, int actArg, const QString &actTile)
 {
-    using ActCode = saki::ActCode;
+    using ActCode = ActCode;
 
-    ActCode act = saki::actCodeOf(actStr.toStdString().c_str());
+    ActCode act = util::actCodeOf(actStr.toStdString().c_str());
     switch (act) {
     case ActCode::SWAP_OUT:
     case ActCode::SWAP_RIICHI:
-        return saki::Action(act, saki::T37(actTile.toLatin1().data()));
+        return Action(act, T37(actTile.toLatin1().data()));
     case ActCode::ANKAN:
-        return saki::Action(act, saki::T34(actTile.toLatin1().data()));
+        return Action(act, T34(actTile.toLatin1().data()));
     case ActCode::CHII_AS_LEFT:
     case ActCode::CHII_AS_MIDDLE:
     case ActCode::CHII_AS_RIGHT:
     case ActCode::PON:
-        return saki::Action(act, actArg, saki::T37(actTile.toLatin1().data()));
+        return Action(act, actArg, T37(actTile.toLatin1().data()));
     case ActCode::KAKAN:
-        return saki::Action(act, actArg);
+        return Action(act, actArg);
     case ActCode::IRS_CHECK:
-        return saki::Action(act, static_cast<unsigned>(actArg));
+        return Action(act, static_cast<unsigned>(actArg));
     default:
-        return saki::Action(act);
+        return Action(act);
     }
 }
 

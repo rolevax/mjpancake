@@ -1,9 +1,9 @@
 #include "p_eff_gb.h"
 #include "p_port.h"
 
-#include "libsaki/form_gb.h"
-#include "libsaki/girls_rinkai.h"
-#include "libsaki/util.h"
+#include "libsaki/form/form_gb.h"
+#include "libsaki/girl/girls_rinkai.h"
+#include "libsaki/util/misc.h"
 
 
 
@@ -11,8 +11,8 @@ PEffGb::PEffGb(QObject *parent)
     : QObject(parent)
     , mMount(saki::TileCount::AKADORA0)
 {
-    mInfo.roundWind = 1;
-    mInfo.selfWind = 2;
+    mFormCtx.roundWind = 1;
+    mFormCtx.selfWind = 2;
 }
 
 void PEffGb::deal()
@@ -37,12 +37,12 @@ void PEffGb::action(const QString &actStr, int actArg, const QString &actTile)
     Action action = readAction(actStr, actArg, actTile);
     switch (action.act()) {
     case ActCode::SWAP_OUT:
-        mInfo.duringKan = false;
+        mFormCtx.duringKan = false;
         mHand.swapOut(action.t37());
         draw();
         break;
     case ActCode::SPIN_OUT:
-        mInfo.duringKan = false;
+        mFormCtx.duringKan = false;
         mHand.spinOut();
         draw();
         break;
@@ -78,12 +78,12 @@ void PEffGb::draw()
     }
 
     if (mSkill)
-        Huiyu::skill(mMount, mHand, mInfo);
+        Huiyu::skill(mMount, mHand, mFormCtx);
 
     mHand.draw(mMount.wallPop(mRand));
     emit drawn(createTileVar(mHand.drawn()));
 
-    mInfo.emptyMount = mTurn == 27;
+    mFormCtx.emptyMount = mTurn == 27;
 
     QVariantMap actions;
     saki::util::Stactor<T34, 3> ankanables;
@@ -103,7 +103,7 @@ void PEffGb::angang(saki::T34 t)
     bool spin = t == mHand.drawn();
     mHand.ankan(t);
     emit anganged(createBarkVar(mHand.barks().back()), spin);
-    mInfo.duringKan = true;
+    mFormCtx.duringKan = true;
     draw();
 }
 
@@ -111,7 +111,7 @@ void PEffGb::zimo()
 {
     using namespace saki;
     bool juezhang = mMount.remainA(mHand.drawn()) == 0 && mHand.ct(mHand.drawn()) == 1;
-    FormGb form(mHand, mInfo, juezhang);
+    FormGb form(mHand, mFormCtx, juezhang);
     QVariantList fans;
     for (Fan f : form.fans())
         fans << static_cast<int>(f);

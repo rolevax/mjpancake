@@ -1,8 +1,8 @@
 #ifndef P_EFF_GB_H
 #define P_EFF_GB_H
 
-#include "libsaki/mount.h"
-#include "libsaki/hand.h"
+#include "libsaki/table/mount.h"
+#include "libsaki/form/hand.h"
 
 #include <QObject>
 #include <QVariantList>
@@ -39,10 +39,10 @@ private:
     void zimo();
 
 private:
-    saki::Rand mRand;
+    saki::util::Rand mRand;
     saki::Mount mMount;
     saki::Hand mHand;
-    saki::PointInfo mInfo;
+    saki::FormCtx mFormCtx;
     int mTurn;
     bool mSkill = false;
 };

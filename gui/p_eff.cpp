@@ -1,7 +1,7 @@
 #include "p_eff.h"
 #include "p_port.h"
 
-#include "libsaki/util.h"
+#include "libsaki/util/misc.h"
 
 #include <numeric>
 #include <sstream>
@@ -10,8 +10,8 @@ PEff::PEff(QObject *parent)
     : QObject(parent)
     , mMount(mRule.akadora)
 {
-    mInfo.roundWind = 1;
-    mInfo.selfWind = 2;
+    mFormCtx.roundWind = 1;
+    mFormCtx.selfWind = 2;
 }
 
 QVariantList PEff::nanikiru(const saki::Hand &hand, const saki::Mount &mount)
@@ -75,9 +75,9 @@ void PEff::deal()
     using namespace saki;
 
     mTurn = 0;
-    mInfo.riichi = 0;
-    mInfo.ippatsu = false;
-    mInfo.duringKan = false;
+    mFormCtx.riichi = 0;
+    mFormCtx.ippatsu = false;
+    mFormCtx.duringKan = false;
 
     mMount = Mount(mRule.akadora);
     TileCount init;
@@ -183,19 +183,19 @@ void PEff::draw()
     mHand.draw(mMount.wallPop(mRand));
     emit drawn(createTileVar(mHand.drawn()));
 
-    mInfo.emptyMount = mTurn == 27;
+    mFormCtx.emptyMount = mTurn == 27;
 
     QVariantMap actions;
     util::Stactor<T34, 3> ankanables;
-    bool canTsumo = mHand.canTsumo(mInfo, mRule);
-    bool canAnkan = mHand.canAnkan(ankanables, mInfo.riichi);
+    bool canTsumo = mHand.canTsumo(mFormCtx, mRule);
+    bool canAnkan = mHand.canAnkan(ankanables, mFormCtx.riichi);
     if (canTsumo)
         actions["TSUMO"] = true;
     if (canAnkan)
         actions["ANKAN"] = createTileStrsVar(ankanables.range());
     actions["SPIN_OUT"] = true;
 
-    if (mInfo.riichi) {
+    if (mFormCtx.riichi) {
         if (canTsumo || canAnkan) {
             emit activated(actions);
         } else {
@@ -206,7 +206,7 @@ void PEff::draw()
         actions["SWAP_OUT"] = 8191; // 0111_1111_1111
         util::Stactor<T37, 13> swapRiichis;
         bool spinRiichi;
-        if (!mInfo.emptyMount && mHand.canRiichi(swapRiichis, spinRiichi)) {
+        if (!mFormCtx.emptyMount && mHand.canRiichi(swapRiichis, spinRiichi)) {
             if (!swapRiichis.empty())
                 actions["SWAP_RIICHI"] = createSwapMask(mHand.closed(), swapRiichis);
             if (spinRiichi)
@@ -218,45 +218,45 @@ void PEff::draw()
 
 void PEff::declareRiichi()
 {
-    mInfo.riichi = mTurn == 1 ? 2 : 1;
+    mFormCtx.riichi = mTurn == 1 ? 2 : 1;
     mToEstablishRiichi = true;
 }
 
 void PEff::swapOut(const saki::T37 &tile)
 {
-    mInfo.duringKan = false;
-    mInfo.ippatsu = mToEstablishRiichi;
+    mFormCtx.duringKan = false;
+    mFormCtx.ippatsu = mToEstablishRiichi;
     mHand.swapOut(tile);
     draw();
 }
 
 void PEff::spinOut()
 {
-    mInfo.duringKan = false;
-    mInfo.ippatsu = mToEstablishRiichi;
+    mFormCtx.duringKan = false;
+    mFormCtx.ippatsu = mToEstablishRiichi;
     mHand.spinOut();
     draw();
 }
 
 void PEff::ankan(saki::T34 t)
 {
-    mInfo.ippatsu = mToEstablishRiichi;
+    mFormCtx.ippatsu = mToEstablishRiichi;
     bool spin = t == mHand.drawn();
     mHand.ankan(t);
     if (mRule.kandora)
         mMount.flipIndic(mRand);
     emit ankaned(createBarkVar(mHand.barks().back()), spin,
                  createTileVar(mMount.getDrids().back()));
-    mInfo.duringKan = true;
+    mFormCtx.duringKan = true;
     draw();
 }
 
 void PEff::tsumo()
 {
     using namespace saki;
-    if (mRule.uradora && mInfo.riichi > 0)
+    if (mRule.uradora && mFormCtx.riichi > 0)
         mMount.digIndic(mRand);
-    Form form(mHand, mInfo, mRule, mMount.getDrids(), mMount.getUrids());
+    Form form(mHand, mFormCtx, mRule, mMount.getDrids(), mMount.getUrids());
     emit finished(createFormVar(form.spell().c_str(), form.charge().c_str()),
                   form.gain(), mTurn, createTilesVar(mMount.getUrids().range()));
 }

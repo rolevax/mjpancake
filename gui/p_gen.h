@@ -1,8 +1,8 @@
 #ifndef P_GEN_H
 #define P_GEN_H
 
-#include "libsaki/pointinfo.h"
-#include "libsaki/rand.h"
+#include "libsaki/form/rule.h"
+#include "libsaki/util/rand.h"
 
 #include <QObject>
 
@@ -26,8 +26,8 @@ signals:
 public slots:
 
 private:
-    saki::Rand mRand;
-    saki::RuleInfo mRule;
+    saki::util::Rand mRand;
+    saki::Rule mRule;
 };
 
 

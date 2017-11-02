@@ -8,44 +8,6 @@ CONFIG += c++11
 CONFIG(release, debug|release): DEFINES += NDEBUG
 
 SOURCES += main.cpp \
-    libsaki/action.cpp \
-    libsaki/ai.cpp \
-    libsaki/ai_achiga.cpp \
-    libsaki/ai_eisui.cpp \
-    libsaki/ai_miyamori.cpp \
-    libsaki/ai_senriyama.cpp \
-    libsaki/ai_shiraitodai.cpp \
-    libsaki/ai_usuzan.cpp \
-    libsaki/ai_stub.cpp \
-    libsaki/choices.cpp \
-    libsaki/explain.cpp \
-    libsaki/form.cpp \
-    libsaki/form_gb.cpp \
-    libsaki/gen.cpp \
-    libsaki/girl.cpp \
-    libsaki/girls_achiga.cpp \
-    libsaki/girls_asakumi.cpp \
-    libsaki/girls_eisui.cpp \
-    libsaki/girls_himematsu.cpp \
-    libsaki/girls_kiyosumi.cpp \
-    libsaki/girls_miyamori.cpp \
-    libsaki/girls_other.cpp \
-    libsaki/girls_rinkai.cpp \
-    libsaki/girls_senriyama.cpp \
-    libsaki/girls_shiraitodai.cpp \
-    libsaki/girls_usuzan.cpp \
-    libsaki/girls_util_toki.cpp \
-    libsaki/hand.cpp \
-    libsaki/mount.cpp \
-    libsaki/princess.cpp \
-    libsaki/rand.cpp \
-    libsaki/replay.cpp \
-    libsaki/string_enum.cpp \
-    libsaki/table.cpp \
-    libsaki/table_view_hand.cpp \
-    libsaki/table_view_real.cpp \
-    libsaki/test.cpp \
-    libsaki/tile_count.cpp \
     gui/p_client.cpp \
     gui/p_eff.cpp \
     gui/p_eff_gb.cpp \
@@ -57,7 +19,44 @@ SOURCES += main.cpp \
     gui/p_table.cpp \
     gui/p_table_local.cpp \
     gui/p_json_tcp.cpp \
-    gui/p_image_settings.cpp
+    gui/p_image_settings.cpp \
+    libsaki/ai/ai.cpp \
+    libsaki/ai/ai_achiga.cpp \
+    libsaki/ai/ai_eisui.cpp \
+    libsaki/ai/ai_miyamori.cpp \
+    libsaki/ai/ai_senriyama.cpp \
+    libsaki/ai/ai_shiraitodai.cpp \
+    libsaki/ai/ai_stub.cpp \
+    libsaki/ai/ai_usuzan.cpp \
+    libsaki/app/gen.cpp \
+    libsaki/app/replay.cpp \
+    libsaki/form/explain.cpp \
+    libsaki/form/form.cpp \
+    libsaki/form/form_gb.cpp \
+    libsaki/form/hand.cpp \
+    libsaki/form/tile_count.cpp \
+    libsaki/girl/girl.cpp \
+    libsaki/girl/girls_achiga.cpp \
+    libsaki/girl/girls_asakumi.cpp \
+    libsaki/girl/girls_eisui.cpp \
+    libsaki/girl/girls_himematsu.cpp \
+    libsaki/girl/girls_kiyosumi.cpp \
+    libsaki/girl/girls_miyamori.cpp \
+    libsaki/girl/girls_other.cpp \
+    libsaki/girl/girls_rinkai.cpp \
+    libsaki/girl/girls_senriyama.cpp \
+    libsaki/girl/girls_shiraitodai.cpp \
+    libsaki/girl/girls_usuzan.cpp \
+    libsaki/girl/girls_util_toki.cpp \
+    libsaki/table/choices.cpp \
+    libsaki/table/mount.cpp \
+    libsaki/table/princess.cpp \
+    libsaki/table/table.cpp \
+    libsaki/table/table_view_hand.cpp \
+    libsaki/table/table_view_real.cpp \
+    libsaki/test/test.cpp \
+    libsaki/util/rand.cpp \
+    libsaki/util/string_enum.cpp
 
 
 
@@ -73,56 +72,6 @@ QML_IMPORT_PATH =
 include(deployment.pri)
 
 HEADERS += \
-    libsaki/action.h \
-    libsaki/ai.h \
-    libsaki/ai_achiga.h \
-    libsaki/ai_eisui.h \
-    libsaki/ai_miyamori.h \
-    libsaki/ai_shiraitodai.h \
-    libsaki/ai_senriyama.h \
-    libsaki/ai_usuzan.h \
-    libsaki/ai_stub.h \
-    libsaki/assume.h \
-    libsaki/choices.h \
-    libsaki/debug_cheat.h \
-    libsaki/explain.h \
-    libsaki/form.h \
-    libsaki/form_gb.h \
-    libsaki/gen.h \
-    libsaki/girl.h \
-    libsaki/girls_achiga.h \
-    libsaki/girls_asakumi.h \
-    libsaki/girls_eisui.h \
-    libsaki/girls_himematsu.h \
-    libsaki/girls_kiyosumi.h \
-    libsaki/girls_miyamori.h \
-    libsaki/girls_other.h \
-    libsaki/girls_rinkai.h \
-    libsaki/girls_senriyama.h \
-    libsaki/girls_shiraitodai.h \
-    libsaki/girls_usuzan.h \
-    libsaki/girls_util_toki.h \
-    libsaki/hand.h \
-    libsaki/meld.h \
-    libsaki/mount.h \
-    libsaki/pointinfo.h \
-    libsaki/princess.h \
-    libsaki/rand.h \
-    libsaki/replay.h \
-    libsaki/string_enum.h \
-    libsaki/table.h \
-    libsaki/table_view.h \
-    libsaki/table_view_hand.h \
-    libsaki/table_view_real.h \
-    libsaki/table_observer.h \
-    libsaki/table_focus.h \
-    libsaki/table_operator.h \
-    libsaki/test.h \
-    libsaki/tile.h \
-    libsaki/tile_count.h \
-    libsaki/util.h \
-    libsaki/util_stactor.h \
-    libsaki/who.h \
     gui/p_client.h \
     gui/p_eff.h \
     gui/p_eff_gb.h \
@@ -134,7 +83,60 @@ HEADERS += \
     gui/p_port.h \
     gui/p_replay.h \
     gui/p_table.h \
-    gui/p_table_local.h
+    gui/p_table_local.h \
+    libsaki/ai/ai.h \
+    libsaki/ai/ai_achiga.h \
+    libsaki/ai/ai_eisui.h \
+    libsaki/ai/ai_miyamori.h \
+    libsaki/ai/ai_senriyama.h \
+    libsaki/ai/ai_shiraitodai.h \
+    libsaki/ai/ai_stub.h \
+    libsaki/ai/ai_usuzan.h \
+    libsaki/app/gen.h \
+    libsaki/app/replay.h \
+    libsaki/form/explain.h \
+    libsaki/form/form.h \
+    libsaki/form/form_ctx.h \
+    libsaki/form/form_gb.h \
+    libsaki/form/hand.h \
+    libsaki/form/rule.h \
+    libsaki/form/tile_count.h \
+    libsaki/girl/girl.h \
+    libsaki/girl/girls_achiga.h \
+    libsaki/girl/girls_asakumi.h \
+    libsaki/girl/girls_eisui.h \
+    libsaki/girl/girls_himematsu.h \
+    libsaki/girl/girls_kiyosumi.h \
+    libsaki/girl/girls_miyamori.h \
+    libsaki/girl/girls_other.h \
+    libsaki/girl/girls_rinkai.h \
+    libsaki/girl/girls_senriyama.h \
+    libsaki/girl/girls_shiraitodai.h \
+    libsaki/girl/girls_usuzan.h \
+    libsaki/girl/girls_util_toki.h \
+    libsaki/table/choices.h \
+    libsaki/table/kan_ctx.h \
+    libsaki/table/mount.h \
+    libsaki/table/princess.h \
+    libsaki/table/table.h \
+    libsaki/table/table_focus.h \
+    libsaki/table/table_observer.h \
+    libsaki/table/table_operator.h \
+    libsaki/table/table_view.h \
+    libsaki/table/table_view_hand.h \
+    libsaki/table/table_view_real.h \
+    libsaki/test/test.h \
+    libsaki/unit/action.h \
+    libsaki/unit/comeld.h \
+    libsaki/unit/meld.h \
+    libsaki/unit/tile.h \
+    libsaki/unit/who.h \
+    libsaki/util/assume.h \
+    libsaki/util/debug_cheat.h \
+    libsaki/util/misc.h \
+    libsaki/util/rand.h \
+    libsaki/util/stactor.h \
+    libsaki/util/string_enum.h
 
 
 

@@ -1,9 +1,9 @@
 #ifndef P_PORT_H
 #define P_PORT_H
 
-#include "libsaki/tile_count.h"
-#include "libsaki/form.h"
-#include "libsaki/replay.h"
+#include "libsaki/form/tile_count.h"
+#include "libsaki/form/form.h"
+#include "libsaki/app/replay.h"
 
 #include <QVariant>
 #include <QVariantList>
@@ -40,14 +40,14 @@ QVariant createIrsCheckRowVar(const saki::IrsCheckRow &row);
 QVariantMap createTableSnapMap(const saki::TableSnap &snap);
 
 QJsonObject createReplayJson(const saki::Replay &replay);
-QJsonObject createRuleJson(const saki::RuleInfo &rule);
+QJsonObject createRuleJson(const saki::Rule &rule);
 QJsonObject createRoundJson(const saki::Replay::Round &round);
 QJsonObject createTrackJson(const saki::Replay::Track &track);
 
 QVariantMap createActivation(const saki::TableView &view);
 
 saki::Replay readReplayJson(const QJsonObject &obj);
-saki::RuleInfo readRuleJson(const QJsonObject &obj);
+saki::Rule readRuleJson(const QJsonObject &obj);
 saki::Replay::Round readRoundJson(const QJsonObject &obj);
 saki::Replay::Track readTrackJson(const QJsonObject &obj);
 

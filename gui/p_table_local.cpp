@@ -2,10 +2,10 @@
 #include "p_port.h"
 #include "p_global.h"
 
-#include "libsaki/rand.h"
-#include "libsaki/string_enum.h"
-#include "libsaki/ai_stub.h"
-#include "libsaki/util.h"
+#include "libsaki/ai/ai_stub.h"
+#include "libsaki/util/rand.h"
+#include "libsaki/util/string_enum.h"
+#include "libsaki/util/misc.h"
 
 #include <QFile>
 #include <QDateTime>
@@ -18,26 +18,32 @@
 #include <iostream>
 #include <cassert>
 
+
+
+using namespace saki;
+
+
+
 PTableLocal::PTableLocal(QObject *parent)
     : QObject(parent)
-    , TableOperator(saki::Who(saki::Who::HUMAN))
+    , TableOperator(Who(Who::HUMAN))
 {
 }
 
-void PTableLocal::onTableStarted(const saki::Table &table, uint32_t seed)
+void PTableLocal::onTableStarted(const Table &table, uint32_t seed)
 {
     (void) seed;
     onPointsChanged(table);
 }
 
-void PTableLocal::onFirstDealerChoosen(saki::Who initDealer)
+void PTableLocal::onFirstDealerChoosen(Who initDealer)
 {
     QVariantMap args;
     args["dealer"] = initDealer.index();
     emit tableEvent(PTable::FirstDealerChoosen, args);
 }
 
-void PTableLocal::onRoundStarted(int round, int extra, saki::Who dealer,
+void PTableLocal::onRoundStarted(int round, int extra, Who dealer,
                             bool al, int deposit, uint32_t seed)
 {
     std::cout << 'r' << round << '.' << extra << " dl" << dealer.index()
@@ -58,7 +64,7 @@ void PTableLocal::onCleaned()
     emit tableEvent(PTable::Cleaned, QVariantMap());
 }
 
-void PTableLocal::onDiced(const saki::Table &table, int die1, int die2)
+void PTableLocal::onDiced(const Table &table, int die1, int die2)
 {
     if (!table.getDealer().human())
         emitJustPause(700);
@@ -69,21 +75,21 @@ void PTableLocal::onDiced(const saki::Table &table, int die1, int die2)
     emit tableEvent(PTable::Diced, args);
 }
 
-void PTableLocal::onDealt(const saki::Table &table)
+void PTableLocal::onDealt(const Table &table)
 {
     QVariantMap args;
     args["init"] = createTilesVar(table.getHand(mSelf).closed());
     emit tableEvent(PTable::Dealt, args);
 }
 
-void PTableLocal::onFlipped(const saki::Table &table)
+void PTableLocal::onFlipped(const Table &table)
 {
     QVariantMap args;
     args["newIndic"] = createTileVar(table.getMount().getDrids().back());
     emit tableEvent(PTable::Flipped, args);
 }
 
-void PTableLocal::onDrawn(const saki::Table &table, saki::Who who)
+void PTableLocal::onDrawn(const Table &table, Who who)
 {
     if (mPrac && who != mSelf)
         return;
@@ -95,13 +101,13 @@ void PTableLocal::onDrawn(const saki::Table &table, saki::Who who)
     emit tableEvent(PTable::Drawn, args);
 }
 
-void PTableLocal::onDiscarded(const saki::Table &table, bool spin)
+void PTableLocal::onDiscarded(const Table &table, bool spin)
 {
-    saki::Who who = table.getFocus().who();
+    Who who = table.getFocus().who();
     if (mPrac && who != mSelf)
         return;
 
-    const saki::T37 &outTile = table.getFocusTile();
+    const T37 &outTile = table.getFocusTile();
     bool lay = table.lastDiscardLay();
 
     if (!who.human())
@@ -114,7 +120,7 @@ void PTableLocal::onDiscarded(const saki::Table &table, bool spin)
     emit tableEvent(PTable::Discarded, args);
 }
 
-void PTableLocal::onRiichiCalled(saki::Who who)
+void PTableLocal::onRiichiCalled(Who who)
 {
     if (!who.human())
         emitJustPause(300);
@@ -124,15 +130,15 @@ void PTableLocal::onRiichiCalled(saki::Who who)
     emit tableEvent(PTable::RiichiCalled, args);
 }
 
-void PTableLocal::onRiichiEstablished(saki::Who who)
+void PTableLocal::onRiichiEstablished(Who who)
 {
     QVariantMap args;
     args["who"] = who.index();
     emit tableEvent(PTable::RiichiEstablished, args);
 }
 
-void PTableLocal::onBarked(const saki::Table &table, saki::Who who,
-                      const saki::M37 &bark, bool spin)
+void PTableLocal::onBarked(const Table &table, Who who,
+                      const M37 &bark, bool spin)
 {
     int fromWhom = bark.isCpdmk() ? table.getFocus().who().index() : -1;
     if (!who.human())
@@ -141,26 +147,26 @@ void PTableLocal::onBarked(const saki::Table &table, saki::Who who,
     QVariantMap args;
     args["who"] = who.index();
     args["fromWhom"] = fromWhom;
-    args["actStr"] = QString(stringOf(bark.type()));
+    args["actStr"] = QString(util::stringOf(bark.type()));
     args["bark"] = createBarkVar(bark);
     args["spin"] = spin;
     emit tableEvent(PTable::Barked, args);
 }
 
-void PTableLocal::onRoundEnded(const saki::Table &table, saki::RoundResult result,
-                          const std::vector<saki::Who> &openers, saki::Who gunner,
-                          const std::vector<saki::Form> &forms)
+void PTableLocal::onRoundEnded(const Table &table, RoundResult result,
+                          const std::vector<Who> &openers, Who gunner,
+                          const std::vector<Form> &forms)
 {
-    using RR = saki::RoundResult;
+    using RR = RoundResult;
 
     QVariantList openersList;
     QVariantList formsList;
     QVariantList handsList;
 
-    for (saki::Who who : openers) {
+    for (Who who : openers) {
         openersList << who.index();
 
-        const saki::Hand &hand = table.getHand(who);
+        const Hand &hand = table.getHand(who);
 
         QVariantMap handMap;
         handMap.insert("closed", createTilesVar(hand.closed()));
@@ -175,7 +181,7 @@ void PTableLocal::onRoundEnded(const saki::Table &table, saki::RoundResult resul
     }
 
     for (size_t i = 0; i < forms.size(); i++) {
-        const saki::Form &form = forms[i];
+        const Form &form = forms[i];
         formsList << createFormVar(form.spell().c_str(), form.charge().c_str());
     }
 
@@ -186,7 +192,7 @@ void PTableLocal::onRoundEnded(const saki::Table &table, saki::RoundResult resul
 
 
     QVariantMap args;
-    args["result"] = QString(stringOf(result));
+    args["result"] = QString(util::stringOf(result));
     args["openers"] = openersList;
     args["gunner"] = gunner.nobody() ? -1 : gunner.index();
     args["hands"] = handsList;
@@ -195,7 +201,7 @@ void PTableLocal::onRoundEnded(const saki::Table &table, saki::RoundResult resul
     emit tableEvent(PTable::RoundEnded, args);
 }
 
-void PTableLocal::onPointsChanged(const saki::Table &table)
+void PTableLocal::onPointsChanged(const Table &table)
 {
     const std::array<int, 4> &points = table.getPoints();
     QVariantList list;
@@ -207,7 +213,7 @@ void PTableLocal::onPointsChanged(const saki::Table &table)
     emit tableEvent(PTable::PointsChanged, args);
 }
 
-void PTableLocal::onTableEnded(const std::array<saki::Who, 4> &rank,
+void PTableLocal::onTableEnded(const std::array<Who, 4> &rank,
                           const std::array<int, 4> &scores)
 {
     QVariantList rankList, scoresList;
@@ -222,7 +228,7 @@ void PTableLocal::onTableEnded(const std::array<saki::Who, 4> &rank,
     emit tableEvent(PTable::TableEnded, args);
 }
 
-void PTableLocal::onPoppedUp(const saki::Table &table, saki::Who who)
+void PTableLocal::onPoppedUp(const Table &table, Who who)
 {
     if (who == mSelf) {
         QVariantMap args;
@@ -231,18 +237,18 @@ void PTableLocal::onPoppedUp(const saki::Table &table, saki::Who who)
     }
 }
 
-void PTableLocal::onActivated(saki::Table &table)
+void PTableLocal::onActivated(Table &table)
 {
-    const std::unique_ptr<saki::TableView> view = table.getView(mSelf);
+    const std::unique_ptr<TableView> view = table.getView(mSelf);
 
     if (table.riichiEstablished(mSelf) && view->myChoices().spinOnly()) {
         emitJustPause(300); // a little pause
-        table.action(mSelf, saki::Action(saki::ActCode::SPIN_OUT));
+        table.action(mSelf, Action(ActCode::SPIN_OUT));
         return;
     }
 
-    if (mPrac && view->myChoices().can(saki::ActCode::PASS)) {
-        table.action(mSelf, saki::Action(saki::ActCode::PASS));
+    if (mPrac && view->myChoices().can(ActCode::PASS)) {
+        table.action(mSelf, Action(ActCode::PASS));
         return;
     }
 
@@ -265,7 +271,7 @@ void PTableLocal::start(const QVariant &girlIdsVar, const QVariant &gameRule, in
     assert(girlIds[1] == 0 || girlIds[1] != girlIds[3]);
     assert(girlIds[2] == 0 || girlIds[2] != girlIds[3]);
 
-    saki::RuleInfo rule = readRuleJson(QJsonObject::fromVariantMap(gameRule.toMap()));
+    Rule rule = readRuleJson(QJsonObject::fromVariantMap(gameRule.toMap()));
 
     std::array<int, 4> points {
         rule.returnLevel - rule.hill / 4,
@@ -275,15 +281,15 @@ void PTableLocal::start(const QVariant &girlIdsVar, const QVariant &gameRule, in
     };
 
     for (int w = 1; w < 4; w++)
-        mAis[w - 1].reset(saki::Ai::create(saki::Who(w), saki::Girl::Id(girlIds[w])));
-    std::array<saki::TableOperator*, 4> operators {
+        mAis[w - 1].reset(Ai::create(Who(w), Girl::Id(girlIds[w])));
+    std::array<TableOperator*, 4> operators {
         this, mAis.at(0).get(), mAis.at(1).get(), mAis.at(2).get()
     };
 
-    std::vector<saki::TableObserver*> observers { this, &mReplay };
+    std::vector<TableObserver*> observers { this, &mReplay };
 
-    mTable.reset(new saki::Table(points, girlIds, operators, observers,
-                                 rule, saki::Who(tempDelaer)));
+    mTable.reset(new Table(points, girlIds, operators, observers,
+                                 rule, Who(tempDelaer)));
     mTable->start();
 }
 
@@ -292,7 +298,7 @@ void PTableLocal::startPrac(int girlId)
     mPrac = true;
 
     std::array<int, 4> girlIds { girlId, 0, 0, 0 };
-    saki::RuleInfo rule;
+    Rule rule;
 
     std::array<int, 4> points {
         rule.returnLevel - rule.hill / 4,
@@ -302,22 +308,22 @@ void PTableLocal::startPrac(int girlId)
     };
 
     for (int w = 1; w < 4; w++)
-        mAis[w - 1].reset(new saki::AiStub(saki::Who(w)));
-    std::array<saki::TableOperator*, 4> operators {
+        mAis[w - 1].reset(new AiStub(Who(w)));
+    std::array<TableOperator*, 4> operators {
         this, mAis.at(0).get(), mAis.at(1).get(), mAis.at(2).get()
     };
 
-    std::vector<saki::TableObserver*> observers { this };
+    std::vector<TableObserver*> observers { this };
 
-    mTable.reset(new saki::Table(points, girlIds, operators, observers,
-                                 rule, saki::Who(0)));
+    mTable.reset(new Table(points, girlIds, operators, observers,
+                                 rule, Who(0)));
     mTable->start();
 }
 
 void PTableLocal::action(const QString &actStr, int actArg, const QString &actTile)
 {
-    saki::Action action = readAction(actStr, actArg, actTile);
-    mTable->action(saki::Who(0), action);
+    Action action = readAction(actStr, actArg, actTile);
+    mTable->action(Who(0), action);
 }
 
 void PTableLocal::saveRecord()
