@@ -7,6 +7,7 @@ SOURCES += main_test.cpp \
     libsaki/ai/ai.cpp \
     libsaki/ai/ai_achiga.cpp \
     libsaki/ai/ai_eisui.cpp \
+    libsaki/ai/ai_kiyosumi.cpp \
     libsaki/ai/ai_miyamori.cpp \
     libsaki/ai/ai_senriyama.cpp \
     libsaki/ai/ai_shiraitodai.cpp \
@@ -40,7 +41,8 @@ SOURCES += main_test.cpp \
     libsaki/table/table_view_real.cpp \
     libsaki/test/test.cpp \
     libsaki/util/rand.cpp \
-    libsaki/util/string_enum.cpp
+    libsaki/util/string_enum.cpp \
+    libsaki/test/bmark.cpp
 
 # Default rules for deployment.
 include(deployment.pri)
@@ -53,6 +55,7 @@ HEADERS += \
     libsaki/ai/ai.h \
     libsaki/ai/ai_achiga.h \
     libsaki/ai/ai_eisui.h \
+    libsaki/ai/ai_kiyosumi.h \
     libsaki/ai/ai_miyamori.h \
     libsaki/ai/ai_senriyama.h \
     libsaki/ai/ai_shiraitodai.h \
@@ -102,7 +105,8 @@ HEADERS += \
     libsaki/util/misc.h \
     libsaki/util/rand.h \
     libsaki/util/stactor.h \
-    libsaki/util/string_enum.h
+    libsaki/util/string_enum.h \
+    libsaki/test/bmark.h
 
 mac {
     QMAKE_CXXFLAGS_WARN_ON = -Wall -Wextra -Wno-missing-braces
