@@ -23,6 +23,7 @@ SOURCES += main.cpp \
     libsaki/ai/ai.cpp \
     libsaki/ai/ai_achiga.cpp \
     libsaki/ai/ai_eisui.cpp \
+    libsaki/ai/ai_kiyosumi.cpp \
     libsaki/ai/ai_miyamori.cpp \
     libsaki/ai/ai_senriyama.cpp \
     libsaki/ai/ai_shiraitodai.cpp \
@@ -87,6 +88,7 @@ HEADERS += \
     libsaki/ai/ai.h \
     libsaki/ai/ai_achiga.h \
     libsaki/ai/ai_eisui.h \
+    libsaki/ai/ai_kiyosumi.h \
     libsaki/ai/ai_miyamori.h \
     libsaki/ai/ai_senriyama.h \
     libsaki/ai/ai_shiraitodai.h \
@@ -136,7 +138,8 @@ HEADERS += \
     libsaki/util/misc.h \
     libsaki/util/rand.h \
     libsaki/util/stactor.h \
-    libsaki/util/string_enum.h
+    libsaki/util/string_enum.h \
+    libsaki/util/version.h
 
 
 

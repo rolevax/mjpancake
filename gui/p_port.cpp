@@ -1,10 +1,13 @@
-#include "gui/p_port.h"
+#include "p_port.h"
+#include "p_global.h"
+
 #include "libsaki/table/table_observer.h"
 #include "libsaki/table/table_view.h"
 #include "libsaki/girl/girl.h"
 #include "libsaki/app/replay.h"
 #include "libsaki/util/string_enum.h"
 #include "libsaki/util/misc.h"
+#include "libsaki/util/version.h"
 
 #include <bitset>
 #include <sstream>
@@ -227,6 +230,8 @@ QJsonObject createReplayJson(const Replay &replay)
     QJsonObject root;
 
     root["version"] = 3;
+    root["appVersion"] = PGlobal::version();
+    root["libVersion"] = saki::VERSION;
 
     QVariantList girls;
     for (Girl::Id v : replay.girls)

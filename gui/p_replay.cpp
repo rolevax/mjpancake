@@ -53,7 +53,11 @@ void PReplay::load(QString filename)
     QJsonObject obj = d.object();
 
     mReplay = readReplayJson(obj);
-    loaded = true;
+    mLoadedAppVersion = obj["appVersion"].toString();
+    mLoadedLibVersion = obj["libVersion"].toString();
+    mLoaded = true;
+
+    emit loaded();
 }
 
 void PReplay::fetch(int replayId)
@@ -67,7 +71,7 @@ void PReplay::fetch(int replayId)
 
 QVariantMap PReplay::meta()
 {
-    assert(loaded);
+    assert(mLoaded);
 
     QStringList roundNames;
     for (const saki::Replay::Round &round : mReplay.rounds) {
@@ -96,9 +100,19 @@ QVariantMap PReplay::meta()
 
 QVariantMap PReplay::look(int roundId, int turn)
 {
-    assert(loaded);
+    assert(mLoaded);
     saki::TableSnap snap = mReplay.look(roundId, turn);
     return createTableSnapMap(snap);
+}
+
+QString PReplay::loadedAppVersion() const
+{
+    return mLoadedAppVersion;
+}
+
+QString PReplay::loadedLibVersion() const
+{
+    return mLoadedLibVersion;
 }
 
 void PReplay::replayDownloaded(int id, const QString &json)
@@ -113,7 +127,7 @@ void PReplay::useOnlineReplay(int id)
 {
     mReplay = sCachedReplays[id];
     mUsers = sCachedUsers[id];
-    loaded = true;
+    mLoaded = true;
     emit onlineReplayReady();
 }
 

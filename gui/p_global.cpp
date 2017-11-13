@@ -64,7 +64,7 @@ void PGlobal::systemNotify()
 
 QString PGlobal::version()
 {
-    return QString("0.8.4");
+    return QString("0.9.0-alpha1");
 }
 
 QString PGlobal::configPath()
