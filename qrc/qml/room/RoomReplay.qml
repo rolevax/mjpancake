@@ -120,7 +120,7 @@ Room {
                 anchors.centerIn: parent
                 color: "white"
                 font.pixelSize: room.height / 30
-                text: global.version + "-" + Qt.platform.os
+                text: pReplay.loadedAppVersion + "@" + pReplay.loadedLibVersion
             }
         }
     }

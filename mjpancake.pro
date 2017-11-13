@@ -138,7 +138,8 @@ HEADERS += \
     libsaki/util/misc.h \
     libsaki/util/rand.h \
     libsaki/util/stactor.h \
-    libsaki/util/string_enum.h
+    libsaki/util/string_enum.h \
+    libsaki/util/version.h
 
 
 

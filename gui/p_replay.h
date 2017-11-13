@@ -17,6 +17,9 @@ class PReplay : public QObject
 public:
     explicit PReplay(QObject *parent = nullptr);
 
+    Q_PROPERTY(QString loadedAppVersion READ loadedAppVersion NOTIFY loaded)
+    Q_PROPERTY(QString loadedLibVersion READ loadedLibVersion NOTIFY loaded)
+
     Q_INVOKABLE QStringList ls();
     Q_INVOKABLE void rm(QString filename);
     Q_INVOKABLE void load(QString filename);
@@ -24,7 +27,11 @@ public:
     Q_INVOKABLE QVariantMap meta();
     Q_INVOKABLE QVariantMap look(int roundId, int turn);
 
+    QString loadedAppVersion() const;
+    QString loadedLibVersion() const;
+
 signals:
+    void loaded();
     void onlineReplayListReady(const QVariantList &ids);
     void onlineReplayReady();
 
@@ -37,9 +44,11 @@ private:
 private:
     static std::map<int, saki::Replay> sCachedReplays;
     static std::map<int, QVariantList> sCachedUsers;
-    bool loaded = false;
+    bool mLoaded = false;
     saki::Replay mReplay;
     QVariantList mUsers;
+    QString mLoadedAppVersion;
+    QString mLoadedLibVersion;
 };
 
 
