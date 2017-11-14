@@ -289,7 +289,7 @@ void PTableLocal::start(const QVariant &girlIdsVar, const QVariant &gameRule, in
     std::vector<TableObserver*> observers { this, &mReplay };
 
     mTable.reset(new Table(points, girlIds, operators, observers,
-                                 rule, Who(tempDelaer)));
+                           rule, Who(tempDelaer), mTableEnv));
     mTable->start();
 }
 
@@ -316,7 +316,7 @@ void PTableLocal::startPrac(int girlId)
     std::vector<TableObserver*> observers { this };
 
     mTable.reset(new Table(points, girlIds, operators, observers,
-                                 rule, Who(0)));
+                                 rule, Who(0), mTableEnv));
     mTable->start();
 }
 

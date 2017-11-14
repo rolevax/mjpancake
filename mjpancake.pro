@@ -17,6 +17,7 @@ SOURCES += main.cpp \
     gui/p_port.cpp \
     gui/p_replay.cpp \
     gui/p_table.cpp \
+    gui/p_table_env.cpp \
     gui/p_table_local.cpp \
     gui/p_json_tcp.cpp \
     gui/p_image_settings.cpp \
@@ -53,6 +54,7 @@ SOURCES += main.cpp \
     libsaki/table/mount.cpp \
     libsaki/table/princess.cpp \
     libsaki/table/table.cpp \
+    libsaki/table/table_env_stub.cpp \
     libsaki/table/table_view_hand.cpp \
     libsaki/table/table_view_real.cpp \
     libsaki/test/test.cpp \
@@ -84,6 +86,7 @@ HEADERS += \
     gui/p_port.h \
     gui/p_replay.h \
     gui/p_table.h \
+    gui/p_table_env.h \
     gui/p_table_local.h \
     libsaki/ai/ai.h \
     libsaki/ai/ai_achiga.h \
@@ -121,6 +124,8 @@ HEADERS += \
     libsaki/table/mount.h \
     libsaki/table/princess.h \
     libsaki/table/table.h \
+    libsaki/table/table_env.h \
+    libsaki/table/table_env_stub.h \
     libsaki/table/table_focus.h \
     libsaki/table/table_observer.h \
     libsaki/table/table_operator.h \

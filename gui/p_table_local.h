@@ -2,6 +2,7 @@
 #define P_TABLE_LOCAL_H
 
 #include "p_table.h"
+#include "p_table_env.h"
 
 #include "libsaki/table/table.h"
 #include "libsaki/ai/ai.h"
@@ -61,6 +62,7 @@ private:
     std::unique_ptr<saki::Table> mTable;
     std::array<std::unique_ptr<saki::Ai>, 3> mAis;
     saki::Replay mReplay;
+    PTableEnv mTableEnv;
     bool mPrac;
 };
 
