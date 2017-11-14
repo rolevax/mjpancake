@@ -14,6 +14,7 @@ SOURCES += main.cpp \
     gui/p_gen.cpp \
     gui/p_global.cpp \
     gui/p_image_provider.cpp \
+    gui/p_parse.cpp \
     gui/p_port.cpp \
     gui/p_replay.cpp \
     gui/p_table.cpp \
@@ -36,6 +37,7 @@ SOURCES += main.cpp \
     libsaki/form/form.cpp \
     libsaki/form/form_gb.cpp \
     libsaki/form/hand.cpp \
+    libsaki/form/parsed.cpp \
     libsaki/form/tile_count.cpp \
     libsaki/girl/girl.cpp \
     libsaki/girl/girls_achiga.cpp \
@@ -83,6 +85,7 @@ HEADERS += \
     gui/p_image_provider.h \
     gui/p_image_settings.h \
     gui/p_json_tcp.h \
+    gui/p_parse.h \
     gui/p_port.h \
     gui/p_replay.h \
     gui/p_table.h \
@@ -104,6 +107,7 @@ HEADERS += \
     libsaki/form/form_ctx.h \
     libsaki/form/form_gb.h \
     libsaki/form/hand.h \
+    libsaki/form/parsed.h \
     libsaki/form/rule.h \
     libsaki/form/tile_count.h \
     libsaki/girl/girl.h \

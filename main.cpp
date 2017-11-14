@@ -6,6 +6,7 @@
 
 #include "gui/p_table.h"
 #include "gui/p_gen.h"
+#include "gui/p_parse.h"
 #include "gui/p_replay.h"
 #include "gui/p_image_provider.h"
 #include "gui/p_image_settings.h"
@@ -39,6 +40,7 @@ int main(int argc, char *argv[])
     engine.addImageProvider(QString("impro"), new PImageProvider);
 
     qmlRegisterType<PTable>("rolevax.sakilogy", 1, 0, "PTable");
+    qmlRegisterType<PParse>("rolevax.sakilogy", 1, 0, "PParse");
     qmlRegisterType<PGen>("rolevax.sakilogy", 1, 0, "PGen");
     qmlRegisterType<PReplay>("rolevax.sakilogy", 1, 0, "PReplay");
     qmlRegisterType<PImageSettings>("rolevax.sakilogy", 1, 0, "PImageSettings");

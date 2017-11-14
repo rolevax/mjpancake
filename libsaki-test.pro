@@ -7,6 +7,7 @@ SOURCES += main_test.cpp \
     libsaki/ai/ai.cpp \
     libsaki/ai/ai_achiga.cpp \
     libsaki/ai/ai_eisui.cpp \
+    libsaki/ai/ai_kiyosumi.cpp \
     libsaki/ai/ai_miyamori.cpp \
     libsaki/ai/ai_senriyama.cpp \
     libsaki/ai/ai_shiraitodai.cpp \
@@ -18,6 +19,7 @@ SOURCES += main_test.cpp \
     libsaki/form/form.cpp \
     libsaki/form/form_gb.cpp \
     libsaki/form/hand.cpp \
+    libsaki/form/parsed.cpp \
     libsaki/form/tile_count.cpp \
     libsaki/girl/girl.cpp \
     libsaki/girl/girls_achiga.cpp \
@@ -36,6 +38,7 @@ SOURCES += main_test.cpp \
     libsaki/table/mount.cpp \
     libsaki/table/princess.cpp \
     libsaki/table/table.cpp \
+    libsaki/table/table_env_stub.cpp \
     libsaki/table/table_view_hand.cpp \
     libsaki/table/table_view_real.cpp \
     libsaki/test/test.cpp \
@@ -53,6 +56,7 @@ HEADERS += \
     libsaki/ai/ai.h \
     libsaki/ai/ai_achiga.h \
     libsaki/ai/ai_eisui.h \
+    libsaki/ai/ai_kiyosumi.h \
     libsaki/ai/ai_miyamori.h \
     libsaki/ai/ai_senriyama.h \
     libsaki/ai/ai_shiraitodai.h \
@@ -66,6 +70,7 @@ HEADERS += \
     libsaki/form/form_gb.h \
     libsaki/form/hand.h \
     libsaki/form/rule.h \
+    libsaki/form/parsed.h \
     libsaki/form/tile_count.h \
     libsaki/girl/girl.h \
     libsaki/girl/girls_achiga.h \
@@ -89,6 +94,7 @@ HEADERS += \
     libsaki/table/table_observer.h \
     libsaki/table/table_operator.h \
     libsaki/table/table_view.h \
+    libsaki/table/table_env_stub.h \
     libsaki/table/table_view_hand.h \
     libsaki/table/table_view_real.h \
     libsaki/test/test.h \
