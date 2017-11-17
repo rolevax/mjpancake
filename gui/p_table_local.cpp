@@ -98,6 +98,7 @@ void PTableLocal::onDrawn(const Table &table, Who who)
     args["who"] = who.index();
     args["tile"] = createTileVar(table.getHand(who).drawn());
     args["rinshan"] = table.duringKan();
+    args["first"] = table.getDealer() == who && table.getRiver(who).empty();
     emit tableEvent(PTable::Drawn, args);
 }
 
