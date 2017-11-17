@@ -76,5 +76,6 @@
         <file>qml/widget/ChegBox.qml</file>
         <file>qml/room/RoomPhoto.qml</file>
         <file>qml/room/RoomNetError.qml</file>
+        <file>qml/room/RoomParse.qml</file>
     </qresource>
 </RCC>

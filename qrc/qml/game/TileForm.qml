@@ -5,7 +5,7 @@ Item {
 
     property string tileSet: "std"
     property color backColor
-    property int tw
+    property real tw
 
     width: 0
     height: 1.35 * tw

@@ -9,9 +9,16 @@ Room {
         spacing: global.size.space
 
         Buzzon {
-            text: "牌型生成"
+            text: "手役生成器"
             textLength: 8
             onClicked: { global.pushScene("room/RoomGen"); }
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+
+        Buzzon {
+            text: "牌形分解器"
+            textLength: 8
+            onClicked: { global.pushScene("room/RoomParse"); }
             anchors.horizontalCenter: parent.horizontalCenter
         }
     }
