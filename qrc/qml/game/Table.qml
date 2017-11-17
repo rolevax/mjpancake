@@ -108,7 +108,7 @@ Item {
                         oppoControls.itemAt(args.who - 1).draw();
                 };
                 duration = 100;
-                prelude = args.rinshan ? 300 : (Math.floor(Math.random() * 100) < 10 ? Math.floor(Math.random() * 1200) + 300 : 0);
+                prelude = args.rinshan ? 300 : ((!args.first) && Math.floor(Math.random() * 100) < 10 ? Math.floor(Math.random() * 1200) + 300 : 0);
                 break;
             case PTable.Discarded:
                 cb = function() {
