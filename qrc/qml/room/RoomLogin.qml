@@ -2,6 +2,25 @@ import QtQuick 2.7
 import "../widget"
 
 Room {
+    readonly property var _contributors: [
+        "ethan",
+        "皋月",
+        "如画江山",
+        "sakisan",
+        "喵打",
+        "TSD",
+        "Paper",
+        "chaseyun",
+        "银",
+        "宅炮",
+        "Mikyu",
+        "花鹿水",
+        "白夜旬",
+        "Yoarkisess",
+        "九月",
+        "临海小红帽"
+    ]
+
     showReturnButton: false
 
     Rectangle {
@@ -13,26 +32,26 @@ Room {
     Column {
         id: names
         anchors.centerIn: parent
-        spacing: global.size.space
+        spacing: global.size.gap
 
         Texd {
             anchors.horizontalCenter: parent.horizontalCenter
-            text: "[贡献者]"
+            text: "贡 献 者\n（截至版本发布时）"
             font.pixelSize: global.size.middleFont
+            horizontalAlignment: Text.AlignHCenter
         }
 
-        Repeater {
-            model: [
-                "Yoarkisess",
-                "百度没留电话的小喵",
-                "花鹿水",
-                "九月",
-                "临海小红帽"
-            ]
-
-            delegate:  Texd {
-                text: modelData
-                font.pixelSize: global.size.middleFont
+        Grid {
+            columns: 3
+            spacing: global.size.space
+            Repeater {
+                model: _contributors
+                delegate:  Texd {
+                    text: modelData
+                    width: 8 * global.size.defaultFont
+                    font.pixelSize: global.size.middleFont
+                    horizontalAlignment: Text.AlignHCenter
+                }
             }
         }
     }
