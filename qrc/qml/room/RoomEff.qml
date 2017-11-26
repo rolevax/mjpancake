@@ -289,6 +289,13 @@ Room {
         }
     }
 
+    Rectangle {
+        visible: rectAnswer.visible
+        anchors.fill: rectAnswer
+        anchors.margins: -global.size.gap
+        color: global.color.back
+    }
+
     Column {
         id: rectAnswer
         visible: false
@@ -352,10 +359,10 @@ Room {
             rectAnswer.visible = false;
             pc.deactivate();
             if (actStr === "SWAP_OUT")
-                river.model.append({ modelTileStr: actArg });
+                river.model.append({ modelTileStr: actTile });
             else if (actStr === "SPIN_OUT")
                 river.model.append({ modelTileStr: pc.drawnStr });
-            pEff.action(actStr, actArg);
+            pEff.action(actStr, actArg, actTile);
         }
     }
 

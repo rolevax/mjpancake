@@ -45,6 +45,7 @@ Item {
             yScale: mouseArea.containsPress ? 0.9 : 1
         }
 
+        // hover highlight
         Rectangle {
             anchors.fill: parent
             radius: parent.radius
@@ -52,23 +53,20 @@ Item {
             visible: global.mobile ? mouseArea.containsPress : mouseArea.containsMouse
         }
 
-        Column {
-            anchors.centerIn: parent
-            spacing: global.size.space
+        Image {
+            width: 0.9 * frame.width
+            height: width
+            source: frame.image
+        }
 
-            Image {
-                width: 0.9 * frame.width
-                height: width
-                source: frame.image
-            }
-
-            Texd {
-                anchors.horizontalCenter: parent.horizontalCenter
-                font.pixelSize: frame.fontSize
-                horizontalAlignment: Text.AlignHCenter
-                color: frame.textColor
-                text: frame.text
-            }
+        Texd {
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: global.size.space
+            anchors.horizontalCenter: parent.horizontalCenter
+            font.pixelSize: frame.fontSize
+            horizontalAlignment: Text.AlignHCenter
+            color: frame.textColor
+            text: frame.text
         }
     }
 }

@@ -40,6 +40,7 @@ Window {
     }
 
     property var _roomStack: []
+    property var _onPushed: null
 
     visible: true
     width: 1207; height: 679
@@ -67,6 +68,10 @@ Window {
             PGlobal.forceImmersive();
             loader.focus = true;
             item.closed.connect(popScene);
+            if (!!_onPushed) {
+                _onPushed(item);
+                _onPushed = null;
+            }
         }
 
         onStatusChanged: {
@@ -93,10 +98,24 @@ Window {
             _roomStack = [];
             loader.source = "room/RoomLogin.qml";
         }
+
+        onTableInitRecved: {
+            pushScene("room/RoomGameOnline", function(item) {
+                item.startChoose(matchResult, choices);
+            });
+        }
+
+        onTableSeatRecved: {
+            //
+            //PClient.sendSeat();
+        }
     }
 
-    function pushScene(name) {
+    function pushScene(name, onPushed) {
         _roomStack.push(loader.source);
+        if (!!onPushed) {
+            _onPushed = onPushed;
+        }
         loader.source = name + ".qml";
     }
 

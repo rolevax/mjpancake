@@ -18,13 +18,9 @@ PClient *PClient::sInstance = nullptr;
 
 PClient::PClient(QObject *parent) : QObject(parent)
 {
-    QVariantMap bookEntry;
-    bookEntry["Bookable"] = false;
-    bookEntry["Play"] = 0;
-    bookEntry["Book"] = 0;
     for (int i = 0; i < 8; i++) {
-        mBooks.append(bookEntry);
-        mBookings.append(false);
+        mMatchWaits.append(0);
+        mMatchings.append(false);
     }
 
     connect(&mSocket, &PJsonTcpSocket::recvJson, this, &PClient::onJsonReceived);
@@ -57,6 +53,12 @@ void PClient::login(const QString &username, const QString &password)
     });
 }
 
+void PClient::logout()
+{
+    // pretend closed, still connecting
+    onRemoteClosed();
+}
+
 void PClient::lookAround()
 {
     QJsonObject req;
@@ -64,25 +66,25 @@ void PClient::lookAround()
     mSocket.send(req);
 }
 
-void PClient::book(int bookType)
+void PClient::sendMatchJoin(int ruleId)
 {
-    mBookings[bookType] = true;
-    emit bookingsChanged();
+    mMatchings[ruleId] = true;
+    emit matchingsChanged();
 
     QJsonObject req;
-    req["Type"] = "book";
-    req["BookType"] = bookType;
+    req["Type"] = "match-join";
+    req["RuleId"] = ruleId;
     mSocket.send(req);
 }
 
-void PClient::unbook()
+void PClient::sendMatchCancel()
 {
-    for (auto &v : mBookings)
+    for (auto &v : mMatchings)
         v = false;
-    emit bookingsChanged();
+    emit matchingsChanged();
 
     QJsonObject req;
-    req["Type"] = "unbook";
+    req["Type"] = "match-cancel";
     mSocket.send(req);
 }
 
@@ -96,18 +98,18 @@ void PClient::sendRoomCreate(int girlId, const QVariantList &aiGids)
     mSocket.send(req);
 }
 
-void PClient::sendSeat()
+void PClient::sendTableSeat()
 {
     QJsonObject req;
-    req["Type"] = "seat";
+    req["Type"] = "table-seat";
     mSocket.send(req);
 }
 
-void PClient::sendChoose(int girlIndex)
+void PClient::sendTableChoose(int girlIndex)
 {
     QJsonObject req;
-    req["Type"] = "choose";
-    req["GirlIndex"] = girlIndex;
+    req["Type"] = "table-choose";
+    req["Gidx"] = girlIndex;
     mSocket.send(req);
 }
 
@@ -182,19 +184,19 @@ int PClient::connCt() const
     return mConnCt;
 }
 
-QVariantList PClient::books() const
+QVariantList PClient::matchWaits() const
 {
-    return mBooks;
+    return mMatchWaits;
 }
 
-QVariantList PClient::bookings() const
+QVariantList PClient::matchings() const
 {
-    return mBookings;
+    return mMatchings;
 }
 
 bool PClient::hasBooking() const
 {
-    for (auto v : mBookings)
+    for (auto v : mMatchings)
         if (v.toBool())
             return true;
     return false;
@@ -213,7 +215,7 @@ QVariantList PClient::water() const
 void PClient::action(const QString &actStr, int actArg, const QString &actTile)
 {
     QJsonObject req;
-    req["Type"] = "action";
+    req["Type"] = "table-action";
     req["Nonce"] = mLastNonce;
     req["ActStr"] = actStr;
     if (actArg != -1)
@@ -271,9 +273,9 @@ PTable::Event PClient::eventOf(const QString &event)
 
 void PClient::onRemoteClosed()
 {
-    for (auto &v : mBookings)
+    for (auto &v : mMatchings)
         v = false;
-    emit bookingsChanged();
+    emit matchingsChanged();
 
     mUser.clear();
     emit userChanged();
@@ -295,21 +297,23 @@ void PClient::onJsonReceived(const QJsonObject &msg)
         }
     } else if (type == "look-around") {
         mConnCt = msg["Conn"].toInt();
-        mBooks = msg["Books"].toArray().toVariantList();
+        mMatchWaits = msg["MatchWaits"].toArray().toVariantList();
         mWater = msg["Water"].toArray().toVariantList();
         emit lookedAround();
-    } else if (type == "seat") {
-        // wait for Qt 5.9 release,
-        // and notify from background by Android service + Qt Remote Object
+    } else if (type == "table-init") {
+        // TODO notify from background by Android service + Qt Remote Object
         //PGlobal::systemNotify();
+
         mLastNonce = 0;
         emit lastNonceChanged();
-        QJsonObject room = msg["Room"].toObject();
+
+        QJsonObject match = msg["MatchResult"].toObject();
+        QJsonArray choices = msg["Choices"].toArray();
+        emit tableInitRecved(match.toVariantMap(), choices.toVariantList());
+    } else if (type == "table-seat") {
+        QJsonArray girlIds = msg["Gids"].toArray();
         int tempDealer = msg["TempDealer"].toInt();
-        emit seatIn(room.toVariantMap(), tempDealer);
-    } else if (type == "chosen") {
-        QJsonArray girlIds = msg["GirlIds"].toArray();
-        emit chosenIn(girlIds.toVariantList());
+        emit tableSeatRecved(girlIds.toVariantList(), tempDealer);
     } else if (type == "resume") {
         mLastNonce = 0;
         emit lastNonceChanged();

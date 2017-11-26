@@ -3,28 +3,29 @@ import rolevax.sakilogy 1.0
 import "../widget"
 
 Row {
-    property int bookType
+    property int ruleId
+    property var _ruleNames: [ "凡人战" ]
 
     spacing: global.size.gap
 
     Texd {
-        text: "东南 IH71 " + (bookType >= 4 ? "2P" : "4P")
+        text: _ruleNames[ruleId]
         font.pixelSize: global.size.middleFont
         anchors.verticalCenter: parent.verticalCenter
     }
 
     Buzzon {
         id: bookButton
-        enabled: !PClient.bookings[bookType] && PClient.books[bookType].Bookable
+        enabled: !PClient.matchings[ruleId]
         anchors.verticalCenter: parent.verticalCenter
         textLength: 4
-        text: PClient.bookings[bookType] ? "待开" : "预约"
-        onClicked: { PClient.book(bookType); }
+        text: PClient.matchings[ruleId] ? "待开" : "预约"
+        onClicked: { PClient.sendMatchJoin(ruleId); }
     }
 
     Texd {
         anchors.verticalCenter: parent.verticalCenter
         font.pixelSize: global.size.middleFont
-        text: PClient.books[bookType].Book + ":" + PClient.books[bookType].Play
+        text: [ "零缺四", "一缺三", "二缺二", "三缺一" ][PClient.matchWaits[ruleId]]
     }
 }

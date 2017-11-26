@@ -35,7 +35,7 @@ Column {
         model: 8
         delegate: AreaBookRow {
             visible: index % 4 === tabPager.currIndex
-            bookType: index
+            ruleId: index
             anchors.horizontalCenter: parent.horizontalCenter
         }
     }

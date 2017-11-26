@@ -9,6 +9,7 @@ Item {
     property int currentIndex: 0
     property alias buddon: buddon
     property alias textLength: buddon.textLength
+    property alias enabled: buddon.enabled
 
     width: buddon.width
     height: buddon.height

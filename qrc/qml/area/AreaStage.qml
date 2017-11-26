@@ -7,11 +7,11 @@ Rectangle {
     id: frame
 
     property var users
-    property var girlIds
-    property bool showReady: false
+    property var girlIds: [ 0, 0, 0, 0 ]
+    property bool showReady: true
     property var _showOrder: [ 0, 1, 2, 3 ]
 
-    signal readyClicked
+    signal seatClicked
 
     anchors.fill: parent
     color: global.color.back
@@ -124,7 +124,7 @@ Rectangle {
     function _clickReady() {
         showReady = false;
         timeBar.cancel();
-        readyClicked();
+        seatClicked();
     }
 
     function splash() {

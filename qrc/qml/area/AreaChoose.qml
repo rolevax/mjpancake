@@ -8,7 +8,6 @@ import "../widget"
 Rectangle {
     id: frame
 
-    property var users: [ null, null, null, null ]
     property var choices: null
     property bool _buttonVisible: true
     property int _girlIndex: -1
@@ -19,57 +18,30 @@ Rectangle {
     color: global.color.back
     visible: false
 
-    Row {
-        id: row
+    Column {
+        id: mainRow
+        // FUCK change to row of photos
         anchors.centerIn: parent
-        spacing: global.size.gap
+        spacing: global.size.space
+        width: 0.3 * frame.height
 
         Repeater {
-            id: rep
-            model: 4
-            delegate: Column {
-                property int userIndex: index
-
-                spacing: global.size.space
-                width: 0.3 * frame.height
-
-                Texd {
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    horizontalAlignment: Text.AlignHCenter
-                    font.pixelSize: global.size.middleFont
-                    text: users[index] ? _userIntro(users[index]) : ""
-                }
-
-                Repeater {
-                    model: 3
-                    delegate: Texd {
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        font.pixelSize: global.size.middleFont
-                        visible: !(userIndex === 0 && _buttonVisible)
-                        opacity: userIndex === 0 && _girlIndex !== index ? 0.5 : 1.0
-                        text: choices ? Names.names[choices[3 * userIndex + index]] : ""
-                    }
-                }
-
-                Repeater {
-                    model: 3
-                    delegate: Buzzon {
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        textLength: 8
-                        text: choices ? Names.names[choices[3 * userIndex + index]] : ""
-                        visible: _buttonVisible && userIndex === 0
-                        onClicked: { _clickChoose(index) }
-                    }
-                }
+            model: 3
+            delegate: Buzzon {
+                anchors.horizontalCenter: parent.horizontalCenter
+                textLength: 8
+                text: choices ? Names.names[choices[index]] : ""
+                visible: _buttonVisible
+                onClicked: { _clickChoose(index) }
             }
         }
     }
 
     TimeBar {
         id: timeBar
-        anchors.left: row.left
-        anchors.right: row.right
-        anchors.top: row.bottom
+        anchors.left: mainRow.left
+        anchors.right: mainRow.right
+        anchors.top: mainRow.bottom
         onFired: {
             chosen(0);
         }

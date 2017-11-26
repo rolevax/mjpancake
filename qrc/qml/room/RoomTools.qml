@@ -8,18 +8,21 @@ Room {
         anchors.centerIn: parent
         spacing: global.size.space
 
-        Buzzon {
-            text: "手役生成器"
-            textLength: 8
-            onClicked: { global.pushScene("room/RoomGen"); }
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
+        Repeater  {
+            model: [
+                { text: "牌谱", room: "Replay" },
+                { text: "单机桌", room: "GameFree" },
+                { text: "牌效练习", room: "Eff" },
+                { text: "手役生成器", room: "Gen" },
+                { text: "牌形分解器", room: "Parse" },
+            ]
 
-        Buzzon {
-            text: "牌形分解器"
-            textLength: 8
-            onClicked: { global.pushScene("room/RoomParse"); }
-            anchors.horizontalCenter: parent.horizontalCenter
+            delegate: Buzzon {
+                text: modelData.text
+                textLength: 8
+                onClicked: { global.pushScene("room/Room" + modelData.room); }
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
         }
     }
 }

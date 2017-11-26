@@ -8,6 +8,7 @@ Row {
     property int currGirlId
     property string mark
     property int defaultIndex: 0
+    property alias enabled: combo.enabled
 
     spacing: global.size.gap
 

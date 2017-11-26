@@ -19,15 +19,14 @@ QVariantList PEff::nanikiru(const saki::Hand &hand, const saki::Mount &mount)
     using namespace saki;
 
     std::vector<T34> choices;
-    std::vector<std::vector<T34>> waits;
+    std::vector<util::Stactor<T34, 34>> waits;
     std::vector<int> remains;
 
     (void) hand; (void) mount;
-    /* TODO recover
     int minStep = 13;
 
-    auto update = [&](const HandDream &dream, T34 t) {
-        int step = dream.step();
+    auto update = [&](const Action &action, T34 t) {
+        int step = hand.peekDiscard(action, &Hand::step);
 
         if (step < minStep) {
             minStep = step;
@@ -37,7 +36,7 @@ QVariantList PEff::nanikiru(const saki::Hand &hand, const saki::Mount &mount)
         }
 
         if (step == minStep && !util::has(choices, T34(t))) { // dup by aka5
-            auto wait = dream.effA();
+            auto wait = hand.peekDiscard(action, &Hand::effA);
             auto aux = [&](int s, T34 t) { return s + mount.remainA(t); };
             int remain = std::accumulate(wait.begin(), wait.end(), 0, aux);
             size_t pos = 0;
@@ -49,13 +48,11 @@ QVariantList PEff::nanikiru(const saki::Hand &hand, const saki::Mount &mount)
         }
     };
 
-    for (const T37 &t : hand.closed().t37s())
-        update(hand.withSwap(t), t);
-    update(hand.withSpin(), hand.drawn());
-    */
+    for (const T37 &t : hand.closed().t37s13())
+        update(Action(ActCode::SWAP_OUT, t), t);
+    update(Action(ActCode::SPIN_OUT), hand.drawn());
 
     QVariantList list;
-    /* TODO recover
     for (size_t i = 0; i < choices.size(); i++) {
         QVariantMap map;
         map["out"] = choices[i].str();
@@ -65,7 +62,6 @@ QVariantList PEff::nanikiru(const saki::Hand &hand, const saki::Mount &mount)
         map["remain"] = remains[i];
         list << map;
     }
-    */
 
     return list;
 }

@@ -133,8 +133,10 @@ PinchArea {
 
     function startPrac(girlId) {
         dialogOpHint.hint = "op";
+
         table.reset();
         table.setGirlIds([ girlId, -1, -1, -1 ]);
+
         table.pTable.startPrac(girlId);
     }
 

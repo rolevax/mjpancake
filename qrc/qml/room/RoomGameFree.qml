@@ -38,14 +38,17 @@ Room {
                 }
                 GirlBox {
                     id: girlBox1; mark: "C1"; z: 103
+                    enabled: toggleMode.currentIndex === 0
                     onChoosen: { girlIds[1] = girlId; }
                 }
                 GirlBox {
                     id: girlBox2; mark: "C2"; z: 102
+                    enabled: toggleMode.currentIndex === 0
                     onChoosen: { girlIds[2] = girlId; }
                 }
                 GirlBox {
                     id: girlBox3; mark: "C3"; z: 101
+                    enabled: toggleMode.currentIndex === 0
                     onChoosen: { girlIds[3] = girlId; }
                 }
             }
@@ -86,6 +89,11 @@ Room {
                 id: toggleTileSet
                 model: [ "普通牌", "纸制牌" ]
             }
+
+            GomboToggle {
+                id: toggleMode
+                model: [ "一人三机", "摸打练习" ]
+            }
         }
 
         Texd {
@@ -114,7 +122,12 @@ Room {
                 PGlobal.save();
                 _shuffleRivals();
                 _playing = true;
-                game.startLocal(shuffledGirlIds, ruleConfig.gameRule, tempDealer);
+
+                if (toggleMode.currentIndex === 0) {
+                    game.startLocal(shuffledGirlIds, ruleConfig.gameRule, tempDealer);
+                } else {
+                    game.startPrac(shuffledGirlIds[0]);
+                }
             }
         }
     }

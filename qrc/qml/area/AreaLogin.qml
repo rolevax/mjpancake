@@ -54,9 +54,16 @@ Column {
         }
     }
 
-    Texd {
-        id: loginErrorText
-        anchors.horizontalCenter: parent.horizontalCenter
+    Rectangle {
+        visible: !!loginErrorText.text
+        width: frame.width
+        height: loginErrorText.height
+        color: global.color.back
+
+        Texd {
+            id: loginErrorText
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
     }
 
     Connections {
