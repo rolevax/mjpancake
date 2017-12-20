@@ -46,9 +46,9 @@ void PGlobal::forceImmersive()
 {
 #ifdef Q_OS_ANDROID
     QAndroidJniObject::callStaticMethod<void>(
-                "rolevax/sakilogy/ImagePickerActivity",
-                "forceImmersive",
-                "()V");
+        "rolevax/sakilogy/ImagePickerActivity",
+        "forceImmersive",
+        "()V");
 #endif
 }
 
@@ -56,9 +56,9 @@ void PGlobal::systemNotify()
 {
 #ifdef Q_OS_ANDROID
     QAndroidJniObject::callStaticMethod<void>(
-                "rolevax/sakilogy/ImagePickerActivity",
-                "popNotification",
-                "()V");
+        "rolevax/sakilogy/ImagePickerActivity",
+        "popNotification",
+        "()V");
 #endif
 }
 
@@ -87,6 +87,7 @@ QString PGlobal::replayPath(QString filename)
     QDir().mkpath(path);
     if (!filename.isEmpty())
         path += "/" + filename;
+
     return path;
 }
 
@@ -161,7 +162,7 @@ void PGlobal::setHints(const QVariantMap &v)
 void PGlobal::regulateRoot()
 {
     if (!mRoot["backColors"].isArray())
-        mRoot["backColors"] = QJsonArray{ "#DD9900", "#111166" };
+        mRoot["backColors"] = QJsonArray { "#DD9900", "#111166" };
 
     if (!mRoot["savedUsername"].isString())
         mRoot["savedUsername"] = QString();
@@ -191,6 +192,5 @@ QObject *pGlobalSingletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine)
     Q_UNUSED(engine)
     Q_UNUSED(scriptEngine)
 
-    PGlobal *pGlobal = new PGlobal();
-    return pGlobal;
+    return new PGlobal();
 }

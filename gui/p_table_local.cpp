@@ -44,7 +44,7 @@ void PTableLocal::onFirstDealerChoosen(Who initDealer)
 }
 
 void PTableLocal::onRoundStarted(int round, int extra, Who dealer,
-                            bool al, int deposit, uint32_t seed)
+                                 bool al, int deposit, uint32_t seed)
 {
     std::cout << 'r' << round << '.' << extra << " dl" << dealer.index()
               << " al" << al << " dp" << deposit
@@ -138,7 +138,7 @@ void PTableLocal::onRiichiEstablished(Who who)
 }
 
 void PTableLocal::onBarked(const Table &table, Who who,
-                      const M37 &bark, bool spin)
+                           const M37 &bark, bool spin)
 {
     int fromWhom = bark.isCpdmk() ? table.getFocus().who().index() : -1;
     if (!who.human())
@@ -154,8 +154,8 @@ void PTableLocal::onBarked(const Table &table, Who who,
 }
 
 void PTableLocal::onRoundEnded(const Table &table, RoundResult result,
-                          const std::vector<Who> &openers, Who gunner,
-                          const std::vector<Form> &forms)
+                               const std::vector<Who> &openers, Who gunner,
+                               const std::vector<Form> &forms)
 {
     using RR = RoundResult;
 
@@ -186,10 +186,9 @@ void PTableLocal::onRoundEnded(const Table &table, RoundResult result,
     }
 
     if ((result == RR::TSUMO || result == RR::RON || result == RR::SCHR)
-            && (openers.size() > 1 || !openers[0].human())) {
+        && (openers.size() > 1 || !openers[0].human())) {
         emitJustPause(700);
     }
-
 
     QVariantMap args;
     args["result"] = QString(util::stringOf(result));
@@ -214,7 +213,7 @@ void PTableLocal::onPointsChanged(const Table &table)
 }
 
 void PTableLocal::onTableEnded(const std::array<Who, 4> &rank,
-                          const std::array<int, 4> &scores)
+                               const std::array<int, 4> &scores)
 {
     QVariantList rankList, scoresList;
     for (int i = 0; i < 4; i++) {
@@ -282,11 +281,12 @@ void PTableLocal::start(const QVariant &girlIdsVar, const QVariant &gameRule, in
 
     for (int w = 1; w < 4; w++)
         mAis[w - 1].reset(Ai::create(Who(w), Girl::Id(girlIds[w])));
-    std::array<TableOperator*, 4> operators {
+
+    std::array<TableOperator *, 4> operators {
         this, mAis.at(0).get(), mAis.at(1).get(), mAis.at(2).get()
     };
 
-    std::vector<TableObserver*> observers { this, &mReplay };
+    std::vector<TableObserver *> observers { this, &mReplay };
 
     mTable.reset(new Table(points, girlIds, operators, observers,
                            rule, Who(tempDelaer), mTableEnv));
@@ -309,14 +309,15 @@ void PTableLocal::startPrac(int girlId)
 
     for (int w = 1; w < 4; w++)
         mAis[w - 1].reset(new AiStub(Who(w)));
-    std::array<TableOperator*, 4> operators {
+
+    std::array<TableOperator *, 4> operators {
         this, mAis.at(0).get(), mAis.at(1).get(), mAis.at(2).get()
     };
 
-    std::vector<TableObserver*> observers { this };
+    std::vector<TableObserver *> observers { this };
 
     mTable.reset(new Table(points, girlIds, operators, observers,
-                                 rule, Who(0), mTableEnv));
+                           rule, Who(0), mTableEnv));
     mTable->start();
 }
 
@@ -338,14 +339,14 @@ void PTableLocal::saveRecord()
     int serial = 0;
 
     auto makeFilename = [&]() {
-        return path + '/' + datetime + '_' + QString::number(serial++) + extension;
-    };
+            return path + '/' + datetime + '_' + QString::number(serial++) + extension;
+        };
 
     QString filename;
     // this loop is useless in most cases, but just to be robust.
     do {
         filename = makeFilename();
-    } while(QFile(filename).exists());
+    } while (QFile(filename).exists());
 
     QJsonDocument doc(createReplayJson(mReplay));
 
@@ -364,5 +365,3 @@ void PTableLocal::emitJustPause(int ms)
     args["ms"] = ms;
     emit tableEvent(PTable::JustPause, args);
 }
-
-

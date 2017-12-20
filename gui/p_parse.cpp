@@ -34,5 +34,3 @@ void PParse::parse(const QStringList &tiles)
 
     emit parsed(res);
 }
-
-

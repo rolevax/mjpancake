@@ -19,6 +19,7 @@
 class PTableLocal : public QObject, saki::TableObserver, saki::TableOperator
 {
     Q_OBJECT
+
 public:
     explicit PTableLocal(QObject *parent = nullptr);
 

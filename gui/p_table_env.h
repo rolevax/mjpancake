@@ -17,5 +17,3 @@ public:
 
 
 #endif // P_TABLE_ENV_H
-
-

@@ -12,17 +12,17 @@
 #include <QtAndroid>
 
 void ImagePickReceiver::handleActivityResult(int requestCode, int resultCode,
-                                             const QAndroidJniObject & data) {
+                                             const QAndroidJniObject &data) {
     (void) requestCode;
     if (resultCode == -1) { // OK
         QAndroidJniObject imageUri = data.callObjectMethod(
-                    "getData",
-                    "()Landroid/net/Uri;");
+                "getData",
+                "()Landroid/net/Uri;");
         QAndroidJniObject imagePath = QAndroidJniObject::callStaticObjectMethod(
-                    "rolevax/sakilogy/ImagePickerActivity",
-                    "getPath",
-                    "(Landroid/net/Uri;)Ljava/lang/String;",
-                    imageUri.object<jobject>());
+                "rolevax/sakilogy/ImagePickerActivity",
+                "getPath",
+                "(Landroid/net/Uri;)Ljava/lang/String;",
+                imageUri.object<jobject>());
 
         switch (requestCode) {
         case REQ_BACKGROUND:
@@ -68,9 +68,9 @@ void PImageSettings::setBackgroundByAndroidGallery()
 {
 #ifdef Q_OS_ANDROID
     QAndroidJniObject intent = QAndroidJniObject::callStaticObjectMethod(
-                "rolevax/sakilogy/ImagePickerActivity",
-                "createChoosePhotoIntent",
-                "()Landroid/content/Intent;" );
+            "rolevax/sakilogy/ImagePickerActivity",
+            "createChoosePhotoIntent",
+            "()Landroid/content/Intent;");
     QtAndroid::startActivity(intent, ImagePickReceiver::REQ_BACKGROUND, &mImagePickReceiver);
 #endif
 }
@@ -90,16 +90,12 @@ void PImageSettings::setPhotoByAndroidGallery(QString girlId)
 {
 #ifdef Q_OS_ANDROID
     QAndroidJniObject intent = QAndroidJniObject::callStaticObjectMethod(
-                "rolevax/sakilogy/ImagePickerActivity",
-                "createChoosePhotoIntent",
-                "()Landroid/content/Intent;" );
+            "rolevax/sakilogy/ImagePickerActivity",
+            "createChoosePhotoIntent",
+            "()Landroid/content/Intent;");
     mImagePickReceiver.setGirlId(girlId);
     QtAndroid::startActivity(intent, ImagePickReceiver::REQ_GIRL_PHOTO, &mImagePickReceiver);
 #else
     (void) girlId;
 #endif
 }
-
-
-
-

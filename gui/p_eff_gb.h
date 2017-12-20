@@ -12,6 +12,7 @@
 class PEffGb : public QObject
 {
     Q_OBJECT
+
 public:
     explicit PEffGb(QObject *parent = nullptr);
 
@@ -50,5 +51,3 @@ private:
 
 
 #endif // P_EFF_GB_H
-
-

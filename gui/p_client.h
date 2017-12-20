@@ -14,6 +14,7 @@
 class PClient : public QObject
 {
     Q_OBJECT
+
 public:
     explicit PClient(QObject *parent = nullptr);
 
@@ -108,5 +109,3 @@ QObject *pClientSingletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine);
 
 
 #endif // P_CLIENT_H
-
-

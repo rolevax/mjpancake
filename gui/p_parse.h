@@ -9,6 +9,7 @@
 class PParse : public QObject
 {
     Q_OBJECT
+
 public:
     explicit PParse(QObject *parent = nullptr);
 
@@ -21,5 +22,3 @@ signals:
 
 
 #endif // P_PARSE_H
-
-

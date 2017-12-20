@@ -10,6 +10,7 @@
 class PJsonTcpSocket : public QObject
 {
     Q_OBJECT
+
 public:
     explicit PJsonTcpSocket(QObject *parent = nullptr);
 

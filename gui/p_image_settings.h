@@ -8,25 +8,28 @@
 
 class PImageSettings;
 
-class ImagePickReceiver : public QAndroidActivityResultReceiver {
+class ImagePickReceiver : public QAndroidActivityResultReceiver
+{
 public:
     static const int REQ_BACKGROUND = 101;
     static const int REQ_GIRL_PHOTO = 102;
 
-    ImagePickReceiver(PImageSettings &pSettings) : mPImageSettings(pSettings) { }
+    ImagePickReceiver(PImageSettings &pSettings) : mPImageSettings(pSettings) {}
     void handleActivityResult(int requestCode, int resultCode,
-                              const QAndroidJniObject & data);
+                              const QAndroidJniObject &data);
     void setGirlId(const QString &girlId);
 
 private:
     PImageSettings &mPImageSettings;
     QString mGirlId;
 };
+
 #endif
 
 class PImageSettings : public QObject
 {
     Q_OBJECT
+
 public:
     explicit PImageSettings(QObject *parent = 0);
 
@@ -41,7 +44,6 @@ signals:
     void photoCopied();
 
 public slots:
-
 
 private:
 

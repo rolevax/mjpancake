@@ -18,10 +18,12 @@
 
 namespace saki
 {
-    struct IrsCheckRow;
-    enum class RoundResult;
-    class TableView;
-}
+struct IrsCheckRow;
+
+enum class RoundResult;
+
+class TableView;
+} // namespace saki
 
 
 
@@ -59,5 +61,3 @@ QJsonArray std2json(const T &arr);
 
 
 #endif // P_PORT_H
-
-

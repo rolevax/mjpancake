@@ -8,5 +8,3 @@ int PTableEnv::hour24() const
 {
     return QTime::currentTime().hour();
 }
-
-

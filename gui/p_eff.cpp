@@ -25,6 +25,7 @@ QVariantList PEff::nanikiru(const saki::Hand &hand, const saki::Mount &mount)
     (void) hand; (void) mount;
     int minStep = 13;
 
+    // *INDENT-OFF*
     auto update = [&](const Action &action, T34 t) {
         int step = hand.peekDiscard(action, &Hand::step);
 
@@ -47,9 +48,11 @@ QVariantList PEff::nanikiru(const saki::Hand &hand, const saki::Mount &mount)
             waits.emplace(waits.begin() + pos, wait);
         }
     };
+    // *INDENT-ON*
 
     for (const T37 &t : hand.closed().t37s13())
         update(Action(ActCode::SWAP_OUT, t), t);
+
     update(Action(ActCode::SPIN_OUT), hand.drawn());
 
     QVariantList list;
@@ -187,8 +190,10 @@ void PEff::draw()
     bool canAnkan = mHand.canAnkan(ankanables, mFormCtx.riichi);
     if (canTsumo)
         actions["TSUMO"] = true;
+
     if (canAnkan)
         actions["ANKAN"] = createTileStrsVar(ankanables.range());
+
     actions["SPIN_OUT"] = true;
 
     if (mFormCtx.riichi) {
@@ -205,9 +210,11 @@ void PEff::draw()
         if (!mFormCtx.emptyMount && mHand.canRiichi(swapRiichis, spinRiichi)) {
             if (!swapRiichis.empty())
                 actions["SWAP_RIICHI"] = createSwapMask(mHand.closed(), swapRiichis);
+
             if (spinRiichi)
                 actions["SPIN_RIICHI"] = true;
         }
+
         emit activated(actions);
     }
 }
@@ -241,6 +248,7 @@ void PEff::ankan(saki::T34 t)
     mHand.ankan(t);
     if (mRule.kandora)
         mMount.flipIndic(mRand);
+
     emit ankaned(createBarkVar(mHand.barks().back()), spin,
                  createTileVar(mMount.getDrids().back()));
     mFormCtx.duringKan = true;
@@ -252,6 +260,7 @@ void PEff::tsumo()
     using namespace saki;
     if (mRule.uradora && mFormCtx.riichi > 0)
         mMount.digIndic(mRand);
+
     Form form(mHand, mFormCtx, mRule, mMount.getDrids(), mMount.getUrids());
     emit finished(createFormVar(form.spell().c_str(), form.charge().c_str()),
                   form.gain(), mTurn, createTilesVar(mMount.getUrids().range()));

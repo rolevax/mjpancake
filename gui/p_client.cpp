@@ -81,6 +81,7 @@ void PClient::sendMatchCancel()
 {
     for (auto &v : mMatchings)
         v = false;
+
     emit matchingsChanged();
 
     QJsonObject req;
@@ -199,6 +200,7 @@ bool PClient::hasBooking() const
     for (auto v : mMatchings)
         if (v.toBool())
             return true;
+
     return false;
 }
 
@@ -220,8 +222,10 @@ void PClient::action(const QString &actStr, int actArg, const QString &actTile)
     req["ActStr"] = actStr;
     if (actArg != -1)
         req["ActArg"] = actArg;
+
     if (actTile.size() > 0)
         req["ActTile"] = actTile;
+
     mSocket.send(req);
 }
 
@@ -266,7 +270,7 @@ PTable::Event PClient::eventOf(const QString &event)
     else if (event == "resume")
         type = PTable::Resume;
     else
-        assert(false && "PClient: unknown table event type");
+        Q_UNREACHABLE();
 
     return type;
 }
@@ -275,6 +279,7 @@ void PClient::onRemoteClosed()
 {
     for (auto &v : mMatchings)
         v = false;
+
     emit matchingsChanged();
 
     mUser.clear();
@@ -302,7 +307,7 @@ void PClient::onJsonReceived(const QJsonObject &msg)
         emit lookedAround();
     } else if (type == "table-init") {
         // TODO notify from background by Android service + Qt Remote Object
-        //PGlobal::systemNotify();
+        // PGlobal::systemNotify();
 
         mLastNonce = 0;
         emit lastNonceChanged();
@@ -347,6 +352,7 @@ void PClient::recvTableEvent(const QJsonObject &msg)
     QVariantMap args = msg["Args"].toObject().toVariantMap();
     if (event == PTable::Activated)
         args["nonce"] = nonce;
+
     emit tableEvent(event, args);
 }
 
@@ -370,8 +376,5 @@ QObject *pClientSingletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine)
     Q_UNUSED(engine)
     Q_UNUSED(scriptEngine)
 
-    PClient *pClient = new PClient();
-    return pClient;
+    return new PClient();
 }
-
-

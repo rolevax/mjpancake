@@ -13,6 +13,7 @@
 class PEff : public QObject
 {
     Q_OBJECT
+
 public:
     explicit PEff(QObject *parent = nullptr);
 
@@ -71,5 +72,3 @@ private:
 
 
 #endif // P_EFF_H
-
-

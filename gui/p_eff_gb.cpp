@@ -91,8 +91,10 @@ void PEffGb::draw()
     bool canAnkan = mHand.canAnkan(ankanables, false);
     if (canTsumo)
         actions["TSUMO"] = true;
+
     if (canAnkan)
         actions["ANKAN"] = createTileStrsVar(ankanables.range());
+
     actions["SPIN_OUT"] = true;
     actions["SWAP_OUT"] = 8191; // 0111_1111_1111
     emit activated(actions);
@@ -115,5 +117,6 @@ void PEffGb::zimo()
     QVariantList fans;
     for (Fan f : form.fans())
         fans << static_cast<int>(f);
+
     emit finished(fans, form.fan(), mTurn);
 }

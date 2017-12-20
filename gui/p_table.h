@@ -9,6 +9,7 @@ class PClient;
 class PTable : public QObject
 {
     Q_OBJECT
+
 public:
     enum Event
     {

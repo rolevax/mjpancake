@@ -42,7 +42,7 @@ void PTable::startPrac(const int &girlId)
 }
 
 void PTable::startLocal(const QVariant &girlIdsVar, const QVariant &gameRule,
-                              int tempDealer)
+                        int tempDealer)
 {
     clearLogicFeeds();
     mOnline = false;
@@ -76,7 +76,7 @@ void PTable::startSample()
     clearLogicFeeds();
     mOnline = false;
 
-    std::vector<std::pair<Event, const char*>> scene {
+    std::vector<std::pair<Event, const char *>> scene {
         { PointsChanged, R"({"points":[105700,90300,35800,168200]})" },
         { Cleaned, "" },
         { RoundStarted, R"({"round":7,"extra":0,"dealer":1,"allLast":true,"deposit":0})" },
@@ -92,19 +92,21 @@ void PTable::startSample()
         emit tableEvent(pair.first, args);
     }
 
+    // *INDENT-OFF*
     auto myInOut = [this](const T37 &tin, const T37 &tout, int outPos) {
         emit tableEvent(Drawn, QVariantMap { { "who", 0 }, { "tile", tin.str() } });
         emit tableEvent(JustPause, QVariantMap { { "ms", 300 } });
         emit tableEvent(JustSetOutPos, QVariantMap { { "outPos", outPos } });
-        emit tableEvent(Discarded, QVariantMap { {"who", 0 }, { "tile", tout.str() } });
+        emit tableEvent(Discarded, QVariantMap { { "who", 0 }, { "tile", tout.str() } });
     };
 
     auto oppoOut = [this](int w, const T37 &tout, bool spin) {
         emit tableEvent(Drawn, QVariantMap { { "who", w } });
         emit tableEvent(JustPause, QVariantMap { { "ms", 300 } });
-        QVariantMap args { {"who", w }, { "tile", tout.str() }, { "spin", spin } };
+        QVariantMap args { { "who", w }, { "tile", tout.str() }, { "spin", spin } };
         emit tableEvent(Discarded, args);
     };
+    // *INDENT-ON*
 
     using namespace tiles37;
 
@@ -198,6 +200,3 @@ void PTable::clearLogicFeeds()
         mWorkThread.wait();
     }
 }
-
-
-

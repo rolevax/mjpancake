@@ -14,6 +14,7 @@
 class PReplay : public QObject
 {
     Q_OBJECT
+
 public:
     explicit PReplay(QObject *parent = nullptr);
 
@@ -54,5 +55,3 @@ private:
 
 
 #endif // P_REPLAY_H
-
-

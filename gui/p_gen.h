@@ -11,12 +11,13 @@
 class PGen : public QObject
 {
     Q_OBJECT
+
 public:
     explicit PGen(QObject *parent = 0);
 
     /*
-    Q_INVOKABLE void genPoint(int point, int selfWind, int roundWind, bool ron);
-                              */
+       Q_INVOKABLE void genPoint(int point, int selfWind, int roundWind, bool ron);
+     */
     Q_INVOKABLE void genFuHan(int fu, int han, int selfWind, int roundWind,
                               bool ron);
 
@@ -33,5 +34,3 @@ private:
 
 
 #endif // P_GEN_H
-
-

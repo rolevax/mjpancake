@@ -130,4 +130,3 @@ void PReplay::useOnlineReplay(int id)
     mLoaded = true;
     emit onlineReplayReady();
 }
-

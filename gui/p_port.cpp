@@ -23,6 +23,7 @@ QString createTileVar(const T37 &t, bool lay)
     QString res(t.str());
     if (lay)
         res += "_";
+
     return res;
 }
 
@@ -34,13 +35,14 @@ QStringList createTilesVar(const TileCount &count)
         if (tile.val() == 5) {
             int red = count.ct(tile.toAka5());
             int black = count.ct(tile);
-            while(red --> 0)
+            while (red-- > 0)
                 list << createTileVar(tile.toAka5());
-            while (black --> 0)
+
+            while (black-- > 0)
                 list << createTileVar(tile);
         } else {
             int ct = count.ct(tile);
-            while (ct --> 0)
+            while (ct-- > 0)
                 list << createTileVar(tile);
         }
     }
@@ -89,11 +91,13 @@ unsigned createSwapMask(const TileCount &count,
     for (const T37 &t : tiles37::ORDER37) {
         if (it == choices.end())
             break;
+
         int ct = count.ct(t);
         if (ct > 0) {
             bool val = t.looksSame(*it);
-            while (ct --> 0)
+            while (ct-- > 0)
                 mask[i++] = val;
+
             it += val; // consume choice if matched
         }
     }
@@ -143,6 +147,7 @@ QVariant createBarksVar(const util::Stactor<M37, 4> &ms)
     QVariantList list;
     for (const M37 &m : ms)
         list << createBarkVar(m);
+
     return QVariant::fromValue(list);
 }
 
@@ -171,6 +176,7 @@ QVariantMap createTableSnapMap(const TableSnap &snap)
     QVariantList points;
     for (int p : snap.points)
         points << p;
+
     map.insert("points", points);
 
     map.insert("wallRemain", snap.wallRemain);
@@ -187,6 +193,7 @@ QVariantMap createTableSnapMap(const TableSnap &snap)
         QVariantList river;
         for (int i = 0; i < int(player.river.size()); i++)
             river << createTileVar(player.river[i], i == player.riichiPos);
+
         playerMap.insert("river", river);
         playerMap.insert("riichiBar", player.riichiBar);
         players.append(playerMap);
@@ -212,13 +219,14 @@ QVariantMap createTableSnapMap(const TableSnap &snap)
     QVariantList openers;
     for (Who opener : snap.openers)
         openers << opener.index();
+
     map.insert("openers", openers);
 
     QVariantList forms;
     for (size_t i = 0; i < snap.spells.size(); i++)
         forms << createFormVar(snap.spells[i].c_str(), snap.charges[i].c_str());
-    map.insert("forms", forms);
 
+    map.insert("forms", forms);
 
     return map;
 }
@@ -236,6 +244,7 @@ QJsonObject createReplayJson(const Replay &replay)
     QVariantList girls;
     for (Girl::Id v : replay.girls)
         girls << static_cast<int>(v);
+
     root["girls"] = QJsonArray::fromVariantList(girls);
 
     root["initPoints"] = std2json(replay.initPoints);
@@ -245,6 +254,7 @@ QJsonObject createReplayJson(const Replay &replay)
     QJsonArray arr;
     for (const Replay::Round &round : replay.rounds)
         arr.append(createRoundJson(round));
+
     root["rounds"] = arr;
 
     return root;
@@ -287,21 +297,25 @@ QJsonObject createRoundJson(const Replay::Round &round)
     QJsonArray spells;
     for (const std::string &spell : round.spells)
         spells.append(QString::fromStdString(spell));
+
     obj["spells"] = spells;
 
     QJsonArray charges;
     for (const std::string &charge : round.charges)
         charges.append(QString::fromStdString(charge));
+
     obj["charges"] = charges;
 
     QJsonArray drids;
     for (const T37 &t : round.drids)
         drids.append(t.str());
+
     obj["drids"] = drids;
 
     QJsonArray urids;
     for (const T37 &t : round.urids)
         urids.append(t.str());
+
     obj["urids"] = urids;
 
     obj["tracks"] = QJsonArray {
@@ -314,6 +328,7 @@ QJsonObject createRoundJson(const Replay::Round &round)
 
 QJsonObject createTrackJson(const Replay::Track &track)
 {
+    // *INDENT-OFF*
     auto inJson = [](Replay::InAct inAct) {
         using In = Replay::In;
         switch (inAct.act) {
@@ -363,22 +378,26 @@ QJsonObject createTrackJson(const Replay::Track &track)
             return QString("err");
         }
     };
+    // *INDENT-ON*
 
     QJsonObject obj;
 
     QJsonArray initArr;
     for (const T37 &t : track.init)
         initArr.append(t.str());
+
     obj["init"] = initArr;
 
     QJsonArray inArr;
     for (const Replay::InAct &inAct : track.in)
         inArr.append(inJson(inAct));
+
     obj["in"] = inArr;
 
     QJsonArray outArr;
     for (const Replay::OutAct &outAct : track.out)
         outArr.append(outJson(outAct));
+
     obj["out"] = outArr;
 
     return obj;
@@ -407,6 +426,7 @@ void activateDrawn(QVariantMap &map, const TableView &view)
         QVariantList list;
         for (int barkId : mode.kakans)
             list << barkId;
+
         map.insert(util::stringOf(AC::KAKAN), QVariant::fromValue(list));
     }
 }
@@ -433,6 +453,7 @@ void activateIrsCheck(QVariantMap &map, const TableView &view)
     QVariantList list;
     for (int i = 0; i < prediceCount; i++)
         list << createIrsCheckRowVar(girl.irsCheckRow(i));
+
     map.insert(util::stringOf(ActCode::IRS_CHECK), QVariant::fromValue(list));
 }
 
@@ -465,8 +486,10 @@ QVariantMap createActivation(const TableView &view)
     case Mode::END:
         if (choices.can(AC::END_TABLE))
             map.insert(util::stringOf(AC::END_TABLE), true);
+
         if (choices.can(AC::NEXT_ROUND))
             map.insert(util::stringOf(AC::NEXT_ROUND), true);
+
         break;
     }
 
@@ -567,6 +590,7 @@ Replay::Round readRoundJson(const QJsonObject &obj)
 
 Replay::Track readTrackJson(const QJsonObject &obj)
 {
+    // *INDENT-OFF*
     auto inAct = [](const QString &qstr) {
         using In = Replay::In;
         using InAct = Replay::InAct;
@@ -630,6 +654,7 @@ Replay::Track readTrackJson(const QJsonObject &obj)
             unreached("corrupted replay json (out)");
         }
     };
+    // *INDENT-ON*
 
     Replay::Track track;
 
@@ -655,6 +680,7 @@ QJsonArray std2json(const T &arr) {
     QVariantList list;
     for (int v : arr)
         list << v;
+
     return QJsonArray::fromVariantList(list);
 }
 
@@ -682,5 +708,3 @@ Action readAction(const QString &actStr, int actArg, const QString &actTile)
         return Action(act);
     }
 }
-
-
