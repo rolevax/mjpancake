@@ -1,23 +1,24 @@
+@ECHO OFF
+
 REM format libsaki
 
-cd libsaki
-FOR /F "tokens=* USEBACKQ" %%F IN (`git ls-files -mo --exclude-standard | findstr "\.cpp \.h"`) DO (
-  SET FILES=%%F
+CD libsaki
+SET FILES=
+FOR /F %%i IN ('..\bin\show_changes.bat') DO SET FILES=%%i
+IF NOT [%FILES%] == [] (
+  ECHO Format: %FILES%
+  ..\bin\uncrustify.exe -c ..\uncrustify.cfg --no-backup %FILES%
 )
-IF NOT %FILES% == "" (
-  echo "Format:" %FILES%
-  ..\bin\uncrustify.exe -c ..\uncrustify.cfg --no-backup ${FILES}
-)
-cd ..
+CD ..
 
-REM format client
-FOR /F "tokens=* USEBACKQ" %%F IN (`git ls-files -mo --exclude-standard | findstr "\.cpp \.h"`) DO (
-  SET FILES=%%F
-)
-IF NOT %FILES% == "" (
-  echo "Format:" %FILES%
-  .\bin\uncrustify.exe -c .\uncrustify.cfg --no-backup ${FILES}
+REM format mjpancake
+
+SET FILES=
+FOR /F %%i IN ('.\bin\show_changes.bat') DO SET FILES=%%i
+IF NOT [%FILES%] == [] (
+  ECHO Format: %FILES%
+  .\bin\uncrustify.exe -c .\uncrustify.cfg --no-backup %FILES%
 )
 
-echo "Haha, formatted!"
+ECHO Haha, formatted!
 
