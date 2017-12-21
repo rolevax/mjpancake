@@ -2,7 +2,7 @@ TEMPLATE = app
 
 format.target = formatted
 linux: format.commands = (cd $$PWD; ./bin/format.linux.sh)
-win: format.commands = (cd $$PWD; bash ./bin/format.win.sh)
+win: format.commands = (cd $$PWD; .\bin\format.win.bat)
 mac: format.commands = (cd $$PWD; ./bin/format.mac.sh)
 format.depends =
 
