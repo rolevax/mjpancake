@@ -1,0 +1,9 @@
+*.cpp  eol=lf
+*.h    eol=lf
+*.qml  eol=lf
+*.pro  eol=lf
+*.java eol=lf
+*.md   eol=lf
+*.txt  eol=lf
+*.sh   eol=lf
+
