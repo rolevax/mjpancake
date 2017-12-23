@@ -4,7 +4,7 @@ import "../widget"
 
 Row {
     property int ruleId
-    property var _ruleNames: [ "凡人战" ]
+    property var _ruleNames: [ "IH71 科学场", "IH71 经典二择" ]
 
     spacing: global.size.gap
 

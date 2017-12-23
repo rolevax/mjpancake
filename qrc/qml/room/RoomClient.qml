@@ -19,13 +19,24 @@ Room {
         height: areaBook.height + 2 * global.size.gap
         width: areaBook.width + 2 * global.size.gap
 
-        Row {
+        Column {
             id: areaBook
             spacing: global.size.space
             anchors.centerIn: parent
 
-            AreaBookRow {
-                ruleId: 0
+            Texd {
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: "在线: " + PClient.connCt + " 桌子: -"
+            }
+
+            Item { height: global.size.space; width: 1 }
+
+            Repeater {
+                model: 2
+                delegate:  AreaBookRow {
+                    anchors.right: parent.right
+                    ruleId: index
+                }
             }
         }
     }

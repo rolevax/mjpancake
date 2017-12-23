@@ -44,7 +44,6 @@ Item {
                 textLength: frame.textLength
                 onClicked: {
                     currIndex = index;
-                    currGirlId = modelData;
                 }
             }
         }
