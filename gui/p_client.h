@@ -39,6 +39,7 @@ public:
     Q_INVOKABLE void sendMatchJoin(int ruleId);
     Q_INVOKABLE void sendMatchCancel();
     Q_INVOKABLE void sendRoomCreate(int girlId, const QVariantList &aiGids);
+    Q_INVOKABLE void sendCliamFood();
     Q_INVOKABLE void sendTableSeat();
     Q_INVOKABLE void sendTableChoose(int girlIndex);
     Q_INVOKABLE void sendResume();

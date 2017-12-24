@@ -99,6 +99,13 @@ void PClient::sendRoomCreate(int girlId, const QVariantList &aiGids)
     mSocket.send(req);
 }
 
+void PClient::sendCliamFood()
+{
+    QJsonObject req;
+    req["Type"] = "claim-food";
+    mSocket.send(req);
+}
+
 void PClient::sendTableSeat()
 {
     QJsonObject req;

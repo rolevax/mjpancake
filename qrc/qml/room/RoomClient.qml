@@ -21,7 +21,7 @@ Room {
 
         Column {
             id: areaBook
-            spacing: global.size.space
+            spacing: global.size.gap
             anchors.centerIn: parent
 
             Texd {
@@ -29,13 +29,31 @@ Room {
                 text: "在线: " + PClient.connCt + " 桌子: -"
             }
 
-            Item { height: global.size.space; width: 1 }
+            Column  {
+                anchors.horizontalCenter: parent.horizontalCenter
+                spacing: global.size.space
+                Repeater {
+                    model: 2
+                    delegate:  AreaBookRow {
+                        anchors.right: parent.right
+                        ruleId: index
+                    }
+                }
+            }
 
-            Repeater {
-                model: 2
-                delegate:  AreaBookRow {
-                    anchors.right: parent.right
-                    ruleId: index
+            Texd {
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: "零食: " + PClient.user.Food + " 贡献: " + PClient.user.CPoint
+            }
+
+            Buzzon {
+                anchors.horizontalCenter: parent.horizontalCenter
+                enabled: _foodAvailable()
+                text: _foodAvailable() ? "获取零食" : _foodCdStr()
+                textLength: Math.max(0.7 * text.length, 12)
+                onClicked: {
+                    enabled = false;
+                    PClient.sendCliamFood();
                 }
             }
         }
@@ -60,5 +78,29 @@ Room {
             // this room is unloaded totally then
             _playing = true;
         }
+    }
+
+    function _foodAvailable() {
+        if (PClient.user.CPoint <= 0)
+            return false;
+
+        var date = new Date(PClient.user.GotFoodAt);
+        if (!date)
+            return  true;
+        _shiftDate(date);
+        return new Date() - date > 0;
+    }
+
+    function _foodCdStr() {
+        if (PClient.user.CPoint <= 0)
+            return "做任务得零食，详情主站";
+
+        var date = new Date(PClient.user.GotFoodAt);
+        _shiftDate(date);
+        return "下次: " + date.toLocaleString();
+    }
+
+    function _shiftDate(date) {
+        date.setTime(date.getTime() + 7 * 24 * 3600 * 1000);
     }
 }
