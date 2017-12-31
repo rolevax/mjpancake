@@ -15,6 +15,7 @@ android: QT += androidextras
 
 CONFIG += c++11
 CONFIG(release, debug|release): DEFINES += NDEBUG
+exists($$PWD/.official): DEFINES += PANCAKE_OFFICIAL
 
 SOURCES += main.cpp \
     gui/p_client.cpp \

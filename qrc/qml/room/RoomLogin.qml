@@ -43,6 +43,7 @@ Room {
         spacing: global.size.gap
 
         Texd {
+            visible: PGlobal.official
             anchors.horizontalCenter: parent.horizontalCenter
             text: "贡 献 者\n（截至版本发布时）"
             font.pixelSize: global.size.middleFont
@@ -50,6 +51,7 @@ Room {
         }
 
         Grid {
+            visible: PGlobal.official
             columns: 3
             spacing: global.size.space
             Repeater {
@@ -61,6 +63,15 @@ Room {
                     horizontalAlignment: Text.AlignHCenter
                 }
             }
+        }
+
+        Texd {
+            visible: !PGlobal.official
+            anchors.horizontalCenter: parent.horizontalCenter
+            text: "此版本并非由喵打发布\n" +
+                  "遇到任何问题请找上传这个文件的人"
+            font.pixelSize: global.size.middleFont
+            horizontalAlignment: Text.AlignHCenter
         }
     }
 
@@ -74,12 +85,12 @@ Room {
 
     AreaLogin {
         id: areaLogin
-        visible: !names.visible
+        visible: PGlobal.official && !names.visible
         anchors.centerIn: parent
     }
 
     Texd {
-        visible: areaLogin.visible
+        visible: !names.visible
         anchors.bottom: parent.bottom
         anchors.right: parent.right
         anchors.margins: global.size.space

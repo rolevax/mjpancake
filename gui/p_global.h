@@ -11,16 +11,18 @@
 class PGlobal : public QObject
 {
     Q_OBJECT
+
 public:
     explicit PGlobal(QObject *parent = 0);
     ~PGlobal();
 
-    Q_PROPERTY(QString version READ version NOTIFY versionChanged)
+    Q_PROPERTY(QString version READ version NOTIFY nothingChanged)
+    Q_PROPERTY(bool official READ official NOTIFY nothingChanged)
     Q_PROPERTY(QVariant backColors READ backColors WRITE setBackColors NOTIFY backColorsChanged)
-    Q_PROPERTY(QString savedUsername READ savedUsername WRITE setSavedUsername\
+    Q_PROPERTY(QString savedUsername READ savedUsername WRITE setSavedUsername \
                NOTIFY savedUsernameChanged)
     Q_PROPERTY(bool savePassword READ savePassword WRITE setSavePassword NOTIFY savePasswordChanged)
-    Q_PROPERTY(QString savedPassword READ savedPassword WRITE setSavedPassword\
+    Q_PROPERTY(QString savedPassword READ savedPassword WRITE setSavedPassword \
                NOTIFY savedPasswordChanged)
     Q_PROPERTY(bool mute READ mute WRITE setMute NOTIFY muteChanged)
     Q_PROPERTY(QVariantMap hints READ hints WRITE setHints NOTIFY hintsChanged)
@@ -29,6 +31,7 @@ public:
     Q_INVOKABLE static void forceImmersive();
     Q_INVOKABLE static void systemNotify();
 
+    static bool official();
     static QString version();
     static QString configPath();
     static QString photoPath();
@@ -52,7 +55,7 @@ public:
     void setHints(const QVariantMap &v);
 
 signals:
-    void versionChanged(); // placeholder
+    void nothingChanged(); // placeholder
     void backColorsChanged();
     void savedUsernameChanged();
     void savePasswordChanged();
@@ -72,5 +75,3 @@ private:
 QObject *pGlobalSingletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine);
 
 #endif // P_GLOBAL_H
-
-

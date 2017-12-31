@@ -62,9 +62,22 @@ void PGlobal::systemNotify()
 #endif
 }
 
+bool PGlobal::official()
+{
+#ifdef PANCAKE_OFFICIAL
+    return true;
+#else
+    return false;
+#endif
+}
+
 QString PGlobal::version()
 {
+#ifdef PANCAKE_OFFICIAL
     return QString("0.9.1-alpha3");
+#else
+    return QString("custom-fork");
+#endif
 }
 
 QString PGlobal::configPath()

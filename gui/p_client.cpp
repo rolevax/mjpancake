@@ -79,10 +79,7 @@ void PClient::sendMatchJoin(int ruleId)
 
 void PClient::sendMatchCancel()
 {
-    for (auto &v : mMatchings)
-        v = false;
-
-    emit matchingsChanged();
+    clearMatchings();
 
     QJsonObject req;
     req["Type"] = "match-cancel";
@@ -322,6 +319,7 @@ void PClient::onJsonReceived(const QJsonObject &msg)
         QJsonObject match = msg["MatchResult"].toObject();
         QJsonArray choices = msg["Choices"].toArray();
         emit tableInitRecved(match.toVariantMap(), choices.toVariantList());
+        clearMatchings();
     } else if (type == "table-seat") {
         QJsonArray girlIds = msg["Gids"].toArray();
         int tempDealer = msg["TempDealer"].toInt();
@@ -370,6 +368,14 @@ void PClient::heartbeat()
         req["Type"] = "heartbeat";
         mSocket.send(req);
     }
+}
+
+void PClient::clearMatchings()
+{
+    for (auto &v : mMatchings)
+        v = false;
+
+    emit matchingsChanged();
 }
 
 void PClient::updateStats(const QVariantList &stats)

@@ -2,4 +2,5 @@
 *.aux
 *.user
 *.properties~
+.official
 

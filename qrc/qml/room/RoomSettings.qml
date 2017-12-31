@@ -12,6 +12,7 @@ Room {
         Buzzon {
             text: "背景"
             textLength: 8
+            enabled: PGlobal.official
             onClicked: {
                 global.pushScene("room/RoomBackground");
             }

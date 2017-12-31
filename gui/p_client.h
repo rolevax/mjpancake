@@ -89,6 +89,7 @@ private slots:
     void heartbeat();
 
 private:
+    void clearMatchings();
     void updateStats(const QVariantList &stats);
 
 private:

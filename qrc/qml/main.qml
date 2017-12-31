@@ -11,7 +11,6 @@ Window {
     readonly property bool mobile: Qt.platform.os === "android" || Qt.platform.os === "ios"
 
     readonly property var global: {
-        "version": "v" + PGlobal.version,
         "window": window,
         "mobile": mobile,
         "windows": Qt.platform.os === "windows",
@@ -45,13 +44,16 @@ Window {
     visible: true
     width: 1207; height: 679
     color: global.color.back
-    title: (PClient.loggedIn ? PClient.user.Username + "@" : "") + "松饼麻雀 " + global.version
+    title: _getTitle()
 
     Image {
         id: background
         anchors.fill: parent
         cache: false
-        source: "image://impro/background"
+        // NOTE: if you are publishing a MOD,
+        // please make your app look clearly different from the upstream version
+        // in order to avoid any misunderstanding from the audience.
+        source: PGlobal.official ? "image://impro/background" : ""
     }
 
     SoundEffect { id: soundButton; muted: PGlobal.mute; source: "qrc:///sound/button.wav" }
@@ -104,11 +106,6 @@ Window {
                 item.startChoose(matchResult, choices);
             });
         }
-
-        onTableSeatRecved: {
-            //
-            //PClient.sendSeat();
-        }
     }
 
     function pushScene(name, onPushed) {
@@ -128,5 +125,13 @@ Window {
         var bak = background.source;
         background.source = "";
         background.source = bak;
+    }
+
+    function _getTitle() {
+        if (PGlobal.official) {
+            return (PClient.loggedIn ? PClient.user.Username + "@" : "") + "松饼麻雀 " + PGlobal.version;
+        } else {
+            return "松饼麻雀 第三方修改版";
+        }
     }
 }
