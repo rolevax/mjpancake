@@ -9,6 +9,7 @@ Rectangle {
     id: frame
 
     property var choices: null
+    property var foodCosts: null
     property bool _buttonVisible: true
     property int _girlIndex: -1
 
@@ -18,21 +19,31 @@ Rectangle {
     color: global.color.back
     visible: false
 
-    Column {
+    Row {
         id: mainRow
-        // FUCK change to row of photos
         anchors.centerIn: parent
         spacing: global.size.space
-        width: 0.3 * frame.height
 
         Repeater {
             model: 3
-            delegate: Buzzon {
-                anchors.horizontalCenter: parent.horizontalCenter
-                textLength: 8
-                text: choices ? Names.names[choices[index]] : ""
+            delegate: Column {
                 visible: _buttonVisible
-                onClicked: { _clickChoose(index) }
+
+                Texd {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    font.pixelSize: global.size.middleFont
+                    text: choices ? Names.names[choices[index]] : ""
+                }
+
+                Buzzon {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    textLength: 8
+                    text: foodCosts ? foodCosts[index] + "零食" : ""
+                    enabled: foodCosts && (foodCosts[index] === 0 || foodCosts[index] <= PClient.user.Food)
+                    onClicked: {
+                        _clickChoose(index);
+                    }
+                }
             }
         }
     }
@@ -45,6 +56,20 @@ Rectangle {
         onFired: {
             chosen(0);
         }
+    }
+
+    Texd {
+        visible: _buttonVisible
+        anchors.horizontalCenter: mainRow.horizontalCenter
+        anchors.top: timeBar.bottom
+        text: "零食库存: " + PClient.user.Food
+    }
+
+    Texd {
+        visible: !_buttonVisible
+        anchors.centerIn: parent
+        font.pixelSize: global.size.middleFont
+        text: "记者拍照中……"
     }
 
     function _clickChoose(girlIndex) {

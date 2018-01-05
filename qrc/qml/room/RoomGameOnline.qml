@@ -17,7 +17,7 @@ Room {
         visible: false
         focus: true
         table.onClosed: {
-            room.closed();
+            areaEnd.visible = true;
         }
     }
 
@@ -25,7 +25,6 @@ Room {
         id: areaChoose
         anchors.fill: parent
         onChosen: {
-            //
             PClient.sendTableChoose(girlIndex);
         }
     }
@@ -37,6 +36,11 @@ Room {
         onSeatClicked: {
             PClient.sendTableSeat();
         }
+    }
+
+    AreaTableEnd {
+        id: areaEnd
+        anchors.fill: parent
     }
 
     Connections {
@@ -53,11 +57,16 @@ Room {
         onTableEvent: {
             areaStage.visible = false;
         }
+
+        onTableEndRecved: {
+            areaEnd.foodChanges = foodChanges;
+        }
     }
 
-    function startChoose(matchResult, choices) {
+    function startChoose(matchResult, choices, foodCosts) {
         room.users = matchResult.Users;
         areaChoose.choices = choices;
+        areaChoose.foodCosts = foodCosts;
         areaChoose.splash();
     }
 }

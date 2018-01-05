@@ -103,7 +103,7 @@ Window {
 
         onTableInitRecved: {
             pushScene("room/RoomGameOnline", function(item) {
-                item.startChoose(matchResult, choices);
+                item.startChoose(matchResult, choices, foodCosts);
             });
         }
     }

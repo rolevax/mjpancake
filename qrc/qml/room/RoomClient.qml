@@ -24,9 +24,17 @@ Room {
             spacing: global.size.gap
             anchors.centerIn: parent
 
-            Texd {
+            Row {
                 anchors.horizontalCenter: parent.horizontalCenter
-                text: "在线: " + PClient.connCt + " 桌子: -"
+                spacing: global.size.gap
+
+                Texd {
+                    text: "在线人数: " + PClient.connCt
+                }
+
+                Texd {
+                    text: "对局桌数: ?"
+                }
             }
 
             Column  {

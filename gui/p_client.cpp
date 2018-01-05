@@ -318,7 +318,8 @@ void PClient::onJsonReceived(const QJsonObject &msg)
 
         QJsonObject match = msg["MatchResult"].toObject();
         QJsonArray choices = msg["Choices"].toArray();
-        emit tableInitRecved(match.toVariantMap(), choices.toVariantList());
+        QJsonArray foodCosts = msg["FoodCosts"].toArray();
+        emit tableInitRecved(match.toVariantMap(), choices.toVariantList(), foodCosts.toVariantList());
         clearMatchings();
     } else if (type == "table-seat") {
         QJsonArray girlIds = msg["Gids"].toArray();
@@ -330,6 +331,9 @@ void PClient::onJsonReceived(const QJsonObject &msg)
         emit resumeIn();
     } else if (type == "table-event") {
         recvTableEvent(msg);
+    } else if (type == "table-end") {
+        QJsonArray foodChanges = msg["FoodChanges"].toArray();
+        emit tableEndRecved(foodChanges.toVariantList());
     } else if (type == "update-user") {
         mUser = msg["User"].toObject().toVariantMap();
         emit userChanged();

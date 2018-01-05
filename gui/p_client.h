@@ -64,8 +64,10 @@ signals:
     void remoteClosed();
     void connError();
     void authFailIn(const QString &reason);
-    void tableInitRecved(const QVariantMap &matchResult, const QVariantList &choices);
+    void tableInitRecved(const QVariantMap &matchResult,
+                         const QVariantList &choices, const QVariantList &foodCosts);
     void tableSeatRecved(const QVariantList &girlIds, int tempDealer);
+    void tableEndRecved(const QVariantList &foodChanges);
     void resumeIn();
     void replayListIn(const QVariantList &replayIds);
     void replayIn(int replayId, const QString &replayJson);

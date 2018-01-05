@@ -26,6 +26,6 @@ Row {
     Texd {
         anchors.verticalCenter: parent.verticalCenter
         font.pixelSize: global.size.middleFont
-        text: [ "零缺四", "一缺三", "二缺二", "三缺一" ][PClient.matchWaits[ruleId]]
+        text: [ "新鲜桌", "一缺三", "二缺二", "三缺一" ][PClient.matchWaits[ruleId]]
     }
 }

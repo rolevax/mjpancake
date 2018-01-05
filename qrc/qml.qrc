@@ -78,5 +78,6 @@
         <file>qml/room/RoomNetError.qml</file>
         <file>qml/room/RoomParse.qml</file>
         <file>qml/room/RoomGameOnline.qml</file>
+        <file>qml/area/AreaTableEnd.qml</file>
     </qresource>
 </RCC>
