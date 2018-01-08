@@ -67,7 +67,7 @@ signals:
     void tableInitRecved(const QVariantMap &matchResult,
                          const QVariantList &choices, const QVariantList &foodCosts);
     void tableSeatRecved(const QVariantList &girlIds, int tempDealer);
-    void tableEndRecved(const QVariantList &foodChanges);
+    void tableEndRecved(bool abortive, const QVariantList &foodChanges);
     void resumeIn();
     void replayListIn(const QVariantList &replayIds);
     void replayIn(int replayId, const QString &replayJson);

@@ -332,8 +332,9 @@ void PClient::onJsonReceived(const QJsonObject &msg)
     } else if (type == "table-event") {
         recvTableEvent(msg);
     } else if (type == "table-end") {
+        bool abortive = msg["Abortive"].toBool();
         QJsonArray foodChanges = msg["FoodChanges"].toArray();
-        emit tableEndRecved(foodChanges.toVariantList());
+        emit tableEndRecved(abortive, foodChanges.toVariantList());
     } else if (type == "update-user") {
         mUser = msg["User"].toObject().toVariantMap();
         emit userChanged();

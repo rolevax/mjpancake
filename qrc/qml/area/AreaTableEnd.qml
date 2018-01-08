@@ -8,6 +8,13 @@ Rectangle {
     visible: false
     color: global.color.back
 
+    MouseArea { // block click
+        anchors.fill: parent
+        onClicked: {
+            mouse.accepted = true;
+        }
+    }
+
     Texd {
         visible: !foodChanges || foodChanges.length == 0
         anchors.centerIn: parent

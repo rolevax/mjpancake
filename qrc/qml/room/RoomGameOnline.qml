@@ -59,6 +59,10 @@ Room {
         }
 
         onTableEndRecved: {
+            if (abortive) {
+                areaEnd.visible = true;
+            }
+
             areaEnd.foodChanges = foodChanges;
         }
     }
