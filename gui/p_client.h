@@ -27,7 +27,7 @@ public:
     Q_PROPERTY(int connCt READ connCt NOTIFY lookedAround)
     Q_PROPERTY(QVariantList matchWaits READ matchWaits NOTIFY lookedAround)
     Q_PROPERTY(QVariantList matchings READ matchings NOTIFY matchingsChanged)
-    Q_PROPERTY(bool hasBooking READ hasBooking NOTIFY matchingsChanged)
+    Q_PROPERTY(bool hasMatching READ hasMatching NOTIFY matchingsChanged)
     Q_PROPERTY(int lastNonce READ lastNonce NOTIFY lastNonceChanged)
     Q_PROPERTY(QVariantList water READ water NOTIFY lookedAround)
 
@@ -56,7 +56,7 @@ public:
     int connCt() const;
     QVariantList matchWaits() const;
     QVariantList matchings() const;
-    bool hasBooking() const;
+    bool hasMatching() const;
     int lastNonce() const;
     QVariantList water() const;
 

@@ -65,6 +65,24 @@ Room {
                 }
             }
         }
+
+        Texd {
+            visible: PClient.hasMatching;
+            anchors.bottom: parent.border
+            anchors.right: parent.right
+            anchors.margins: global.size.space
+            text: "取消预约"
+            color: "blue"
+            font.underline: true
+            font.pixelSize: global.size.smallFont
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    PClient.sendMatchCancel();
+                }
+            }
+        }
     }
 
     Timer {

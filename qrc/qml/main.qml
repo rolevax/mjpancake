@@ -77,8 +77,35 @@ Window {
         }
 
         onStatusChanged: {
+            // deprecated, now there won't be error in login page
             if (status == Loader.Error && (source == "qrc:/qml/room/RoomLogin.qml")) {
                 setSource("room/RoomNetError.qml");
+            }
+        }
+    }
+
+    Buzzon {
+        id: bookingButton
+        textLength: 8
+        anchors.margins: global.size.space
+        anchors.right: parent.right
+        anchors.top: parent.top
+        visible: PClient.hasMatching
+        text: "预约中 " + _formatElapse(bookTimer.elapse)
+
+        Timer {
+            id: bookTimer
+            property int elapse: 0
+            interval: 1000
+            repeat: true
+            running: bookingButton.visible
+            onTriggered: {
+                elapse++;
+            }
+            onRunningChanged: {
+                if (!running) {
+                    elapse = 0;
+                }
             }
         }
     }
@@ -133,5 +160,11 @@ Window {
         } else {
             return "松饼麻雀 第三方修改版";
         }
+    }
+
+    function _formatElapse(elapse) {
+        var date = new Date(null);
+        date.setSeconds(elapse);
+        return date.toISOString().substr(14, 5);
     }
 }

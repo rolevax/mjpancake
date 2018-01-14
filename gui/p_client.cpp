@@ -199,7 +199,7 @@ QVariantList PClient::matchings() const
     return mMatchings;
 }
 
-bool PClient::hasBooking() const
+bool PClient::hasMatching() const
 {
     for (auto v : mMatchings)
         if (v.toBool())
