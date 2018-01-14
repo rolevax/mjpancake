@@ -140,10 +140,12 @@ Item {
             case PTable.Barked:
                 cb = function() {
                     shockers.itemAt(args.who).shock(args.actStr);
-                    if (args.who === 0)
+                    if (args.who === 0) {
                         playerControl.bark(args.bark, args.spin);
-                    else
+                    } else {
                         oppoControls.itemAt(args.who - 1).bark(args.bark, args.spin);
+                        playerControl.fixBarkFailureIfAny();
+                    }
                     if (args.fromWhom >= 0)
                         rivers.itemAt(args.fromWhom).sub();
                 };
@@ -152,6 +154,7 @@ Item {
                 cb = function() {
                     endRound(args.result, args.openers, args.gunner,
                              args.hands, args.forms, args.urids);
+                    playerControl.fixBarkFailureIfAny();
                 };
                 // extra duration to delay point change animation
                 duration = 200;

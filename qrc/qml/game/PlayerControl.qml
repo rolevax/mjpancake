@@ -24,6 +24,8 @@ Item {
     property bool _canSpinRiichi: false
     property bool _canPass: false
     property string _actBark: ""
+    property var _outModel: null
+    property int _outPos
 
     ActionButtonBar {
         id: actionButtons
@@ -374,6 +376,13 @@ Item {
 
     // called only by self and set-background-demo
     function swapOut(outPos) {
+        // backup for fixBarkFailureIfAny()
+        _outModel = {
+            modelTileStr: handModel.get(outPos).modelTileStr ,
+            modelFloatAct: ""
+        };
+        _outPos = outPos;
+
         outCoord = mapFromItem(frame, outPos * twb, 0);
         handModel.remove(outPos, 1);
         if (drawn.visible)
@@ -587,6 +596,14 @@ Item {
         // mainly handle auto-spin after riichi
         if (drawn.visible)
             _spinOut();
+    }
+
+    // fix mis-discard when bark failed by other player's
+    // ron or bark of higher priority
+    function fixBarkFailureIfAny() {
+        if (handModel.count % 3 !== 1) {
+            handModel.insert(_outPos, _outModel);
+        }
     }
 } // end of Item
 
