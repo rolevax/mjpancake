@@ -705,13 +705,14 @@ Item {
     }
 
     function reset() {
+        deactivate();
         _handleTableEventCleaned();
         animBuf.clear();
 
         mount.visible = false;
         middle.reset();
         setGirlIds([ -1, -1, -1, -1]);
-        setUsers([ null, null, null, null]);
+        setUsers([ null, null, null, null  ]);
         for (var i = 0; i < 4; i++)
             photos[i].removeBars();
     }

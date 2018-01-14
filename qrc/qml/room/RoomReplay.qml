@@ -123,6 +123,10 @@ Room {
                 text: pReplay.loadedAppVersion + "@" + pReplay.loadedLibVersion
             }
         }
+
+        table.onClosed: {
+            game.visible = false;
+        }
     }
 
     MouseArea {
@@ -166,7 +170,9 @@ Room {
         Buzzon {
             text: "已阅"
             smallFont: true
-            onClicked: { game.visible = false; }
+            onClicked: {
+                game.visible = false;
+            }
         }
 
         GomboMenu {
