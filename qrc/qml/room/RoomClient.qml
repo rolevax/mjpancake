@@ -7,13 +7,9 @@ import "../game"
 Room {
     id: room
 
-    property bool _playing: false
-
     backButtonZ: 10
-    showReturnButton: !_playing
 
     Rectangle {
-        visible: !_playing
         anchors.centerIn: parent
         color: global.color.back
         height: areaBook.height + 2 * global.size.gap
@@ -24,7 +20,14 @@ Room {
             spacing: global.size.gap
             anchors.centerIn: parent
 
+            Texd {
+                visible: !areaBookRows.visible
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: "开服时间: 每周八 19:30 ~ 21:30"
+            }
+
             Row {
+                visible: areaBookRows.visible
                 anchors.horizontalCenter: parent.horizontalCenter
                 spacing: global.size.gap
 
@@ -38,6 +41,8 @@ Room {
             }
 
             Column  {
+                id: areaBookRows
+                visible: PClient.duringMatchTime()
                 anchors.horizontalCenter: parent.horizontalCenter
                 spacing: global.size.space
                 Repeater {
@@ -68,7 +73,7 @@ Room {
 
         Texd {
             visible: PClient.hasMatching;
-            anchors.bottom: parent.border
+            anchors.top: parent.top
             anchors.right: parent.right
             anchors.margins: global.size.space
             text: "取消预约"
@@ -88,21 +93,18 @@ Room {
     Timer {
         interval: 5000
         repeat: true
-        running: !_playing
+        running: areaBookRows.visible
         triggeredOnStart: true
         onTriggered: {
             PClient.lookAround();
         }
     }
 
-    Connections {
-        target: PClient
-
-        onTableInitRecved: {
-            // historical, useless now, remove someday
-            // as RoomGameOnline is pushed when start,
-            // this room is unloaded totally then
-            _playing = true;
+    // backdoor for overtime play
+    Shortcut {
+        sequence: "F8"
+        onActivated: {
+            areaBookRows.visible = true;
         }
     }
 

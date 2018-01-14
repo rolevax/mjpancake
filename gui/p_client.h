@@ -33,6 +33,8 @@ public:
 
     static PClient &instance();
 
+    Q_INVOKABLE bool duringMatchTime();
+
     Q_INVOKABLE void login(const QString &username, const QString &password);
     Q_INVOKABLE void logout();
     Q_INVOKABLE void lookAround();

@@ -3,6 +3,7 @@
 
 #include "libsaki/util/misc.h"
 
+#include <QDateTime>
 #include <QStringList>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -38,6 +39,18 @@ PClient::PClient(QObject *parent) : QObject(parent)
 PClient &PClient::instance()
 {
     return *sInstance;
+}
+
+bool PClient::duringMatchTime()
+{
+    QDateTime dt = QDateTime::currentDateTimeUtc();
+    int dayOfWeek = dt.date().dayOfWeek();
+    QTime time = dt.time();
+    QTime begin(11, 30);
+    QTime end(13, 30);
+
+    // Monday 19:30 ~ 21:30 CST
+    return dayOfWeek == 1 && begin <= time && time < end;
 }
 
 void PClient::login(const QString &username, const QString &password)
