@@ -47,7 +47,7 @@ Room {
         target: PClient
 
         onTableSeatRecved: {
-            game.startOnline(PClient, girlIds, room.users, tempDealer);
+            game.startOnline(girlIds, room.users, tempDealer);
             game.visible = true;
             areaChoose.visible = false;
             areaStage.girlIds = girlIds;
@@ -72,6 +72,11 @@ Room {
         areaChoose.choices = choices;
         areaChoose.foodCosts = foodCosts;
         areaChoose.splash();
+    }
+
+    function startResume() {
+        game.startResume();
+        game.visible = true;
     }
 }
 

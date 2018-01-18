@@ -2,7 +2,7 @@
 #include "p_port.h"
 
 #include "libsaki/form/form_gb.h"
-#include "libsaki/girl/girls_rinkai.h"
+#include "libsaki/girl/rinkai_huiyu.h"
 #include "libsaki/util/misc.h"
 
 
@@ -27,7 +27,7 @@ void PEffGb::deal()
     mMount.initFill(mRand, init, exist);
     mHand = Hand(init);
 
-    emit dealt(createTilesVar(mHand.closed()));
+    emit dealt(createTilesVar(mHand.closed().t37s13(true).range()));
     draw();
 }
 
@@ -80,7 +80,7 @@ void PEffGb::draw()
     if (mSkill)
         Huiyu::skill(mMount, mHand, mFormCtx);
 
-    mHand.draw(mMount.wallPop(mRand));
+    mHand.draw(mMount.pop(mRand));
     emit drawn(createTileVar(mHand.drawn()));
 
     mFormCtx.emptyMount = mTurn == 27;

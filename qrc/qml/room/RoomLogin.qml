@@ -111,8 +111,17 @@ Room {
         target: PClient
 
         onUserChanged: {
+            // cannot directly find by 'global' after pushed scene somehow
+            var globalRef = global;
+
             if (PClient.loggedIn)
                 global.pushScene("room/RoomMainMenu");
+
+            if (resume) {
+                globalRef.pushScene("room/RoomGameOnline", function(item) {
+                    item.startResume();
+                });
+            }
         }
     }
 }

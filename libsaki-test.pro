@@ -39,6 +39,7 @@ SOURCES += main_test.cpp \
     libsaki/table/princess.cpp \
     libsaki/table/table.cpp \
     libsaki/table/table_env_stub.cpp \
+    libsaki/table/table_tester.cpp \
     libsaki/table/table_view_hand.cpp \
     libsaki/table/table_view_real.cpp \
     libsaki/test/test.cpp \
@@ -92,9 +93,9 @@ HEADERS += \
     libsaki/table/table.h \
     libsaki/table/table_focus.h \
     libsaki/table/table_observer.h \
-    libsaki/table/table_operator.h \
     libsaki/table/table_view.h \
     libsaki/table/table_env_stub.h \
+    libsaki/table/table_tester.h \
     libsaki/table/table_view_hand.h \
     libsaki/table/table_view_real.h \
     libsaki/test/test.h \

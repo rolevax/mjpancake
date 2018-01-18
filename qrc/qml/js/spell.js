@@ -133,32 +133,19 @@ function logtr(str) {
     return str;
 }
 
-function skilltr(str) {
+function irsCheckTr(name, index) {
     var dict = {
-        SUMIRE_A: "射贯",
-        SUMIRE_A_R: "下家",
-        SUMIRE_A_C: "对面",
-        SUMIRE_A_L: "上家",
-        AWAI_DABURI: "☆☆☆☆☆☆",
-        KASUMI_ZIM: "降神",
-        SAWAYA_C_BLUE: "青云",
-        SAWAYA_C_YELLOW: "黄云",
-        SAWAYA_C_RED: "赤云",
-        SAWAYA_C_RED_SELF: "自",
-        SAWAYA_C_RED_RIVALS: "他",
-        SAWAYA_C_WHITE: "白云",
-        SAWAYA_C_BLACK: "黑云",
-        SAWAYA_K_PA_KOR: "瘟神威 PA KOR",
-        SAWAYA_K_PA_KOR_R: "下家",
-        SAWAYA_K_PA_KOR_C: "对面",
-        SAWAYA_K_PA_KOR_L: "上家",
-        SAWAYA_K_AT_KOR: "海神威 AT KOR",
-        SAWAYA_K_HOYAW: "蛇神威 HOYAW",
-        SAWAYA_K_HURI: "鸟神威 HURI",
-        SAWAYA_K_PAWCI: "淫神威 PAWCI",
+        SUMIRE: ["射贯", "下家", "对面", "上家" ],
+        AWAI: [ "☆☆☆☆☆☆" ],
+        KASUMI: [ "降神" ],
+        SAWAYA_CLOUD: [ "青云", "黄云", "赤云", "自", "他", "白云", "黑云" ],
+        SAWAYA_KAMUY: [
+            "瘟神威 PA KOR", "下家", "对面", "上家",
+            "海神威 AT KOR", "蛇神威 HOYAW", "鸟神威 HURI", "淫神威 PAWCI"
+        ]
     };
 
-    return dict[str] ? dict[str] : str;
+    return dict[name] && dict[name][index] ? dict[name][index] : "未命名能力";
 }
 
 function fantr(fans) {

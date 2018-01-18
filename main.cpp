@@ -24,6 +24,7 @@ int main(int argc, char *argv[])
     const QByteArray loopName = qgetenv("QSG_RENDER_LOOP");
     if (loopName.isEmpty())
         putenv("QSG_RENDER_LOOP=basic");
+
 #endif
 
     QApplication app(argc, argv);
@@ -33,8 +34,6 @@ int main(int argc, char *argv[])
 
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
     QTextCodec::setCodecForLocale(codec);
-
-    qRegisterMetaType<PTable::Event>();
 
     QQmlApplicationEngine engine;
     engine.addImageProvider(QString("impro"), new PImageProvider);

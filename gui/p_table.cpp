@@ -60,19 +60,18 @@ void PTable::startLocal(const QVariant &girlIdsVar, const QVariant &gameRule,
     table->start(girlIdsVar, gameRule, tempDealer);
 }
 
-void PTable::startOnline(PClient *client)
+void PTable::startOnline()
 {
-    assert(client != nullptr);
-
     clearLogicFeeds();
     mOnline = true;
 
-    connect(this, &PTable::action, client, &PClient::action);
-    connect(client, &PClient::tableEvent, this, &PTable::tableEvent);
+    connect(this, &PTable::action, &PClient::instance(), &PClient::action);
+    connect(&PClient::instance(), &PClient::tableEvent, this, &PTable::tableEvent);
 }
 
 void PTable::startSample()
 {
+    /*
     clearLogicFeeds();
     mOnline = false;
 
@@ -185,7 +184,7 @@ void PTable::startSample()
     emit tableEvent(Barked, args3);
     emit tableEvent(Flipped, QVariantMap { { "newIndic", "2f" } });
     emit tableEvent(Drawn, QVariantMap { { "who", 0 }, { "tile", "0p" }, { "rinshan", true } });
-}
+    */}
 
 bool PTable::online() const
 {

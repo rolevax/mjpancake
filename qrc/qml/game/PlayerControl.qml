@@ -548,6 +548,7 @@ Item {
 
     function setBarks(barks) {
         barksModel.clear();
+
         for (var i = 0; i < barks.length; i++) {
             var barkModel = {
                 modelMeld: barks[i],

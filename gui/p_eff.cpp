@@ -85,7 +85,8 @@ void PEff::deal()
     mHand = Hand(init);
     mMount.flipIndic(mRand);
 
-    emit dealt(createTilesVar(mHand.closed()), createTileVar(mMount.getDrids().back()));
+    emit dealt(createTilesVar(mHand.closed().t37s13(true).range()),
+               createTileVar(mMount.getDrids().back()));
     draw();
 }
 
@@ -179,7 +180,7 @@ void PEff::draw()
         return;
     }
 
-    mHand.draw(mMount.wallPop(mRand));
+    mHand.draw(mMount.pop(mRand));
     emit drawn(createTileVar(mHand.drawn()));
 
     mFormCtx.emptyMount = mTurn == 27;

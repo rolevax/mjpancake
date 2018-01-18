@@ -28,7 +28,6 @@ public:
     Q_PROPERTY(QVariantList matchWaits READ matchWaits NOTIFY lookedAround)
     Q_PROPERTY(QVariantList matchings READ matchings NOTIFY matchingsChanged)
     Q_PROPERTY(bool hasMatching READ hasMatching NOTIFY matchingsChanged)
-    Q_PROPERTY(int lastNonce READ lastNonce NOTIFY lastNonceChanged)
     Q_PROPERTY(QVariantList water READ water NOTIFY lookedAround)
 
     static PClient &instance();
@@ -59,7 +58,6 @@ public:
     QVariantList matchWaits() const;
     QVariantList matchings() const;
     bool hasMatching() const;
-    int lastNonce() const;
     QVariantList water() const;
 
 signals:
@@ -70,23 +68,20 @@ signals:
                          const QVariantList &choices, const QVariantList &foodCosts);
     void tableSeatRecved(const QVariantList &girlIds, int tempDealer);
     void tableEndRecved(bool abortive, const QVariantList &foodChanges);
-    void resumeIn();
     void replayListIn(const QVariantList &replayIds);
     void replayIn(int replayId, const QString &replayJson);
 
-    void userChanged();
+    void userChanged(bool resume = false);
     void statsChanged();
     void lookedAround();
-    void lastNonceChanged();
     void matchingsChanged();
 
-    void tableEvent(PTable::Event type, const QVariantMap &args);
+    void tableEvent(const QString &type, const QVariantMap &args);
 
 public slots:
-    void action(const QString &actStr, int actArg, const QString &actTile);
+    void action(const QString &actStr, int actArg, const QString &actTile, int nonce);
 
 private slots:
-    static PTable::Event eventOf(const QString &event);
     void onRemoteClosed();
     void onJsonReceived(const QJsonObject &msg);
     void recvTableEvent(const QJsonObject &msg);

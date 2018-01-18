@@ -211,6 +211,7 @@ Item {
     }
 
     function activate(action) {
+        resultWindow.visible = true;
         nextRoundButton.visible = !!action.NEXT_ROUND;
         endTableButton.visible = !!action.END_TABLE;
     }

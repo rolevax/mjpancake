@@ -133,12 +133,7 @@ void PClient::sendTableChoose(int girlIndex)
 
 void PClient::sendResume()
 {
-    QJsonObject req;
-    req["Type"] = "action";
-    req["ActStr"] = "RESUME";
-    req["ActArg"] = "-1";
-    req["Nonce"] = 0;
-    mSocket.send(req);
+    action("RESUME", -1, "", 0);
 }
 
 void PClient::getReplayList()
@@ -221,21 +216,16 @@ bool PClient::hasMatching() const
     return false;
 }
 
-int PClient::lastNonce() const
-{
-    return mLastNonce;
-}
-
 QVariantList PClient::water() const
 {
     return mWater;
 }
 
-void PClient::action(const QString &actStr, int actArg, const QString &actTile)
+void PClient::action(const QString &actStr, int actArg, const QString &actTile, int nonce)
 {
     QJsonObject req;
     req["Type"] = "table-action";
-    req["Nonce"] = mLastNonce;
+    req["Nonce"] = nonce;
     req["ActStr"] = actStr;
     if (actArg != -1)
         req["ActArg"] = actArg;
@@ -244,52 +234,6 @@ void PClient::action(const QString &actStr, int actArg, const QString &actTile)
         req["ActTile"] = actTile;
 
     mSocket.send(req);
-}
-
-PTable::Event PClient::eventOf(const QString &event)
-{
-    PTable::Event type;
-
-    if (event == "first-dealer-choosen")
-        type = PTable::FirstDealerChoosen;
-    else if (event == "round-started")
-        type = PTable::RoundStarted;
-    else if (event == "cleaned")
-        type = PTable::Cleaned;
-    else if (event == "diced")
-        type = PTable::Diced;
-    else if (event == "dealt")
-        type = PTable::Dealt;
-    else if (event == "flipped")
-        type = PTable::Flipped;
-    else if (event == "drawn")
-        type = PTable::Drawn;
-    else if (event == "discarded")
-        type = PTable::Discarded;
-    else if (event == "riichi-called")
-        type = PTable::RiichiCalled;
-    else if (event == "riichi-established")
-        type = PTable::RiichiEstablished;
-    else if (event == "barked")
-        type = PTable::Barked;
-    else if (event == "round-ended")
-        type = PTable::RoundEnded;
-    else if (event == "points-changed")
-        type = PTable::PointsChanged;
-    else if (event == "table-ended")
-        type = PTable::TableEnded;
-    else if (event == "popped-up")
-        type = PTable::PoppedUp;
-    else if (event == "activated")
-        type = PTable::Activated;
-    else if (event == "deactivated")
-        type = PTable::Deactivated;
-    else if (event == "resume")
-        type = PTable::Resume;
-    else
-        Q_UNREACHABLE();
-
-    return type;
 }
 
 void PClient::onRemoteClosed()
@@ -310,7 +254,8 @@ void PClient::onJsonReceived(const QJsonObject &msg)
         QString error = msg["Error"].toString();
         if (error.isEmpty()) {
             mUser = msg["User"].toObject().toVariantMap();
-            emit userChanged();
+            bool resume = msg["Resume"].toBool();
+            emit userChanged(resume);
             updateStats(msg["Stats"].toArray().toVariantList());
         } else {
             mUser.clear();
@@ -326,9 +271,6 @@ void PClient::onJsonReceived(const QJsonObject &msg)
         // TODO notify from background by Android service + Qt Remote Object
         // PGlobal::systemNotify();
 
-        mLastNonce = 0;
-        emit lastNonceChanged();
-
         QJsonObject match = msg["MatchResult"].toObject();
         QJsonArray choices = msg["Choices"].toArray();
         QJsonArray foodCosts = msg["FoodCosts"].toArray();
@@ -338,10 +280,6 @@ void PClient::onJsonReceived(const QJsonObject &msg)
         QJsonArray girlIds = msg["Gids"].toArray();
         int tempDealer = msg["TempDealer"].toInt();
         emit tableSeatRecved(girlIds.toVariantList(), tempDealer);
-    } else if (type == "resume") {
-        mLastNonce = 0;
-        emit lastNonceChanged();
-        emit resumeIn();
     } else if (type == "table-event") {
         recvTableEvent(msg);
     } else if (type == "table-end") {
@@ -364,17 +302,8 @@ void PClient::onJsonReceived(const QJsonObject &msg)
 
 void PClient::recvTableEvent(const QJsonObject &msg)
 {
-    int nonce = msg["Nonce"].toInt();
-    if (nonce > mLastNonce) {
-        mLastNonce = nonce;
-        emit lastNonceChanged();
-        emit tableEvent(PTable::Deactivated, QVariantMap());
-    }
-
-    PTable::Event event = eventOf(msg["Event"].toString());
+    QString event = msg["Event"].toString();
     QVariantMap args = msg["Args"].toObject().toVariantMap();
-    if (event == PTable::Activated)
-        args["nonce"] = nonce;
 
     emit tableEvent(event, args);
 }

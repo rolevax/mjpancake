@@ -35,7 +35,7 @@ void PGen::genFuHan(int fu, int han, int selfWind, int roundWind, bool ron)
                     : Gen::genForm4FuHan(mRand, fu, han, selfWind, roundWind, mRule, ron);
 
     QVariantMap how = createFormVar(g.form.spell().c_str(), g.form.charge().c_str());
-    how["hand"] = createTilesVar(g.hand.closed());
+    how["hand"] = createTilesVar(g.hand.closed().t37s13(true).range());
     how["barks"] = createBarksVar(g.hand.barks());
     how["pick"] = createTileVar(g.pick);
 

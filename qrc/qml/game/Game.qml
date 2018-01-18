@@ -140,15 +140,26 @@ PinchArea {
         table.pTable.startPrac(girlId);
     }
 
-    function startOnline(pClient, girlIds, users, tempDealer) {
+    function startOnline(girlIds, users, tempDealer) {
         dialogOpHint.hint = "op";
 
         table.reset();
         table.setGirlIds(girlIds);
         table.setUsers(users);
         table.middle.setDealer(tempDealer, true);
+        table.hasTimeout = true;
 
-        table.pTable.startOnline(pClient);
+        table.pTable.startOnline();
+    }
+
+    function startResume() {
+        dialogOpHint.hint = "";
+
+        table.reset();
+        table.hasTimeout = true;
+
+        table.pTable.startOnline();
+        PClient.sendResume();
     }
 
     function startSample() {

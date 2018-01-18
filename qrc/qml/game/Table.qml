@@ -11,6 +11,7 @@ Item {
 
     property bool animEnabled: true
     property bool keepOpen: false
+    property bool hasTimeout: false
     property string tileSet: "std"
 
     // small tile width, height, and thickness
@@ -33,7 +34,7 @@ Item {
     property alias middle: middle // for temp-dealer showing
 
     property string _lastDiscardStr
-    property int _nonce: -1
+    property int _nonce
 
     PTable {
         id: pTable
@@ -43,15 +44,22 @@ Item {
             var duration = 0;
             var prelude = 0;
 
+            // assume activation always blocks rendering
+            // i.e. activation shall be canceled whenever rendering event arrived
+            if (type !== "activated") {
+                cb = function() { table.deactivate(); };
+                animBuf.push({ callback: cb, duration: 0, prelude: 0 });
+            }
+
             switch (type) {
-            case PTable.FirstDealerChoosen:
+            case "first-dealer-choosen":
                 cb = function() {
                     mount.dealer = args.dealer;
                     middle.setDealer(args.dealer)
                     pointBoard.initDealer = args.dealer;
                 };
                 break;
-            case PTable.RoundStarted:
+            case "round-started":
                 cb = function() {
                     middle.setRound(args.round, args.extra);
                     middle.setDealer(args.dealer);
@@ -68,17 +76,17 @@ Item {
                     colorIndex = (colorIndex + 1) % backColors.length;
                 };
                 break;
-            case PTable.Cleaned:
+            case "cleaned":
                 cb = _handleTableEventCleaned;
                 break;
-            case PTable.Diced:
+            case "diced":
                 cb = function() {
                     middle.setDice(args.die1, args.die2);
                     mount.dice = args.die1 + args.die2;
                 };
                 duration = 1600;
                 break;
-            case PTable.Dealt:
+            case "dealt":
                 var preCb = function() {
                     playerControl.deal(args.init);
                     oppoControls.itemAt(0).deal();
@@ -89,13 +97,13 @@ Item {
                 animBuf.push({ callback: preCb, duration: 1600 });
                 cb =  function() { middle.wallRemain = 70; };
                 break;
-            case PTable.Flipped:
+            case "flipped":
                 cb = function() {
                     mount.flip(args.newIndic);
                     resultWindow.doraIndic.doraIndic = mount.doraIndics;
                 };
                 break;
-            case PTable.Drawn:
+            case "drawn":
                 cb = function() {
                     middle.wallRemain--;
                     if (args.rinshan)
@@ -110,7 +118,7 @@ Item {
                 duration = 100;
                 prelude = args.rinshan ? 300 : 0;
                 break;
-            case PTable.Discarded:
+            case "discarded":
                 cb = function() {
                     var osc; // out-tile's scene coord
                     if (args.who === 0) {
@@ -130,14 +138,14 @@ Item {
                 };
                 duration = 800;
                 break;
-            case PTable.RiichiCalled:
+            case "riichi-called":
                 cb = function() { shockers.itemAt(args.who).shock("RIICHI"); };
                 break;
-            case PTable.RiichiEstablished:
+            case "riichi-established":
                 cb = function() { middle.addBar(args.who); };
                 duration = 100;
                 break;
-            case PTable.Barked:
+            case "barked":
                 cb = function() {
                     shockers.itemAt(args.who).shock(args.actStr);
                     if (args.who === 0) {
@@ -150,7 +158,7 @@ Item {
                         rivers.itemAt(args.fromWhom).sub();
                 };
                 break;
-            case PTable.RoundEnded:
+            case "round-ended":
                 cb = function() {
                     endRound(args.result, args.openers, args.gunner,
                              args.hands, args.forms, args.urids);
@@ -159,13 +167,13 @@ Item {
                 // extra duration to delay point change animation
                 duration = 200;
                 break;
-            case PTable.PointsChanged:
+            case "points-changed":
                 cb = function() {
                     middle.setPoints(args.points);
                     pointBoard.points = args.points;
                 };
                 break;
-            case PTable.TableEnded:
+            case "table-ended":
                 cb = function() {
                     resultFinal.girlIds = [ resultWindow.girlIds[args.rank[0]],
                                             resultWindow.girlIds[args.rank[1]],
@@ -178,25 +186,22 @@ Item {
                     resultFinal.visible = true;
                 };
                 break;
-            case PTable.PoppedUp:
+            case "popped-up":
                 cb = function() { logBox.log(args.str); };
                 break;
-            case PTable.Activated:
+            case "activated":
                 cb = function() {
-                    activate(args.action, args.lastDiscarder, !!args.green, args.nonce);
+                    activate(args.action, args.lastDiscarder, args.nonce);
                 };
                 break;
-            case PTable.Deactivated:
-                cb = function() { table.deactivate(); };
-                break;
-            case PTable.JustPause:
+            case "just-pause":
                 cb = function() { };
                 duration = args.ms;
                 break;
-            case PTable.JustSetOutPos:
+            case "just-set-out-pos":
                 cb = function() { playerControl.swapOut(args.outPos); };
                 break;
-            case PTable.Resume:
+            case "resume":
                 cb = function() { resume(args); };
                 duration = 1600;
                 break;
@@ -385,7 +390,11 @@ Item {
         z: 3
         width: (table.width + 13 * twb) / 2;
         height: table.thb
-        onActionTriggered: { table.action(actStr, actArg, actTile); }
+        onActionTriggered: {
+            if (photos[0].girlId === 712611 && actStr === "IRS_CLICK")
+                table.green.visible = !table.green.visible;
+            table.action(actStr, actArg, actTile);
+        }
     }
 
     TimeBar {
@@ -393,7 +402,7 @@ Item {
         width: table.width
         anchors.top: playerControl.bottom
         onFired: {
-            table.action("SWEEP", "-1");
+            table.action("SWEEP", -1, "");
         }
     }
 
@@ -446,8 +455,7 @@ Item {
         timeBar.cancel();
         table.deactivate();
 
-        if (table._nonce < 0 || table._nonce === PClient.lastNonce)
-            pTable.action(actStr, actArg, actTile);
+        pTable.action(actStr, actArg, actTile, _nonce);
     }
 
     function setGirlIds(girlIds) {
@@ -468,16 +476,13 @@ Item {
         playerControl.easyPass();
     }
 
-    function activate(action, lastDiscarder, green, nonce) {
-        if (nonce >= 0) {
-            table._nonce = nonce;
-            if (nonce !== PClient.lastNonce)
-                return;
+    function activate(action, lastDiscarder, nonce) {
+        table._nonce = nonce;
+
+        if (table.hasTimeout)
             timeBar.timeDown();
-        }
 
         PGlobal.forceImmersive();
-        table.green.visible = green;
 
         if (action.END_TABLE || action.NEXT_ROUND) {
             resultWindow.activate(action);

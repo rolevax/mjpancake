@@ -8,6 +8,7 @@ Rectangle {
     signal actionTriggered(int mask)
 
     property int fontSize
+    property string _irsCheckName
 
     color: "#AA000000"
     width: fontSize * 12
@@ -53,7 +54,7 @@ Rectangle {
 
                 Texd {
                     color: "white"
-                    text: Spell.skilltr(modelText)
+                    text: Spell.irsCheckTr(_irsCheckName, index)
                     font.pixelSize: fontSize
                     anchors.verticalCenter: parent.verticalCenter
                 }
@@ -124,10 +125,12 @@ Rectangle {
     }
 
     function activate(action) {
-        var list = action.IRS_CHECK;
+        var args = action.IRS_CHECK;
+
+        _irsCheckName = args.name;
         listModel.clear();
-        for (var i = 0; i < list.length; i++)
-            listModel.append(list[i]);
+        for (var i = 0; i < args.items.length; i++)
+            listModel.append(args.items[i]);
 
         frame.visible = true;
     }

@@ -25,7 +25,7 @@ public:
     void setSkill(bool v);
 
 signals:
-    void dealt(const QStringList &init);
+    void dealt(const QVariant &init);
     void drawn(const QVariant &tile);
     void anganged(const QVariant &bark, bool spin);
     void activated(const QVariantMap &actions);
