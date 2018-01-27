@@ -11,7 +11,7 @@
 
 
 #ifdef NDEBUG
-const char *SRV_ADDR = "118.89.219.207";
+const char *SRV_ADDR = "cn.rolevax.xyz";
 #else
 const char *SRV_ADDR = "127.0.0.1";
 #endif

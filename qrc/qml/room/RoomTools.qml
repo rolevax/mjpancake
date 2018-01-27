@@ -10,8 +10,8 @@ Room {
 
         Repeater  {
             model: [
-                { text: "牌谱", room: "Replay" },
                 { text: "单机桌", room: "GameFree" },
+                { text: "牌谱", room: "Replay" },
                 { text: "牌效练习", room: "Eff" },
                 { text: "手役生成器", room: "Gen" },
                 { text: "牌形分解器", room: "Parse" },

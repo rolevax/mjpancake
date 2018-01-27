@@ -11,7 +11,7 @@ Room {
 
         Buxxon {
             text: "踩地板"
-            textLength: 16
+            textLength: 14
             enabled: PClient.loggedIn
             onClicked: {
                 global.pushScene("room/RoomClient");
@@ -35,7 +35,7 @@ Room {
 
                     delegate: Buxxon {
                         text: modelData.text
-                        textLength: 8
+                        textLength: 7
                         onClicked: {
                             global.pushScene("room/Room" + modelData.load);
                         }
@@ -44,7 +44,7 @@ Room {
 
                 Buxxon {
                     text: "骑马"
-                    textLength: 8
+                    textLength: 7
                     onClicked: { Qt.quit(); }
                 }
             }

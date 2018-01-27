@@ -5,18 +5,18 @@ import "../widget"
 
 Room {
     readonly property var _contributors: [
+        "汐羽",
         "如画江山",
         "ethan",
         "皋月",
+        "karkimira",
         "TSD",
         "sakisan",
-        "汐羽",
+        "TerryHu",
         "瑞原 はやり",
         "Mikyu",
         "喵打",
-        "TerryHu",
         "银",
-        "karkimira",
         "Paper",
         "chaseyun",
         "宅炮",
