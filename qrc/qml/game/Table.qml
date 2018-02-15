@@ -109,8 +109,13 @@ Item {
                 };
                 duration = 100;
                 prelude = args.rinshan ? 300 : 0;
-                if(Math.random()<0.10)
-                    prelude+=1200*Math.random();
+                if(args.who!=0&&!args.rinshan)
+                {
+                   if(Math.random()<0.1)
+                       break;
+                   prelude+=Math.floor(300+1200*Math.random());
+                   console.log(prelude);
+                }
                 break;
             case PTable.Discarded:
                 cb = function() {
