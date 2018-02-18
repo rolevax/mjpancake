@@ -109,8 +109,15 @@ Item {
                 };
                 duration = 100;
                 prelude = args.rinshan ? 300 : 0;
-                if (!args.rinshan && Math.floor(Math.random()) > 0.1)
-                   prelude += 300 + 1200 * Math.floor(Math.random());
+                if (!args.rinshan && Math.floor(Math.random() * 100) < 10) {
+                    var sum = 0;
+                   for (var i = 0;i <= 3;i++)
+                   {
+                       sum += rivers.itemAt(i).count;
+                   }
+                   if (sum != 0)
+                   prelude += 300 + Math.floor(1200 * Math.random());
+                }
                 break;
             case PTable.Discarded:
                 cb = function() {
