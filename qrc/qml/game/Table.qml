@@ -111,8 +111,7 @@ Item {
                 prelude = args.rinshan ? 300 : 0;
                 if (!args.rinshan && Math.floor(Math.random() * 100) < 10) {
                     var sum = 0;
-                    for (var i = 0;i <= 3;i++)
-                    {
+                    for (var i = 0; i <= 3; i++) {
                         sum += rivers.itemAt(i).count;
                     }
                     if (sum != 0)
