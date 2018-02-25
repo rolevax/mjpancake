@@ -115,7 +115,7 @@ Item {
                         sum += rivers.itemAt(i).count;
                     }
                     if (sum != 0)
-                    prelude += 300 + Math.floor(1200 * Math.random());
+                        prelude += 300 + Math.floor(1200 * Math.random());
                 }
                 break;
             case PTable.Discarded:
