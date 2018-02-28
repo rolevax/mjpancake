@@ -5,16 +5,16 @@ dist: trusty
 
 before_install:
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-  - sudo add-apt-repository --yes ppa:beineri/opt-qt592-trusty
+  - sudo add-apt-repository --yes ppa:beineri/opt-qt-5.10.1-trusty
   - sudo apt-get update -qq
 
 install:
   - sudo apt-get -y install -qq g++-7
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 90
-  - sudo apt-get -y install qt59-meta-full
+  - sudo apt-get -y install qt510-meta-full
 
 script:
-  - source /opt/qt59/bin/qt59-env.sh
-  - /opt/qt59/bin/qmake -config release mjpancake.pro
+  - source /opt/qt510/bin/qt510-env.sh
+  - /opt/qt510/bin/qmake -config release mjpancake.pro
   - make
 
