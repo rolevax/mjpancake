@@ -3,6 +3,9 @@ import QtQuick 2.7
 Item {
     id: frame
 
+    property int hiddenDuration: 5000
+    property int shownDuration: 5000
+
     signal fired
 
     // width set by parent
@@ -19,7 +22,7 @@ Item {
         SequentialAnimation {
             id: timeBarAnim
 
-            PauseAnimation { duration: 5000 }
+            PauseAnimation { duration: hiddenDuration }
 
             ScriptAction {
                 script: {
@@ -32,7 +35,7 @@ Item {
                 target: timeBar
                 property: "width"
                 to: 0
-                duration: 5000
+                duration: shownDuration
             }
 
             ScriptAction{

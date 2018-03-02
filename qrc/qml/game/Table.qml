@@ -479,8 +479,17 @@ Item {
     function activate(action, lastDiscarder, nonce) {
         table._nonce = nonce;
 
-        if (table.hasTimeout)
+        if (table.hasTimeout) {
+            if (action.PASS) {
+                timeBar.hiddenDuration = 0;
+                timeBar.shownDuration = 3000;
+            } else {
+                timeBar.hiddenDuration = 5000;
+                timeBar.shownDuration = 5000;
+            }
+
             timeBar.timeDown();
+        }
 
         PGlobal.forceImmersive();
 
