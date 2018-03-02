@@ -454,7 +454,7 @@ Item {
             } else if (!banOne2Used && tile === banOne2) {
                 bit = 0;
                 banOne2Used = true;
-            } else if (tile === banAll1 || tile === banAll2) {
+            } else if (tile === banAll1 || tile === banAll2 || tile === banAll3) {
                 bit = 0;
             }
 
