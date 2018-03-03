@@ -408,18 +408,10 @@ Item {
 
     focus: true
     Keys.onPressed: {
-        if (event.key === Qt.Key_Back) {
+        if (event.key === Qt.Key_Back || event.key === Qt.Key_Escape) {
             if (!pTable.online)
                 table.closed();
             event.accepted = true;
-        }
-    }
-
-    Shortcut {
-        sequence: "Esc"
-        onActivated: {
-            if (!pTable.online)
-                table.closed();
         }
     }
 

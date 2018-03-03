@@ -1,9 +1,9 @@
 import QtQuick 2.7
 import "../widget"
 
-Rectangle {
+Item {
     id: shocker
-    color: "transparent"
+
     width: 600
     height: 150
 
@@ -15,7 +15,7 @@ Rectangle {
             id: text
             color: "#DDFFFFFF"
             anchors.centerIn: parent
-            font.pixelSize: 80
+            font.pixelSize: 0.5 * shocker.height
         }
     }
 

@@ -121,6 +121,13 @@ PinchArea {
         PGlobal.forceImmersive();
     }
 
+    onFocusChanged: {
+        // necessary for enabling android 'back' key handling
+        // (any cleaner workaround?)
+        if (focus)
+            table.focus = true;
+    }
+
     function startLocal(girlIds, gameRule, tempDealer) {
         dialogOpHint.hint = "op";
 

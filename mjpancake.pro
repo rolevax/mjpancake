@@ -234,7 +234,7 @@ contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
     ANDROID_EXTRA_LIBS =
 }
 
-mac, android {
+mac|android {
     QMAKE_CXXFLAGS_WARN_ON = -Wall -Wextra -Wno-missing-braces
 }
 
