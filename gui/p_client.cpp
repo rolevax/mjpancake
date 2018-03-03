@@ -251,61 +251,24 @@ void PClient::onJsonReceived(const QJsonObject &msg)
 {
     QString type = msg["Type"].toString();
     if (type == "auth") {
-        QString error = msg["Error"].toString();
-        if (error.isEmpty()) {
-            mUser = msg["User"].toObject().toVariantMap();
-            bool resume = msg["Resume"].toBool();
-            emit userChanged(resume);
-            updateStats(msg["Stats"].toArray().toVariantList());
-        } else {
-            mUser.clear();
-            emit userChanged();
-            emit authFailIn(error);
-        }
+        handleAuth(msg);
     } else if (type == "look-around") {
-        mConnCt = msg["Conn"].toInt();
-        mMatchWaits = msg["MatchWaits"].toArray().toVariantList();
-        mWater = msg["Water"].toArray().toVariantList();
-        emit lookedAround();
+        handleLookAround(msg);
     } else if (type == "table-init") {
-        // TODO notify from background by Android service + Qt Remote Object
-        // PGlobal::systemNotify();
-
-        QJsonObject match = msg["MatchResult"].toObject();
-        QJsonArray choices = msg["Choices"].toArray();
-        QJsonArray foodCosts = msg["FoodCosts"].toArray();
-        emit tableInitRecved(match.toVariantMap(), choices.toVariantList(), foodCosts.toVariantList());
-        clearMatchings();
+        handleTableInit(msg);
     } else if (type == "table-seat") {
-        QJsonArray girlIds = msg["Gids"].toArray();
-        int tempDealer = msg["TempDealer"].toInt();
-        emit tableSeatRecved(girlIds.toVariantList(), tempDealer);
+        handleTableSeat(msg);
     } else if (type == "table-event") {
-        recvTableEvent(msg);
+        handleTableEvent(msg);
     } else if (type == "table-end") {
-        bool abortive = msg["Abortive"].toBool();
-        QJsonArray foodChanges = msg["FoodChanges"].toArray();
-        emit tableEndRecved(abortive, foodChanges.toVariantList());
+        handleTableEnd(msg);
     } else if (type == "update-user") {
-        mUser = msg["User"].toObject().toVariantMap();
-        emit userChanged();
-        updateStats(msg["Stats"].toArray().toVariantList());
+        handleUpdateUser(msg);
     } else if (type == "get-replay-list") {
-        QVariantList ids = msg["ReplayIds"].toArray().toVariantList();
-        emit replayListIn(ids);
+        handleGetReplayList(msg);
     } else if (type == "get-replay") {
-        QString json = msg["ReplayJson"].toString();
-        int id = msg["ReplayId"].toInt();
-        emit replayIn(id, json);
+        handleGetReplay(msg);
     }
-}
-
-void PClient::recvTableEvent(const QJsonObject &msg)
-{
-    QString event = msg["Event"].toString();
-    QVariantMap args = msg["Args"].toObject().toVariantMap();
-
-    emit tableEvent(event, args);
 }
 
 void PClient::heartbeat()
@@ -315,6 +278,83 @@ void PClient::heartbeat()
         req["Type"] = "heartbeat";
         mSocket.send(req);
     }
+}
+
+void PClient::handleAuth(const QJsonObject &msg)
+{
+    QString error = msg["Error"].toString();
+    if (error.isEmpty()) {
+        mUser = msg["User"].toObject().toVariantMap();
+        bool resume = msg["Resume"].toBool();
+        emit userChanged(resume);
+        updateStats(msg["Stats"].toArray().toVariantList());
+    } else {
+        mUser.clear();
+        emit userChanged();
+        emit authFailIn(error);
+    }
+}
+
+void PClient::handleLookAround(const QJsonObject &msg)
+{
+    mConnCt = msg["Conn"].toInt();
+    mMatchWaits = msg["MatchWaits"].toArray().toVariantList();
+    mWater = msg["Water"].toArray().toVariantList();
+    emit lookedAround();
+}
+
+void PClient::handleTableInit(const QJsonObject &msg)
+{
+    // TODO notify from background by Android service + Qt Remote Object
+    // PGlobal::systemNotify();
+
+    QJsonObject match = msg["MatchResult"].toObject();
+    QJsonArray choices = msg["Choices"].toArray();
+    QJsonArray foodCosts = msg["FoodCosts"].toArray();
+    emit tableInitRecved(match.toVariantMap(), choices.toVariantList(), foodCosts.toVariantList());
+    clearMatchings();
+}
+
+void PClient::handleTableSeat(const QJsonObject &msg)
+{
+    QJsonArray girlIds = msg["Gids"].toArray();
+    int tempDealer = msg["TempDealer"].toInt();
+    emit tableSeatRecved(girlIds.toVariantList(), tempDealer);
+}
+
+void PClient::handleTableEvent(const QJsonObject &msg)
+{
+    QString event = msg["Event"].toString();
+    QVariantMap args = msg["Args"].toObject().toVariantMap();
+
+    emit tableEvent(event, args);
+}
+
+void PClient::handleTableEnd(const QJsonObject &msg)
+{
+    bool abortive = msg["Abortive"].toBool();
+    QJsonArray foodChanges = msg["FoodChanges"].toArray();
+    emit tableEndRecved(abortive, foodChanges.toVariantList());
+}
+
+void PClient::handleUpdateUser(const QJsonObject &msg)
+{
+    mUser = msg["User"].toObject().toVariantMap();
+    emit userChanged();
+    updateStats(msg["Stats"].toArray().toVariantList());
+}
+
+void PClient::handleGetReplayList(const QJsonObject &msg)
+{
+    QVariantList ids = msg["ReplayIds"].toArray().toVariantList();
+    emit replayListIn(ids);
+}
+
+void PClient::handleGetReplay(const QJsonObject &msg)
+{
+    QString json = msg["ReplayJson"].toString();
+    int id = msg["ReplayId"].toInt();
+    emit replayIn(id, json);
 }
 
 void PClient::clearMatchings()

@@ -84,10 +84,18 @@ public slots:
 private slots:
     void onRemoteClosed();
     void onJsonReceived(const QJsonObject &msg);
-    void recvTableEvent(const QJsonObject &msg);
     void heartbeat();
 
 private:
+    void handleAuth(const QJsonObject &msg);
+    void handleLookAround(const QJsonObject &msg);
+    void handleTableInit(const QJsonObject &msg);
+    void handleTableSeat(const QJsonObject &msg);
+    void handleTableEvent(const QJsonObject &msg);
+    void handleTableEnd(const QJsonObject &msg);
+    void handleUpdateUser(const QJsonObject &msg);
+    void handleGetReplayList(const QJsonObject &msg);
+    void handleGetReplay(const QJsonObject &msg);
     void clearMatchings();
     void updateStats(const QVariantList &stats);
 
