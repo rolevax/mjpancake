@@ -54,7 +54,7 @@ Room {
                 width: parent.width
                 anchors.top: miscRow.bottom
                 anchors.topMargin: global.size.space
-                height: kickFloor.height-miscRow.height-global.size.space
+                height: kickFloor.height - miscRow.height - global.size.space
                 text: "松饼社区主站"
                 onClicked: {
                     Qt.openUrlExternally("https://mjpancake.github.io/");
