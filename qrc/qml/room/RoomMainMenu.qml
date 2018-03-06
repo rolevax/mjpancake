@@ -10,6 +10,7 @@ Room {
         spacing: global.size.space
 
         Buxxon {
+            id: kickFloor
             text: "踩地板"
             textLength: 14
             enabled: PClient.loggedIn
@@ -20,7 +21,7 @@ Room {
 
         Item {
             width: miscRow.width
-            height: parent.height
+            height: kickFloor.height
 
             Row {
                 id: miscRow
@@ -53,7 +54,7 @@ Room {
                 width: parent.width
                 anchors.top: miscRow.bottom
                 anchors.topMargin: global.size.space
-                anchors.bottom: parent.bottom
+                height: kickFloor.height-miscRow.height-global.size.space
                 text: "松饼社区主站"
                 onClicked: {
                     Qt.openUrlExternally("https://mjpancake.github.io/");
