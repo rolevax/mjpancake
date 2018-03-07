@@ -437,10 +437,11 @@ Item {
         for (var i = 0; i < 4; i++) {
             rivers.itemAt(i).clearCircles();
         }
-        logBox.clear();
     }
 
     function action(actStr, actArg, actTile) {
+        logBox.clear();
+
         if (!actTile)
             actTile = "";
 
