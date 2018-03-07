@@ -36,7 +36,7 @@ Room {
                 }
 
                 Texd {
-                    text: "对局桌数: ?"
+                    text: "对局桌数: " + PClient.tableCt
                 }
             }
 

@@ -25,6 +25,7 @@ public:
     Q_PROPERTY(int playCt READ playCt NOTIFY statsChanged)
     Q_PROPERTY(QVariantList ranks READ ranks NOTIFY statsChanged)
     Q_PROPERTY(int connCt READ connCt NOTIFY lookedAround)
+    Q_PROPERTY(int tableCt READ tableCt NOTIFY lookedAround)
     Q_PROPERTY(QVariantList matchWaits READ matchWaits NOTIFY lookedAround)
     Q_PROPERTY(QVariantList matchings READ matchings NOTIFY matchingsChanged)
     Q_PROPERTY(bool hasMatching READ hasMatching NOTIFY matchingsChanged)
@@ -55,6 +56,7 @@ public:
     int playCt() const;
     QVariantList ranks() const;
     int connCt() const;
+    int tableCt() const;
     QVariantList matchWaits() const;
     QVariantList matchings() const;
     bool hasMatching() const;
@@ -108,6 +110,7 @@ private:
     QVariantList mStats;
     QVariantList mMatchings;
     int mConnCt = 0;
+    int mTableCt = 0;
     QVariantList mMatchWaits;
     QVariantList mWater;
     int mLastNonce = 0;

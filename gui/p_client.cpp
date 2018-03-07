@@ -197,6 +197,11 @@ int PClient::connCt() const
     return mConnCt;
 }
 
+int PClient::tableCt() const
+{
+    return mTableCt;
+}
+
 QVariantList PClient::matchWaits() const
 {
     return mMatchWaits;
@@ -298,6 +303,7 @@ void PClient::handleAuth(const QJsonObject &msg)
 void PClient::handleLookAround(const QJsonObject &msg)
 {
     mConnCt = msg["Conn"].toInt();
+    mTableCt = msg["Table"].toInt();
     mMatchWaits = msg["MatchWaits"].toArray().toVariantList();
     mWater = msg["Water"].toArray().toVariantList();
     emit lookedAround();
