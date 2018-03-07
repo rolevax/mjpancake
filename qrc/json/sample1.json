@@ -1,0 +1,120 @@
+[
+    {
+        "Event": "points-changed",
+        "Args": { "points": [105700,90300,35800,168200] }
+    },
+    { "Event": "cleaned", "Args": {} },
+    {
+        "Event": "round-started",
+        "Args": {"round":7,"extra":0,"dealer":1,"allLast":true,"deposit":0}
+    },
+    { "Event": "just-pause", "Args": { "ms": 1600 } },
+    { "Event": "diced", "Args": { "die1":1, "die2":1 } },
+    {
+        "Event": "dealt",
+        "Args": { "init": ["1p","2p","2p","2p","3p","5p","2f","2y","3y","3s","9s","1m","4m"] }
+    },
+    { "Event": "flipped", "Args": { "newIndic": "1f" } },
+
+    { "Pack": "oppo-out", "Who": 1, "Out": "3f", "Spin": false },
+    { "Pack": "oppo-out", "Who": 2, "Out": "4f", "Spin": false },
+    { "Pack": "oppo-out", "Who": 3, "Out": "9s", "Spin": false },
+    { "Pack": "my-in-out", "In": "4p", "Out": "1m", "OutPos": 11 },
+
+    { "Pack": "oppo-out", "Who": 1, "Out": "6s", "Spin": false },
+    { "Pack": "oppo-out", "Who": 2, "Out": "1f", "Spin": true },
+    { "Pack": "oppo-out", "Who": 3, "Out": "9p", "Spin": false },
+    { "Pack": "my-in-out", "In": "3p", "Out": "9s", "OutPos": 11 },
+
+    { "Pack": "oppo-out", "Who": 1, "Out": "7s", "Spin": false },
+    { "Pack": "oppo-out", "Who": 2, "Out": "3y", "Spin": true },
+    { "Pack": "oppo-out", "Who": 3, "Out": "1s", "Spin": false },
+    { "Pack": "my-in-out", "In": "1p", "Out": "3s", "OutPos": 11 },
+
+    { "Pack": "oppo-out", "Who": 1, "Out": "4s", "Spin": false },
+    { "Pack": "oppo-out", "Who": 2, "Out": "2m", "Spin": false },
+    { "Pack": "oppo-out", "Who": 3, "Out": "1y", "Spin": false },
+    { "Pack": "my-in-out", "In": "3p", "Out": "4m", "OutPos": 12 },
+
+    { "Pack": "oppo-out", "Who": 1, "Out": "1y", "Spin": false },
+    { "Pack": "oppo-out", "Who": 2, "Out": "9s", "Spin": false },
+    { "Pack": "oppo-out", "Who": 3, "Out": "2y", "Spin": false },
+    { "Pack": "my-in-out", "In": "2p", "Out": "2y", "OutPos": 11 },
+
+    { "Pack": "oppo-out", "Who": 1, "Out": "6m", "Spin": true },
+    { "Pack": "oppo-out", "Who": 2, "Out": "5m", "Spin": false },
+    { "Pack": "oppo-out", "Who": 3, "Out": "8s", "Spin": true },
+    { "Pack": "my-in-out", "In": "1p", "Out": "3y", "OutPos": 12 },
+
+    { "Pack": "oppo-out", "Who": 1, "Out": "7m", "Spin": true },
+    { "Pack": "oppo-out", "Who": 2, "Out": "5s", "Spin": false },
+    { "Pack": "oppo-out", "Who": 3, "Out": "9m", "Spin": false },
+    { "Pack": "my-in-out", "In": "3p", "Out": "2f", "OutPos": 12 },
+
+    { "Pack": "oppo-out", "Who": 1, "Out": "3s", "Spin": true },
+    { "Pack": "oppo-out", "Who": 2, "Out": "7p", "Spin": true },
+    { "Pack": "oppo-out", "Who": 3, "Out": "1p", "Spin": true },
+
+    { "Event": "just-pause", "Args": { "ms": 500 } },
+    {
+        "Event": "barked",
+        "Args": {
+            "who": 0,
+            "fromWhom": 3,
+            "actStr": "DAIMINKAN",
+            "bark": {
+                "type": 4, "open": 0,
+                "0": "1p_", "1": "1p", "2": "1p", "3": "1p",
+                "isDaiminkan": true, "isAnkan": false, "isKakan": false
+            }
+        }
+    },
+    { "Event": "just-pause", "Args": { "ms": 300 } },
+    {
+        "Event": "drawn",
+        "Args": { "who": 0, "tile": "4p", "rinshan": true }
+    },
+
+    { "Event": "just-pause", "Args": { "ms": 500 } },
+    {
+        "Event": "barked",
+        "Args": {
+            "who": 0,
+            "fromWhom": -1,
+            "actStr": "ANKAN",
+            "bark": {
+                "type": 4, "open": -1,
+                "0": "2p", "1": "2p", "2": "2p", "3": "2p",
+                "isDaiminkan": false, "isAnkan": true, "isKakan": false
+            }
+        }
+    },
+    { "Event": "flipped", "Args": { "newIndic": "8s" } },
+    { "Event": "flipped", "Args": { "newIndic": "3y" } },
+    { "Event": "just-pause", "Args": { "ms": 300 } },
+    {
+        "Event": "drawn",
+        "Args": { "who": 0, "tile": "4p", "rinshan": true }
+    },
+
+    { "Event": "just-pause", "Args": { "ms": 500 } },
+    {
+        "Event": "barked",
+        "Args": {
+            "who": 0,
+            "fromWhom": -1,
+            "actStr": "ANKAN",
+            "bark": {
+                "type": 4, "open": -1,
+                "0": "3p", "1": "3p", "2": "3p", "3": "3p",
+                "isDaiminkan": false, "isAnkan": true, "isKakan": false
+            }
+        }
+    },
+    { "Event": "flipped", "Args": { "newIndic": "2f" } },
+    { "Event": "just-pause", "Args": { "ms": 300 } },
+    {
+        "Event": "drawn",
+        "Args": { "who": 0, "tile": "0p", "rinshan": true }
+    }
+]

@@ -33,7 +33,7 @@ signals:
 public slots:
 
 private:
-    void clearLogicFeeds();
+    void clearEventFeeds();
 
 private:
     QThread mWorkThread;
