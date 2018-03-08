@@ -53,7 +53,6 @@ void PReplay::load(QString filename)
     QJsonObject obj = d.object();
 
     mReplay = readReplayJson(obj);
-    mLoadedAppVersion = obj["appVersion"].toString();
     mLoadedLibVersion = obj["libVersion"].toString();
     mLoaded = true;
 
@@ -105,11 +104,6 @@ QVariantMap PReplay::look(int roundId, int turn)
     return createTableSnapMap(snap);
 }
 
-QString PReplay::loadedAppVersion() const
-{
-    return mLoadedAppVersion;
-}
-
 QString PReplay::loadedLibVersion() const
 {
     return mLoadedLibVersion;
@@ -128,5 +122,5 @@ void PReplay::useOnlineReplay(int id)
     mReplay = sCachedReplays[id];
     mUsers = sCachedUsers[id];
     mLoaded = true;
-    emit onlineReplayReady();
+    emit loaded();
 }

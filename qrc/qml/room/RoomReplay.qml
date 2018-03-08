@@ -20,51 +20,77 @@ Room {
     PReplay {
         id: pReplay
 
+        onLoaded: {
+            _showGame();
+        }
+
         onOnlineReplayListReady: {
             onlineListView.model = ids;
         }
-
-        onOnlineReplayReady: {
-            _showGame();
-        }
     }
 
-    LisdView {
-        id: localListView
-
-        visible: !game.visible
-        spacing: global.size.space
-        width: 0.4 * room.width
+    Row {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: global.size.gap
         anchors.bottom: replayIdInput.top
         anchors.bottomMargin: global.size.space
 
-        model: pReplay.ls()
-        delegate: Item {
-            width: parent.width
-            height: buttonDelegate.height
+        spacing: global.size.gap
 
-            Buzzon {
+        LisdView {
+            id: localListView
+
+            visible: !game.visible
+            spacing: global.size.space
+            width: 0.4 * room.width
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+
+            model: pReplay.ls()
+            delegate: Item {
+                width: parent.width
+                height: buttonDelegate.height
+
+                Buzzon {
+                    id: buttonDelegate
+                    width: 0.85 * parent.width
+                    text: modelData
+                    enabled: !_loading
+                    onClicked: {
+                        pReplay.load(modelData);
+                    }
+                }
+
+                Buzzon {
+                    anchors.right: parent.right
+                    width: 0.13 * parent.width
+                    text: "删"
+                    enabled: !_loading
+                    onClicked: {
+                        pReplay.rm(modelData);
+                        localListView.model = pReplay.ls();
+                    }
+                }
+            }
+        }
+
+        LisdView {
+            id: onlineListView
+
+            visible: !game.visible && PClient.loggedIn
+            spacing: global.size.space
+            width: 0.4 * room.width
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+
+            delegate:  Buzzon {
                 id: buttonDelegate
                 width: 0.85 * parent.width
                 text: modelData
                 enabled: !_loading
                 onClicked: {
-                    pReplay.load(modelData);
-                    _showGame();
-                }
-            }
-
-            Buzzon {
-                anchors.right: parent.right
-                width: 0.13 * parent.width
-                text: "删"
-                enabled: !_loading
-                onClicked: {
-                    pReplay.rm(modelData);
-                    localListView.model = pReplay.ls();
+                    _fetchOnline(modelData)
                 }
             }
         }
@@ -72,7 +98,7 @@ Room {
 
     TexdInput {
         id: replayIdInput
-        visible: false // feature hidden
+        visible: !game.visible && PClient.loggedIn
         width: 12 * global.size.middleFont
         anchors.right: parent.right
         anchors.rightMargin: global.size.space
@@ -120,7 +146,7 @@ Room {
                 anchors.centerIn: parent
                 color: "white"
                 font.pixelSize: room.height / 30
-                text: pReplay.loadedAppVersion + "@" + pReplay.loadedLibVersion
+                text: "" + pReplay.loadedLibVersion
             }
         }
 
@@ -217,7 +243,7 @@ Room {
             anchors.centerIn: parent
             color: "white"
             font.pixelSize: 0.1 * parent.height
-            text: "正在从茫茫零食堆里捞出牌谱……"
+            text: "正在打捞牌谱……"
         }
     }
 
