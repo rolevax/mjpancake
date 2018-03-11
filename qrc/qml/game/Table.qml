@@ -719,6 +719,7 @@ Item {
         _handleTableEventCleaned();
         animBuf.clear();
 
+        green.visible = false;
         mount.visible = false;
         middle.reset();
         setGirlIds([ -1, -1, -1, -1]);

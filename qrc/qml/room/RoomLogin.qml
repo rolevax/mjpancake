@@ -5,32 +5,15 @@ import "../widget"
 
 Room {
     readonly property var _contributors: [
-        "汐羽",
-        "如画江山",
-        "ethan",
-        "皋月",
-        "karkimira",
-        "喵打",
-        "TSD",
-        "sakisan",
-        "xmt",
-        "TerryHu",
-        "瑞原 はやり",
-        "Mikyu",
-        "银",
-        "Paper",
-        "chaseyun",
-        "宅炮",
-        "tianmidai123",
-        "迹落无言",
-        "花鹿水",
-        "苟利国家生死以",
-        "大七星石户之霞",
-        "Lhtie",
-        "中东自爆英灵",
-        "白夜旬",
-        "Yoarkisess",
-        "九月",
+        "汐羽", "xmt", "如画江山",
+        "Once", "TerryHu", "ethan",
+        "皋月", "karkimira", "喵打",
+        "TSD", "sakisan", "瑞原 はやり",
+        "Mikyu", "银", "Paper",
+        "chaseyun", "宅炮", "tianmidai123",
+        "迹落无言", "花鹿水", "苟利国家生死以",
+        "大七星石户之霞", "Lhtie", "中东自爆英灵",
+        "白夜旬", "Yoarkisess", "九月",
         "临海小红帽"
     ]
 
@@ -49,10 +32,10 @@ Room {
         spacing: global.size.gap
 
         Texd {
+            id: titleText
             visible: PGlobal.official
             anchors.horizontalCenter: parent.horizontalCenter
             text: "贡 献 者\n（截至版本发布时）"
-            font.pixelSize: global.size.middleFont
             horizontalAlignment: Text.AlignHCenter
         }
 
@@ -64,8 +47,7 @@ Room {
                 model: _contributors
                 delegate:  Texd {
                     text: modelData
-                    width: 8 * global.size.defaultFont
-                    font.pixelSize: global.size.middleFont
+                    width: titleText.width
                     horizontalAlignment: Text.AlignHCenter
                 }
             }
