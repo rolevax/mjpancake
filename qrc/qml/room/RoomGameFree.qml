@@ -13,6 +13,7 @@ Room {
     property int tempDealer
     property bool shuffleSeat: false
     property bool _playing: false
+    property int _selectingIndex: 0
 
     showReturnButton: !_playing
 
@@ -32,24 +33,28 @@ Room {
                 spacing: global.size.space
                 z: 2
 
-                GirlBox {
-                    id: girlBox0; mark: "P1"; z: 104
-                    onChoosen: { girlIds[0] = girlId; }
-                }
-                GirlBox {
-                    id: girlBox1; mark: "C1"; z: 103
-                    enabled: toggleMode.currentIndex === 0
-                    onChoosen: { girlIds[1] = girlId; }
-                }
-                GirlBox {
-                    id: girlBox2; mark: "C2"; z: 102
-                    enabled: toggleMode.currentIndex === 0
-                    onChoosen: { girlIds[2] = girlId; }
-                }
-                GirlBox {
-                    id: girlBox3; mark: "C3"; z: 101
-                    enabled: toggleMode.currentIndex === 0
-                    onChoosen: { girlIds[3] = girlId; }
+                Repeater {
+                    model: 4
+                    delegate:  Row {
+                        spacing: global.size.gap
+
+                        Texd {
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: [ "P1", "C1", "C2", "C3" ][index]
+                        }
+
+                        Buzzon {
+                            smallFont: true
+                            textLength: 7
+                            enabled: index === 0 || toggleMode.currentIndex === 0
+                            text: Names.names[girlIds[index]]
+                            onClicked: {
+                                _selectingIndex = index;
+                                girlSelector.girlId = girlIds[index];
+                                girlSelector.visible = true;
+                            }
+                        }
+                    }
                 }
             }
 
@@ -71,10 +76,10 @@ Room {
                 sound: global.sound.button
                 onActivated: {
                     var indices = Names.genIndices();
-                    girlBox0.chooseByAvalIndex(indices[0]);
-                    girlBox1.chooseByAvalIndex(indices[1]);
-                    girlBox2.chooseByAvalIndex(indices[2]);
-                    girlBox3.chooseByAvalIndex(indices[3]);
+                    var tmp = [ 0, 0, 0, 0 ];
+                    for (var i in tmp)
+                        tmp[i] = Names.availIds[indices[i]];
+                    girlIds = tmp; // force refresh
                 }
             }
 
@@ -129,6 +134,17 @@ Room {
                     game.startPrac(shuffledGirlIds[0]);
                 }
             }
+        }
+    }
+
+    AreaGirlSelector {
+        id: girlSelector
+        anchors.fill: parent
+        visible: false
+        onSelected: {
+            var tmp = room.girlIds;
+            tmp[_selectingIndex] = girlSelector.girlId;
+            room.girlIds = tmp; // force update signal
         }
     }
 

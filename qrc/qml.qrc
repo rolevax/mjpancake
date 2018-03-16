@@ -10,7 +10,7 @@
         <file>qml/widget/TexdInput.qml</file>
         <file>qml/widget/AnimadionBuffer.qml</file>
         <file>qml/area/AreaLogin.qml</file>
-        <file>qml/area/GirlBox.qml</file>
+        <file>qml/area/AreaGirlSelector.qml</file>
         <file>qml/area/RuleConfig.qml</file>
         <file>qml/game/ActionButton.qml</file>
         <file>qml/game/ActionButtonBar.qml</file>
