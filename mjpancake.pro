@@ -13,7 +13,7 @@ QT += qml quick widgets network multimedia
 
 android: QT += androidextras
 
-CONFIG += c++11
+CONFIG += c++1z
 CONFIG(release, debug|release): DEFINES += NDEBUG
 exists($$PWD/.official): DEFINES += PANCAKE_OFFICIAL
 

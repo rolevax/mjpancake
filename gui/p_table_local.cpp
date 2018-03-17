@@ -61,7 +61,7 @@ void PTableLocal::start(const QVariant &girlIdsVar, const QVariant &gameRule, in
     for (int w = 0; w < 3; w++)
         ai3[w] = Ai::create(Girl::Id(config.girlIds[w + 1]));
 
-    mServer = util::unique<TableServerAi3>(config, obs, mTableEnv, std::move(ai3));
+    mServer = std::make_unique<TableServerAi3>(config, obs, mTableEnv, std::move(ai3));
     auto msgs = mServer->start();
     handleTableMsgs(msgs);
 }
@@ -82,11 +82,11 @@ void PTableLocal::startPrac(int girlId)
 
     TableServerAi3::Ai3 ai3;
     for (int w = 0; w < 3; w++)
-        ai3[w] = util::unique<AiStub>();
+        ai3[w] = std::make_unique<AiStub>();
 
     Table::InitConfig config { points, girlIds, rule, whos::HUMAN };
     std::vector<TableObserver *> obs;
-    mServer = util::unique<TableServerAi3>(config, obs, mTableEnv, std::move(ai3));
+    mServer = std::make_unique<TableServerAi3>(config, obs, mTableEnv, std::move(ai3));
     auto msgs = mServer->start();
     handleTableMsgs(msgs);
 }
