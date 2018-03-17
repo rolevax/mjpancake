@@ -17,7 +17,7 @@ Item {
     property SoundEffect sound: global.sound.button
 
     width: textLength * fontSize
-    height: width + 1.5 * fontSize
+    height: textLength * fontSize + 1.5 * fontSize
     opacity: enabled ? 1.0 : 0.5
 
     MouseArea {
