@@ -79,11 +79,11 @@ Item {
         y: ys[0]
     }
 
-    function setGirlIds(girlIds) {
-        item0.name = Names.names[girlIds[0]];
-        item1.name = Names.names[girlIds[1]];
-        item2.name = Names.names[girlIds[2]];
-        item3.name = Names.names[girlIds[3]];
+    function setGirlKeys(girlKeys) {
+        item0.name = Names.getName(girlKeys[0]);
+        item1.name = Names.getName(girlKeys[1]);
+        item2.name = Names.getName(girlKeys[2]);
+        item3.name = Names.getName(girlKeys[3]);
     }
 
     onPointsChanged: {

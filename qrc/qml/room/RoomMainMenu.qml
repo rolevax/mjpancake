@@ -23,7 +23,7 @@ Room {
             model: [
                 { text: "麻将部备品", load: "Tools" },
                 { text: "设置", load: "Settings" },
-                { text: "联机模式", load: "Client" }
+                { text: "联机(不稳)", load: "Client" }
             ]
 
             delegate: Buxxon {
@@ -39,7 +39,10 @@ Room {
         Buxxon {
             width: 2 * normal.width
             textLength: 7
-            text: "创造人类"
+            text: "人物编辑"
+            onClicked: {
+                global.pushScene("room/RoomEditList");
+            }
         }
 
         Buxxon {

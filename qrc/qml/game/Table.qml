@@ -175,10 +175,10 @@ Item {
                 break;
             case "table-ended":
                 cb = function() {
-                    resultFinal.girlIds = [ resultWindow.girlIds[args.rank[0]],
-                                            resultWindow.girlIds[args.rank[1]],
-                                            resultWindow.girlIds[args.rank[2]],
-                                            resultWindow.girlIds[args.rank[3]] ];
+                    resultFinal.girlKeys = [ resultWindow.girlKeys[args.rank[0]],
+                                             resultWindow.girlKeys[args.rank[1]],
+                                             resultWindow.girlKeys[args.rank[2]],
+                                             resultWindow.girlKeys[args.rank[3]] ];
                     resultFinal.points = [ args.scores[args.rank[0]],
                                            args.scores[args.rank[1]],
                                            args.scores[args.rank[2]],
@@ -391,7 +391,7 @@ Item {
         width: (table.width + 13 * twb) / 2;
         height: table.thb
         onActionTriggered: {
-            if (photos[0].girlId === 712611 && actStr === "IRS_CLICK")
+            if (photos[0].girlKey.id === 712611 && actStr === "IRS_CLICK")
                 table.green.visible = !table.green.visible;
             table.action(actStr, actArg, actTile);
         }
@@ -451,12 +451,12 @@ Item {
         pTable.action(actStr, actArg, actTile, _nonce);
     }
 
-    function setGirlIds(girlIds) {
-        pointBoard.setGirlIds(girlIds);
-        resultWindow.girlIds = girlIds
+    function setGirlKeys(girlKeys) {
+        pointBoard.setGirlKeys(girlKeys);
+        resultWindow.girlKeys = girlKeys
         for (var w = 0; w < 4; w++) {
-            photos[w].girlId = girlIds[w];
-            rivers.itemAt(w).upDown = (girlIds[w] === 712411 || girlIds[w] === 712412);
+            photos[w].girlKey = girlKeys[w];
+            rivers.itemAt(w).upDown = (girlKeys[w].id === 712411 || girlKeys[w].id === 712412);
         }
     }
 
@@ -557,7 +557,7 @@ Item {
     function resume(snap) {
         var i;
 
-        setGirlIds(snap.girlIds);
+        setGirlKeys(snap.girlKeys);
         setUsers(snap.users);
 
         pointBoard.points = snap.points;
@@ -722,7 +722,7 @@ Item {
         green.visible = false;
         mount.visible = false;
         middle.reset();
-        setGirlIds([ -1, -1, -1, -1]);
+        setGirlKeys([ -1, -1, -1, -1]);
         setUsers([ null, null, null, null  ]);
         for (var i = 0; i < 4; i++)
             photos[i].removeBars();

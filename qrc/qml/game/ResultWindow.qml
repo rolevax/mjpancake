@@ -12,7 +12,7 @@ Item {
     property color backColor
     property int tw
 
-    property var girlIds: [ -1, -1, -1, -1 ]
+    property var girlKeys: [ null, null, null, null ]
 
     signal nextRound
     signal endTable
@@ -173,9 +173,9 @@ Item {
         text.text += "\n";
         text.text += Spell.charge(forms[0].charge);
 
-        name.text = Names.names[girlIds[winners[0]]];
+        name.text = Names.getName(girlKeys[winners[0]]);
         if (gunner >= 0)
-            name.text += "  <<<  " + Names.names[girlIds[gunner]];
+            name.text += "  <<<  " + Names.getName(girlKeys[gunner]);
 
         if (forms.length >= 2) {
             state = "huge";
@@ -189,8 +189,8 @@ Item {
             text2.text += "\n";
             text2.text += Spell.charge(forms[1].charge);
 
-            name2.text = Names.names[girlIds[winners[1]]];
-            name2.text += "  <<<  " + Names.names[girlIds[gunner]];
+            name2.text = Names.getName(girlKeys[winners[1]]);
+            name2.text += "  <<<  " + Names.getName(girlKeys[gunner]);
         }
 
         uraIndic.visible = uraIndic.doraIndic.length > 0;

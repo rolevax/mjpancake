@@ -21,7 +21,6 @@ public:
     Q_PROPERTY(bool loggedIn READ loggedIn NOTIFY userChanged)
     Q_PROPERTY(QVariantMap user READ user NOTIFY userChanged)
     Q_PROPERTY(QVariantList stats READ stats NOTIFY statsChanged)
-    Q_PROPERTY(QVariantList playedGirlIds READ playedGirlIds NOTIFY statsChanged)
     Q_PROPERTY(int playCt READ playCt NOTIFY statsChanged)
     Q_PROPERTY(QVariantList ranks READ ranks NOTIFY statsChanged)
     Q_PROPERTY(int connCt READ connCt NOTIFY lookedAround)
@@ -40,7 +39,6 @@ public:
     Q_INVOKABLE void lookAround();
     Q_INVOKABLE void sendMatchJoin(int ruleId);
     Q_INVOKABLE void sendMatchCancel();
-    Q_INVOKABLE void sendRoomCreate(int girlId, const QVariantList &aiGids);
     Q_INVOKABLE void sendCliamFood();
     Q_INVOKABLE void sendTableSeat();
     Q_INVOKABLE void sendTableChoose(int girlIndex);
@@ -51,7 +49,6 @@ public:
 
     QVariantMap user() const;
     QVariantList stats() const;
-    QVariantList playedGirlIds() const;
     bool loggedIn() const;
     int playCt() const;
     QVariantList ranks() const;

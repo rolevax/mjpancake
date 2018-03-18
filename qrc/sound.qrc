@@ -5,6 +5,5 @@
         <file>sound/select.wav</file>
         <file>sound/discard.wav</file>
         <file>sound/bell.wav</file>
-        <file>qml/area/AreaProfile.qml</file>
     </qresource>
 </RCC>

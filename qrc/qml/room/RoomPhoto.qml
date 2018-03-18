@@ -15,8 +15,8 @@ Room {
 
         onPhotoCopied: {
             // force reload
-            photo.girlId = -1;
-            photo.girlId = Qt.binding(function() { return girlMenu.currGirlId; });
+            photo.girlKey = null;
+            photo.girlKey = Qt.binding(function() { return { id: girlMenu.currGirlId }; });
         }
     }
 
@@ -36,7 +36,7 @@ Room {
             anchors.centerIn: parent
             width: 0.6 * height
             height: (mouseArea.containsPress ? 0.95 : 1) * 0.7 * parent.height
-            girlId: girlMenu.currGirlId
+            girlKey: { "id": girlMenu.currGirlId, "path": "" }
             cache: false
 
             MouseArea {
@@ -54,8 +54,6 @@ Room {
         anchors.rightMargin: 0.05 * parent.width
         anchors.verticalCenter: parent.verticalCenter
         girlIds: Names.allIds
-        onCurrGirlIdChanged: { global.currGirlId = currGirlId; }
-        Component.onCompleted: { currGirlIdChanged(); }
     }
 
     FileDialog {

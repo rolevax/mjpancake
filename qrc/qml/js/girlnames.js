@@ -124,6 +124,16 @@ var availIds = availSchools.reduce(
     []
 );
 
+function getName(girlKey, pEditor) {
+    if (!girlKey)
+        return "falsy key";
+
+    if (girlKey.id === 1)
+        return "custom"; // FUCK
+
+    return "" + names[girlKey.id];
+}
+
 function genId() {
     return availIds[Math.floor(Math.random() * availIds.length)];
 }

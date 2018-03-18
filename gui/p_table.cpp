@@ -25,24 +25,7 @@ PTable::~PTable()
     clearEventFeeds();
 }
 
-void PTable::startPrac(const int &girlId)
-{
-    clearEventFeeds();
-    mOnline = false;
-
-    PTableLocal *table = new PTableLocal;
-    table->moveToThread(&mWorkThread);
-    mWorkThread.start();
-
-    connect(&mWorkThread, &QThread::finished, table, &PTableLocal::deleteLater);
-
-    connect(this, &PTable::action, table, &PTableLocal::action);
-    connect(table, &PTableLocal::tableEvent, this, &PTable::tableEvent);
-
-    table->startPrac(girlId);
-}
-
-void PTable::startLocal(const QVariant &girlIdsVar, const QVariant &gameRule,
+void PTable::startLocal(const QVariant &girlKeys, const QVariant &gameRule,
                         int tempDealer)
 {
     clearEventFeeds();
@@ -58,7 +41,7 @@ void PTable::startLocal(const QVariant &girlIdsVar, const QVariant &gameRule,
     connect(this, &PTable::saveRecord, table, &PTableLocal::saveRecord);
     connect(table, &PTableLocal::tableEvent, this, &PTable::tableEvent);
 
-    table->start(girlIdsVar, gameRule, tempDealer);
+    table->start(girlKeys, gameRule, tempDealer);
 }
 
 void PTable::startOnline()

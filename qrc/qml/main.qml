@@ -35,7 +35,6 @@ Window {
         },
         "pushScene": pushScene,
         "reloadBackground": reloadBackground,
-        "currGirlId": 0
     }
 
     property var _roomStack: []

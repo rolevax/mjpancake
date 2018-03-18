@@ -36,6 +36,7 @@ public:
     static QString configPath();
     static QString photoPath();
     static QString replayPath(QString filename = "");
+    static QString editPath(QString filename = "");
 
     QVariant backColors() const;
     void setBackColors(const QVariant &v);

@@ -28,8 +28,7 @@ signals:
     void tableEvent(const QString &type, const QVariantMap &args);
 
 public slots:
-    void start(const QVariant &girlIdsVar, const QVariant &gameRule, int tempDelaer);
-    void startPrac(int girlId);
+    void start(const QVariant &girlKeys, const QVariant &gameRule, int tempDelaer);
     void action(const QString &actStr, int actArg, const QString &actTile, int nonce);
     void saveRecord();
 
@@ -42,7 +41,6 @@ private:
     std::unique_ptr<saki::TableServerAi3> mServer;
     saki::Replay mReplay;
     PTableEnv mTableEnv;
-    bool mPrac;
 };
 
 #endif // P_TABLE_LOCAL_H

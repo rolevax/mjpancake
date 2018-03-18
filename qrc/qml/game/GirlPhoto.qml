@@ -7,14 +7,18 @@ import "../widget"
 Item {
     id: frame
 
-    property int girlId: -1
+    property var girlKey: {
+        "id": -1,
+        "path": "",
+    }
+
     property var user: null
     property bool cache: true
 
-    visible: girlId !== -1
+    visible: girlKey && girlKey.id !== -1
 
     Image {
-        source: "image://impro/photo/" + girlId
+        source: girlKey ? ("image://impro/photo/" + girlKey.id) : ""
         anchors.fill: parent
         cache: frame.cache
     }
@@ -37,7 +41,7 @@ Item {
         style: Text.Outline
         styleColor: "black"
         font.pixelSize: frame.height / 13
-        text: Names.names[girlId]
+        text: Names.getName(girlKey)
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         anchors.bottomMargin: frame.height / 24

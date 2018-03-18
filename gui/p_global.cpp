@@ -104,6 +104,16 @@ QString PGlobal::replayPath(QString filename)
     return path;
 }
 
+QString PGlobal::editPath(QString filename)
+{
+    QString path = configPath() + "/edit";
+    QDir().mkpath(path);
+    if (!filename.isEmpty())
+        path += "/" + filename;
+
+    return path;
+}
+
 QVariant PGlobal::backColors() const
 {
     return mRoot["backColors"].toVariant();

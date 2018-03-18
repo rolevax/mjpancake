@@ -5,6 +5,7 @@ Rectangle {
     id: buddon
 
     signal clicked
+    signal longClicked
     property string text
     property color textColor: "white"
     property color lightColor: "#16FFFFFF"
@@ -43,6 +44,11 @@ Rectangle {
         onClicked: {
             sound.play();
             buddon.clicked();
+        }
+
+        onPressAndHold: {
+            sound.play();
+            buddon.longClicked();
         }
     }
 

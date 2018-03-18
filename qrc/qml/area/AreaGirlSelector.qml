@@ -8,7 +8,7 @@ Rectangle {
 
     signal selected
 
-    property alias girlId: photo.girlId
+    property var girlKey: { "id": -1 }
 
     color: global.color.back
 
@@ -21,7 +21,7 @@ Rectangle {
 
     Item {
         anchors.left: parent.left
-        anchors.right: girlMenu.left
+        anchors.right: selectMenu.left
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         anchors.leftMargin: 0.05 * parent.width
@@ -35,8 +35,7 @@ Rectangle {
             anchors.centerIn: parent
             width: 0.6 * height
             height: 0.7 * parent.height
-            cache: false
-            girlId: 0
+            girlKey: frame.girlKey
         }
 
         Buzzon {
@@ -52,8 +51,16 @@ Rectangle {
         }
     }
 
-    LisdView {
-        id: girlMenu
+    ChegList {
+        id: checkList
+        anchors.top: selectMenu.top
+        anchors.right: selectMenu.left
+        anchors.rightMargin: global.size.gap
+        model: [ "天麻", "原创" ]
+    }
+
+    Item {
+        id: selectMenu
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         anchors.right: parent.right
@@ -61,33 +68,55 @@ Rectangle {
         anchors.bottomMargin: 0.1 * parent.height
         anchors.rightMargin: 0.1 * parent.width
         width: sample.width + 2 * global.size.space
-        spacing: 2 * global.size.space
-        model: Names.availSchools
-        delegate: Column {
-            spacing: global.size.space
 
-            property string schoolId: modelData
-
-            Texd {
-                text: Names.schoolData[schoolId].name
-            }
-
-            Grid {
+        LisdView {
+            id: girlMenu
+            visible: checkList.currIndex === 0
+            anchors.fill: parent
+            spacing: 2 * global.size.space
+            model: Names.availSchools
+            delegate: Column {
                 spacing: global.size.space
-                columns: 5
-                Repeater {
-                    model: Names.schoolData[schoolId].members
-                    delegate: Buzzon {
-                        textLength: 2
-                        text: "" + modelData % 10
-                        onClicked: {
-                            photo.girlId = modelData;
+
+                property string schoolId: modelData
+
+                Texd {
+                    text: Names.schoolData[schoolId].name
+                }
+
+                Grid {
+                    spacing: global.size.space
+                    columns: 5
+                    Repeater {
+                        model: Names.schoolData[schoolId].members
+                        delegate: Buzzon {
+                            textLength: 2
+                            text: "" + modelData % 10
+                            onClicked: {
+                                frame.girlKey = { "id": modelData, "path": "" };
+                            }
                         }
                     }
                 }
             }
         }
+
+        LisdView {
+            id: customMenu
+            visible: checkList.currIndex === 1
+            anchors.fill: parent
+            spacing: 2 * global.size.space
+            model: 20
+            delegate: Buzzon {
+                width: parent.width
+                text: "aaa" + index
+                onClicked: {
+                    frame.girlKey = { "id": 1, "path": "" };
+                }
+            }
+        }
     }
+
 
     Grid {
         id: sample

@@ -82,13 +82,19 @@ QVariantMap PReplay::meta()
         roundNames << str;
     }
 
-    QVariantList girlIds;
-    for (int w = 0; w < 4; w++)
-        girlIds << static_cast<int>(mReplay.girls[w]);
+    QVariantList girlKeys;
+    for (int w = 0; w < 4; w++) {
+        QVariantMap key {
+            { "id", static_cast<int>(mReplay.girls[w]) },
+            { "path", "" }
+        };
+
+        girlKeys << key;
+    }
 
     QVariantMap map;
     map.insert("roundNames", roundNames);
-    map.insert("girlIds", girlIds);
+    map.insert("girlKeys", girlKeys);
     map.insert("seed", mReplay.seed);
 
     if (!mUsers.empty())

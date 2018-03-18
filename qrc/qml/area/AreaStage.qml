@@ -7,7 +7,7 @@ Rectangle {
     id: frame
 
     property var users
-    property var girlIds: [ 0, 0, 0, 0 ]
+    property var girlKeys: [ null, null, null, null ]
     property bool showReady: true
     property var _showOrder: [ 0, 1, 2, 3 ]
 
@@ -28,7 +28,7 @@ Rectangle {
                 width: 0.6 * height
                 height: 0.5 * frame.height
                 opacity: 0.0
-                girlId: girlIds[index]
+                girlKey: frame.girlKeys[index]
                 user: users[index]
             }
         }

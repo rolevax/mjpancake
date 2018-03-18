@@ -19,6 +19,7 @@ exists($$PWD/.official): DEFINES += PANCAKE_OFFICIAL
 
 HEADERS += \
     gui/p_client.h \
+    gui/p_editor.h \
     gui/p_eff.h \
     gui/p_eff_gb.h \
     gui/p_gen.h \
@@ -35,6 +36,7 @@ HEADERS += \
 
 SOURCES += main.cpp \
     gui/p_client.cpp \
+    gui/p_editor.cpp \
     gui/p_eff.cpp \
     gui/p_eff_gb.cpp \
     gui/p_gen.cpp \

@@ -1,7 +1,5 @@
 <RCC>
     <qresource prefix="/">
         <file>font/wqy-microhei.ttf</file>
-        <file>qml/widget/Buxxon.qml</file>
-        <file>qml/room/RoomShop.qml</file>
     </qresource>
 </RCC>

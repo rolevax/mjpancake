@@ -8,8 +8,14 @@ import "../js/girlnames.js" as Names
 Room {
     id: room
 
-    property var girlIds: [ 0, 0, 0, 0 ]
-    property var shuffledGirlIds: [ 0, 0, 0, 0 ]
+    property var girlKeys: [
+        { "id": 0, "path": "" },
+        { "id": 0, "path": "" },
+        { "id": 0, "path": "" },
+        { "id": 0, "path": "" }
+    ]
+
+    property var shuffledGirlKeys: [ null, null, null, null]
     property int tempDealer
     property bool shuffleSeat: false
     property bool _playing: false
@@ -26,12 +32,10 @@ Room {
             id: configBoxes
             spacing: global.size.gap
             anchors.horizontalCenter: parent.horizontalCenter
-            z: 10
 
             Column {
                 id: girlColumn
                 spacing: global.size.space
-                z: 2
 
                 Repeater {
                     model: 4
@@ -46,11 +50,10 @@ Room {
                         Buzzon {
                             smallFont: true
                             textLength: 7
-                            enabled: index === 0 || toggleMode.currentIndex === 0
-                            text: Names.names[girlIds[index]]
+                            text: "" + Names.getName(girlKeys[index])
                             onClicked: {
                                 _selectingIndex = index;
-                                girlSelector.girlId = girlIds[index];
+                                girlSelector.girlKey = girlKeys[index];
                                 girlSelector.visible = true;
                             }
                         }
@@ -60,26 +63,27 @@ Room {
 
             RuleConfig {
                 id: ruleConfig
-                z: 1
             }
         }
 
-        Rectangle { z: 9; width: parent.width; height: 1; color: "grey" }
+        Rectangle { width: parent.width; height: 1; color: "grey" }
 
         Row {
             anchors.horizontalCenter: parent.horizontalCenter
             spacing: global.size.space
-            z: 8
 
             GomboToggle {
                 model: [ "随机选人" ]
                 sound: global.sound.button
                 onActivated: {
                     var indices = Names.genIndices();
-                    var tmp = [ 0, 0, 0, 0 ];
-                    for (var i in tmp)
-                        tmp[i] = Names.availIds[indices[i]];
-                    girlIds = tmp; // force refresh
+                    var tmp = [ {}, {}, {}, {} ];
+                    for (var i in tmp) {
+                        tmp[i].id = Names.availIds[indices[i]];
+                        tmp[i].path = "";
+                    }
+
+                    girlKeys = tmp; // force refresh
                 }
             }
 
@@ -94,16 +98,10 @@ Room {
                 id: toggleTileSet
                 model: [ "普通牌", "纸制牌" ]
             }
-
-            GomboToggle {
-                id: toggleMode
-                model: [ "一人三机", "摸打练习" ]
-            }
         }
 
         Texd {
             id: hintText
-            z: 7
             anchors.horizontalCenter: parent.horizontalCenter
             horizontalAlignment: Text.AlignHCenter
             font.pixelSize: global.size.middleFont
@@ -128,11 +126,7 @@ Room {
                 _shuffleRivals();
                 _playing = true;
 
-                if (toggleMode.currentIndex === 0) {
-                    game.startLocal(shuffledGirlIds, ruleConfig.gameRule, tempDealer);
-                } else {
-                    game.startPrac(shuffledGirlIds[0]);
-                }
+                game.startLocal(shuffledGirlKeys, ruleConfig.gameRule, tempDealer);
             }
         }
     }
@@ -142,9 +136,9 @@ Room {
         anchors.fill: parent
         visible: false
         onSelected: {
-            var tmp = room.girlIds;
-            tmp[_selectingIndex] = girlSelector.girlId;
-            room.girlIds = tmp; // force update signal
+            var tmp = room.girlKeys;
+            tmp[_selectingIndex] = girlSelector.girlKey;
+            room.girlKeys = tmp; // force update signal
         }
     }
 
@@ -162,36 +156,43 @@ Room {
         PGlobal.save();
     }
 
-    function dupId(id1, id2) {
-        return id1 !== 0 && id1 === id2;
+    function dupKey(key1, key2) {
+        switch (key1.id) {
+        case 0:
+            return false; // doge
+        case 1:
+            return key2.id === 1 && key1.path === key2.path;
+        default:
+            return key1.id === key2.id;
+        }
     }
 
     function hasDupId() {
         for (var i = 0; i < 4 - 1; i++)
             for (var j = i + 1; j < 4; j++)
-                if (dupId(girlIds[i], girlIds[j]))
+                if (dupKey(girlKeys[i], girlKeys[j]))
                     return true;
         return false;
     }
 
     function _shuffleRivals() {
-        // make a copy, avoid directly modifying 'girlIds'
-        // because 'girlIds' should be consistant with combo boxes
+        // make a copy, avoid directly modifying 'girlKeys'
+        // because 'girlKeys' should be consistant with combo boxes
         for (var i = 0; i < 4; i++)
-            shuffledGirlIds[i] = girlIds[i];
+            shuffledGirlKeys[i] = girlKeys[i];
 
         if (room.shuffleSeat) {
             var temp;
             // swap one of 1, 2, 3 into 1
             var p1 = 1 + Math.floor(Math.random() * 3);
-            temp = shuffledGirlIds[1];
-            shuffledGirlIds[1] = shuffledGirlIds[p1];
-            shuffledGirlIds[p1] = temp;
+            temp = shuffledGirlKeys[1];
+            shuffledGirlKeys[1] = shuffledGirlKeys[p1];
+            shuffledGirlKeys[p1] = temp;
             // swap one of 2, 3 into 2
             var p2 = 2 + Math.floor(Math.random() * 2);
-            temp = shuffledGirlIds[2];
-            shuffledGirlIds[2] = shuffledGirlIds[p2];
-            shuffledGirlIds[p2] = temp;
+            temp = shuffledGirlKeys[2];
+            shuffledGirlKeys[2] = shuffledGirlKeys[p2];
+            shuffledGirlKeys[p2] = temp;
             tempDealer = Math.floor(Math.random() * 4);
         } else {
             tempDealer = 0;

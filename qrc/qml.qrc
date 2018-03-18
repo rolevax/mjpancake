@@ -45,7 +45,6 @@
         <file>qml/room/RoomHelpOp.qml</file>
         <file>qml/room/RoomReplay.qml</file>
         <file>qml/room/RoomSettings.qml</file>
-        <file>qml/room/RoomSignUp.qml</file>
         <file>qml/area/AreaBookRow.qml</file>
         <file>qml/js/nettrans.js</file>
         <file>qml/area/AreaStage.qml</file>
@@ -61,23 +60,19 @@
         <file>qml/area/GirlMenu.qml</file>
         <file>qml/widget/ChegList.qml</file>
         <file>qml/widget/TabBager.qml</file>
-        <file>qml/area/AreaBigStats.qml</file>
         <file>qml/widget/LisdView.qml</file>
-        <file>qml/area/AreaTitle.qml</file>
         <file>qml/game/ActionToggle.qml</file>
         <file>qml/widget/Buxxon.qml</file>
-        <file>qml/room/RoomChoose.qml</file>
-        <file>qml/area/AreaProfile.qml</file>
         <file>qml/room/RoomLogin.qml</file>
         <file>qml/room/RoomMainMenu.qml</file>
-        <file>qml/room/RoomShop.qml</file>
         <file>qml/room/RoomBackground.qml</file>
         <file>qml/widget/Dialok.qml</file>
         <file>qml/widget/ChegBox.qml</file>
         <file>qml/room/RoomPhoto.qml</file>
-        <file>qml/room/RoomNetError.qml</file>
         <file>qml/room/RoomParse.qml</file>
         <file>qml/room/RoomGameOnline.qml</file>
         <file>qml/area/AreaTableEnd.qml</file>
+        <file>qml/room/RoomEditList.qml</file>
+        <file>qml/room/RoomEditor.qml</file>
     </qresource>
 </RCC>

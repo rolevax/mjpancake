@@ -16,8 +16,7 @@ public:
 
     Q_PROPERTY(bool online READ online NOTIFY onlineChanged)
 
-    Q_INVOKABLE void startPrac(const int &girlId);
-    Q_INVOKABLE void startLocal(const QVariant &girlIds, const QVariant &gameRule,
+    Q_INVOKABLE void startLocal(const QVariant &girlKeys, const QVariant &gameRule,
                                 int tempDealer);
     Q_INVOKABLE void startOnline();
     Q_INVOKABLE void startSample();

@@ -128,30 +128,21 @@ PinchArea {
             table.focus = true;
     }
 
-    function startLocal(girlIds, gameRule, tempDealer) {
+    function startLocal(girlKeys, gameRule, tempDealer) {
         dialogOpHint.hint = "op";
 
         table.reset();
-        table.setGirlIds(girlIds);
+        table.setGirlKeys(girlKeys);
         table.middle.setDealer(tempDealer, true);
 
-        table.pTable.startLocal(girlIds, gameRule, tempDealer);
+        table.pTable.startLocal(girlKeys, gameRule, tempDealer);
     }
 
-    function startPrac(girlId) {
+    function startOnline(girlKeys, users, tempDealer) {
         dialogOpHint.hint = "op";
 
         table.reset();
-        table.setGirlIds([ girlId, -1, -1, -1 ]);
-
-        table.pTable.startPrac(girlId);
-    }
-
-    function startOnline(girlIds, users, tempDealer) {
-        dialogOpHint.hint = "op";
-
-        table.reset();
-        table.setGirlIds(girlIds);
+        table.setGirlKeys(girlKeys);
         table.setUsers(users);
         table.middle.setDealer(tempDealer, true);
         table.hasTimeout = true;
@@ -170,9 +161,16 @@ PinchArea {
     }
 
     function startSample() {
+        var girlKeys = [
+            { "id": 713315, "path": "" },
+            { "id": 713335, "path": "" },
+            { "id": 713345, "path": "" },
+            { "id": 713325, "path": "" },
+        ];
+
         dialogOpHint.hint = "";
         table.reset();
-        table.setGirlIds([ 713315, 713335, 713345, 713325 ]);
+        table.setGirlKeys(girlKeys);
         table.pTable.startSample();
     }
 

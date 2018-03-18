@@ -214,15 +214,15 @@ Room {
                     var meta = pReplay.meta();
                     for (var i = 0; i < currentIndex; i++) {
                         var temp;
-                        temp = meta.girlIds.shift();
-                        meta.girlIds.push(temp);
+                        temp = meta.girlKeys.shift();
+                        meta.girlKeys.push(temp);
                         if (meta.users) {
                             temp = meta.users.shift();
                             meta.users.push(temp);
                         }
                     }
 
-                    game.table.setGirlIds(meta.girlIds);
+                    game.table.setGirlKeys(meta.girlKeys);
                     if (meta.users)
                         game.table.setUsers(meta.users);
 
@@ -267,7 +267,7 @@ Room {
 
         var meta = pReplay.meta();
         roundsGombo.model = meta.roundNames.map(_roundNameTr);
-        game.table.setGirlIds(meta.girlIds);
+        game.table.setGirlKeys(meta.girlKeys);
         tableSeed = meta.seed;
         if (meta.users)
             game.table.setUsers(meta.users);

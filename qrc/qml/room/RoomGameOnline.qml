@@ -47,10 +47,10 @@ Room {
         target: PClient
 
         onTableSeatRecved: {
-            game.startOnline(girlIds, room.users, tempDealer);
+            game.startOnline(girlKeys, room.users, tempDealer);
             game.visible = true;
             areaChoose.visible = false;
-            areaStage.girlIds = girlIds;
+            areaStage.girlKeys = girlKeys;
             areaStage.splash();
         }
 

@@ -7,7 +7,7 @@ Rectangle {
 
     signal closed
 
-    property var girlIds: [ -1, -1, -1, -1 ]
+    property var girlKeys: [ null, null, null, null ]
     property var points: [ 0, 0, 0, 0 ]
 
     width: 0.75 * height
@@ -37,7 +37,7 @@ Rectangle {
                     color: "white"
                     anchors.left: parent.left
                     font.pixelSize: global.size.middleFont
-                    text: (index + 1) + "  " + Names.names[girlIds[index]]
+                    text: (index + 1) + "  " + Names.getName(girlKeys[index])
                 }
 
                 Texd {
