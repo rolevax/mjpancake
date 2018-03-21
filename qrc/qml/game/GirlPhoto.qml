@@ -41,7 +41,7 @@ Item {
         style: Text.Outline
         styleColor: "black"
         font.pixelSize: frame.height / 13
-        text: Names.getName(girlKey)
+        text: Names.getName(girlKey, PEditor)
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         anchors.bottomMargin: frame.height / 24

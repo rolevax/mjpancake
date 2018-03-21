@@ -64,7 +64,7 @@ Room {
         anchors.rightMargin: 0.1 * parent.width
         width: 0.6 * height
         height: 0.6 * listBackground.height
-        girlKey: { "id": (_currIndex >= 0 ? 1 : -1), "path": "" }
+        girlKey: { "id": (_currIndex >= 0 ? 1 : -1), "path": entryList.model[_currIndex] }
     }
 
     Column {
@@ -86,7 +86,7 @@ Room {
             enabled: _currIndex >= 0
             onClicked: {
                 var cb = function(item) {
-                    // FUCK
+                    item.girlKey = photo.girlKey;
                 };
 
                 global.pushScene("room/RoomEditor", cb);
@@ -98,7 +98,8 @@ Room {
             width: photo.width
             enabled: _currIndex >= 0
             onLongClicked: {
-                //
+                PEditor.remove(photo.girlKey.path);
+                entryList.model = PEditor.ls();
                 _currIndex = -1;
             }
         }

@@ -1,4 +1,5 @@
 import QtQuick 2.7
+import rolevax.sakilogy 1.0
 import "../js/girlnames.js" as Names
 import "../widget"
 
@@ -37,7 +38,7 @@ Rectangle {
                     color: "white"
                     anchors.left: parent.left
                     font.pixelSize: global.size.middleFont
-                    text: (index + 1) + "  " + Names.getName(girlKeys[index])
+                    text: (index + 1) + "  " + Names.getName(girlKeys[index], PEditor)
                 }
 
                 Texd {

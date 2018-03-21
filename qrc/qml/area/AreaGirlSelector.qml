@@ -1,6 +1,7 @@
 import QtQuick 2.7
 import "../widget"
 import "../game"
+import rolevax.sakilogy 1.0
 import "../js/girlnames.js" as Names
 
 Rectangle {
@@ -106,12 +107,12 @@ Rectangle {
             visible: checkList.currIndex === 1
             anchors.fill: parent
             spacing: 2 * global.size.space
-            model: 20
+            model: PEditor.ls()
             delegate: Buzzon {
                 width: parent.width
-                text: "aaa" + index
+                text: modelData
                 onClicked: {
-                    frame.girlKey = { "id": 1, "path": "" };
+                    frame.girlKey = { "id": 1, "path": modelData };
                 }
             }
         }

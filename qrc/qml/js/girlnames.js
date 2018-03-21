@@ -129,7 +129,7 @@ function getName(girlKey, pEditor) {
         return "falsy key";
 
     if (girlKey.id === 1)
-        return "custom"; // FUCK
+        return pEditor.getName(girlKey.path);
 
     return "" + names[girlKey.id];
 }

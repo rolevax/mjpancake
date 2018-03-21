@@ -50,7 +50,7 @@ Room {
                         Buzzon {
                             smallFont: true
                             textLength: 7
-                            text: "" + Names.getName(girlKeys[index])
+                            text: Names.getName(girlKeys[index], PEditor)
                             onClicked: {
                                 _selectingIndex = index;
                                 girlSelector.girlKey = girlKeys[index];

@@ -1,6 +1,7 @@
 #include "p_table_local.h"
 #include "p_port.h"
 #include "p_global.h"
+#include "p_editor.h"
 
 #include "libsaki/app/girl_x.h"
 #include "libsaki/ai/ai_stub.h"
@@ -53,8 +54,8 @@ void PTableLocal::start(const QVariant &girlKeys, const QVariant &gameRule, int 
     std::array<std::unique_ptr<Girl>, 4> girls;
     for (int w = 0; w < 4; w++) {
         if (girlIds[w] == Girl::Id::CUSTOM) {
-            // FUCK load Lua script from filesystem
-            girls[w] = std::make_unique<GirlX>(Who(w), "fuck = 7738");
+            QString luaCode = PEditor::instance().getLuaCode(girlPaths[w]);
+            girls[w] = std::make_unique<GirlX>(Who(w), luaCode.toStdString());
         } else {
             girls[w] = Girl::create(Who(w), girlIds[w]);
         }

@@ -1,5 +1,6 @@
 import QtQuick 2.7
 import "../widget"
+import rolevax.sakilogy 1.0
 import "../js/girlnames.js" as Names
 import "../js/spell.js" as Spell
 
@@ -173,9 +174,9 @@ Item {
         text.text += "\n";
         text.text += Spell.charge(forms[0].charge);
 
-        name.text = Names.getName(girlKeys[winners[0]]);
+        name.text = Names.getName(girlKeys[winners[0]], PEditor);
         if (gunner >= 0)
-            name.text += "  <<<  " + Names.getName(girlKeys[gunner]);
+            name.text += "  <<<  " + Names.getName(girlKeys[gunner], PEditor);
 
         if (forms.length >= 2) {
             state = "huge";
@@ -189,8 +190,8 @@ Item {
             text2.text += "\n";
             text2.text += Spell.charge(forms[1].charge);
 
-            name2.text = Names.getName(girlKeys[winners[1]]);
-            name2.text += "  <<<  " + Names.getName(girlKeys[gunner]);
+            name2.text = Names.getName(girlKeys[winners[1]], PEditor);
+            name2.text += "  <<<  " + Names.getName(girlKeys[gunner], PEditor);
         }
 
         uraIndic.visible = uraIndic.doraIndic.length > 0;

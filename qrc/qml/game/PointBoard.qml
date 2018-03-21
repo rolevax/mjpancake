@@ -1,4 +1,5 @@
 import QtQuick 2.7
+import rolevax.sakilogy 1.0
 import "../js/girlnames.js" as Names
 import "../widget"
 
@@ -80,10 +81,10 @@ Item {
     }
 
     function setGirlKeys(girlKeys) {
-        item0.name = Names.getName(girlKeys[0]);
-        item1.name = Names.getName(girlKeys[1]);
-        item2.name = Names.getName(girlKeys[2]);
-        item3.name = Names.getName(girlKeys[3]);
+        item0.name = Names.getName(girlKeys[0], PEditor);
+        item1.name = Names.getName(girlKeys[1], PEditor);
+        item2.name = Names.getName(girlKeys[2], PEditor);
+        item3.name = Names.getName(girlKeys[3], PEditor);
     }
 
     onPointsChanged: {

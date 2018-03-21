@@ -15,14 +15,20 @@ class PEditor : public QObject
 public:
     explicit PEditor(QObject *parent = nullptr);
 
+    static PEditor &instance();
+
     Q_INVOKABLE QStringList ls();
+    Q_INVOKABLE QString getName(QString path);
+    Q_INVOKABLE QString getLuaCode(QString path);
     Q_INVOKABLE void save(QString path, QString name, QString luaCode);
+    Q_INVOKABLE void remove(QString path);
 
 signals:
 
 private slots:
 
 private:
+    static PEditor *sInstance;
 };
 
 

@@ -36,12 +36,14 @@ Room {
             TexdInput {
                 id: inputPath
                 hintText: "文件名"
+                text: girlKey.path ? girlKey.path : ""
                 textLength: 8
             }
 
             TexdInput {
                 id: inputName
                 hintText: "人物名"
+                text: girlKey.path ? PEditor.getName(girlKey.path) : ""
                 textLength: 8
             }
         }
@@ -87,13 +89,7 @@ Room {
                 focus: true
                 wrapMode: TextEdit.Wrap
                 onCursorRectangleChanged: flick.ensureVisible(cursorRectangle)
-                text: "function onSelfDraw()\n" +
-                      "    hand = info.getHand(self)\n" +
-                      "    effA = hand.effA()\n" +
-                      "    for t in effA do\n" +
-                      "        mount:lightA(t, 100)\n" +
-                      "    end\n" +
-                      "end"
+                text: girlKey.path ? PEditor.getLuaCode(girlKey.path) : ""
                 color: global.color.text
                 font.pixelSize: global.size.defaultFont
                 // FUCK find a monospace font
@@ -120,9 +116,10 @@ Room {
             id: buttonSave
             text: "保存"
             width: photo.width
-            // when brand_new, or filename === old_filename
+            visible: !girlKey.path || girlKey.path === inputPath.text
+            enabled: !!inputPath.text
             onClicked: {
-                // FUCK check filename
+                // FUCK validate filename
                 var saveData = {
                     path: inputPath.text
                 };
