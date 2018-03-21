@@ -49,6 +49,11 @@ Column {
         enabled: !frozen && unInput.acceptableInput && pwInput.acceptableInput
         onClicked: {
             frozen = true;
+
+            PGlobal.savedUsername = unInput.text.trim();
+            if (PGlobal.savePassword)
+                PGlobal.savedPassword = pwInput.text;
+
             loginErrorText.text = "";
             PClient.login(unInput.text.trim(), pwInput.text);
         }
@@ -80,13 +85,8 @@ Column {
         }
 
         onUserChanged: {
-            if (PClient.loggedIn) {
-                PGlobal.savedUsername = PClient.user.Username;
-                if (PGlobal.savePassword)
-                    PGlobal.savedPassword = pwInput.text;
-            } else {
+            if (!PClient.loggedIn)
                 frame.frozen = false;
-            }
         }
     }
 }

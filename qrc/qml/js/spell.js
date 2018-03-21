@@ -53,6 +53,10 @@ function charge(str) {
 }
 
 function logtr(str) {
+    if (str.startsWith("Lua")) {
+        return str.substr(3);
+    }
+
     str = str.replace(/DRAW/g, "取:");
     str = str.replace(/DISCARD/g, "出:");
     str = str.replace(/0J/g, "怜");

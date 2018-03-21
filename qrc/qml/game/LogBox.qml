@@ -15,6 +15,7 @@ Rectangle {
     Texd {
         id: msg
         anchors.centerIn: parent
+        width: parent.width
         wrapMode: TextEdit.WrapAnywhere
         horizontalAlignment: Text.AlignHCenter
         focus: true

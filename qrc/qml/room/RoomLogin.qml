@@ -102,8 +102,10 @@ Room {
             // cannot directly find by 'global' after pushed scene somehow
             var globalRef = global;
 
-            if (PClient.loggedIn)
+            if (PClient.loggedIn) {
+                PGlobal.save(); // save username/password
                 global.pushScene("room/RoomMainMenu");
+            }
 
             if (resume) {
                 globalRef.pushScene("room/RoomGameOnline", function(item) {

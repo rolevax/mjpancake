@@ -52,7 +52,7 @@ Window {
         // NOTE: if you are publishing a MOD,
         // please make your app look clearly different from the upstream version
         // in order to avoid any misunderstanding from the audience.
-        source: PGlobal.official ? "image://impro/background" : ""
+        source: "image://impro/background"
     }
 
     SoundEffect { id: soundButton; muted: PGlobal.mute; source: "qrc:///sound/button.wav" }

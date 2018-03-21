@@ -70,7 +70,6 @@ Room {
             contentHeight: codeEdit.paintedHeight
             clip: true
             flickableDirection: Flickable.VerticalFlick
-            // FUCK support mouse wheel
 
             function ensureVisible(r) {
                 if (contentX >= r.x)
@@ -86,13 +85,119 @@ Room {
             TextEdit {
                 id: codeEdit
                 width: flick.width
+                height: flick.height
                 focus: true
+                selectByMouse: true
                 wrapMode: TextEdit.Wrap
                 onCursorRectangleChanged: flick.ensureVisible(cursorRectangle)
                 text: girlKey.path ? PEditor.getLuaCode(girlKey.path) : ""
                 color: global.color.text
                 font.pixelSize: global.size.defaultFont
-                // FUCK find a monospace font
+                font.family: "Courier"
+
+                Keys.onTabPressed: {
+                    indentCurrLine();
+                    event.accepted = true;
+                }
+
+                Keys.onBacktabPressed: {
+                    backIndentCurrLine();
+                    event.accepted = true;
+                }
+
+                property bool toDealEnter: false
+
+                Keys.onReturnPressed: {
+                    toDealEnter = true;
+                    event.accepted = false;
+                }
+
+                Keys.onEnterPressed: {
+                    toDealEnter = true;
+                    event.accepted = false;
+                }
+
+                Keys.onPressed: {
+                    if (event.key === Qt.Key_D) {
+                        fixIndentAfterClose("en");
+                    } else if (event.key === Qt.Key_E) {
+                        fixIndentAfterClose("els");
+                    } else if (event.key === Qt.Key_F) {
+                        fixIndentAfterClose("elsei");
+                    }
+
+                    event.accepted = false;
+                }
+
+                onTextChanged: {
+                    if (toDealEnter) {
+                        toDealEnter = false;
+                        indentAfterEnter();
+                    }
+                }
+
+                function indentCurrLine() {
+                    var lastEnter = getText(0, cursorPosition).lastIndexOf('\n');
+                    insert(lastEnter + 1, "  ");
+                }
+
+                function backIndentCurrLine() {
+                    var lastEnter = getText(0, cursorPosition).lastIndexOf('\n');
+
+                    if (getText(lastEnter + 1, lastEnter + 3) === "  ")
+                        remove(lastEnter + 1, lastEnter + 3);
+                    else if (getText(lastEnter + 1, lastEnter + 2) === " ")
+                        remove(lastEnter + 1, lastEnter + 2);
+                }
+
+                function indentAfterEnter() {
+                    var cp = cursorPosition;
+                    var lastEnter = getText(0, cp - 1).lastIndexOf('\n');
+                    var prevLine = getText(lastEnter + 1, cp - 1);
+
+                    var spaceCt = prevLine.search(/\S/);
+                    if (isSurrounder(prevLine))
+                        spaceCt += 2;
+
+                    var lead = new Array(spaceCt + 1).join(" ");
+                    insert(cp, lead);
+                }
+
+                function fixIndentAfterClose(tail) {
+                    var lastEnter = getText(0, cursorPosition).lastIndexOf('\n');
+                    var currLine = getText(lastEnter + 1, cursorPosition);
+                    if (!(new RegExp("^\\s*" + tail + "$").test(currLine)))
+                        return;
+
+                    var prevEnter = text.substr(0, lastEnter).lastIndexOf('\n');
+                    var prevLine = getText(prevEnter + 1, lastEnter);
+                    var spaceCt = prevLine.search(/\S/);
+                    if (!isSurrounder(prevLine))
+                        spaceCt -= 2;
+
+                    var lead = new Array(spaceCt + 1).join(" ") + tail;
+                    remove(lastEnter + 1, cursorPosition);
+                    insert(lastEnter + 1, lead);
+                }
+
+                function isSurrounder(line) {
+                    if (/\bfunction\b.*\(.*\)\s*$/.test(line))
+                        return true;
+
+                    if (/\bthen\b\s*$/.test(line))
+                        return true;
+
+                    if (/\belse\b\s*$/.test(line))
+                        return true;
+
+                    if (/\belseif\b\s*$/.test(line))
+                        return true;
+
+                    if (/\bdo\b\s*$/.test(line))
+                        return true;
+
+                    return false;
+                }
             }
         }
     }
@@ -120,10 +225,6 @@ Room {
             enabled: !!inputPath.text
             onClicked: {
                 // FUCK validate filename
-                var saveData = {
-                    path: inputPath.text
-                };
-
                 PEditor.save(inputPath.text, inputName.text, codeEdit.text);
                 room.closed();
             }
@@ -133,14 +234,23 @@ Room {
             visible: !buttonSave.visible
             text: "改名并保存"
             width: photo.width
-            // when filename !== old_filename
+            onClicked: {
+                // FUCK validate filename
+                PEditor.save(inputPath.text, inputName.text, codeEdit.text);
+                PEditor.remove(girlKey.path);
+                room.closed();
+            }
         }
 
         Buzzon {
             visible: !buttonSave.visible
             text: "以新名另存"
             width: photo.width
-            // when filename !== old_filename
+            onClicked: {
+                // FUCK validate filename
+                PEditor.save(inputPath.text, inputName.text, codeEdit.text);
+                room.closed();
+            }
         }
 
         Buzzon {
@@ -150,5 +260,9 @@ Room {
                 room.closed();
             }
         }
+    }
+
+    Component.onCompleted: {
+        PEditor.setLuaHighlighter(codeEdit.textDocument)
     }
 }
