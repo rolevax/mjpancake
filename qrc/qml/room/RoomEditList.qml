@@ -104,4 +104,36 @@ Room {
             }
         }
     }
+
+    Buzzon {
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.margins: global.size.space
+        enabled: _currIndex >= 0
+        textLength: 8
+        text: "三狗战"
+        onClicked: {
+            var cb = function(item) {
+                var girlKeys = [
+                    photo.girlKey,
+                    { id: 0, path: "" },
+                    { id: 0, path: "" },
+                    { id: 0, path: "" }
+                ];
+
+                var rule = {
+                    "roundLimit": 8,
+                    "fly": true, "returnLevel": 30000, "hill": 20000,
+                    "headJump": true, "daiminkanPao": true,
+                    "nagashimangan": true, "ippatsu": true,
+                    "uradora": true, "kandora": true,
+                    "akadora": 2 // int 2 denotes 4 akadoras
+                }
+
+                item.startLocal(girlKeys, rule, 0);
+            };
+
+            global.pushScene("game/Game", cb);
+        }
+    }
 }

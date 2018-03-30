@@ -222,9 +222,8 @@ Room {
             text: "保存"
             width: photo.width
             visible: !girlKey.path || girlKey.path === inputPath.text
-            enabled: !!inputPath.text
+            enabled: _pathOk()
             onClicked: {
-                // FUCK validate filename
                 PEditor.save(inputPath.text, inputName.text, codeEdit.text);
                 room.closed();
             }
@@ -234,8 +233,8 @@ Room {
             visible: !buttonSave.visible
             text: "改名并保存"
             width: photo.width
+            enabled: _pathOk()
             onClicked: {
-                // FUCK validate filename
                 PEditor.save(inputPath.text, inputName.text, codeEdit.text);
                 PEditor.remove(girlKey.path);
                 room.closed();
@@ -246,8 +245,8 @@ Room {
             visible: !buttonSave.visible
             text: "以新名另存"
             width: photo.width
+            enabled: _pathOk()
             onClicked: {
-                // FUCK validate filename
                 PEditor.save(inputPath.text, inputName.text, codeEdit.text);
                 room.closed();
             }
@@ -264,5 +263,9 @@ Room {
 
     Component.onCompleted: {
         PEditor.setLuaHighlighter(codeEdit.textDocument)
+    }
+
+    function _pathOk() {
+        return /^[a-zA-Z0-9_]+$/.test(inputPath.text);
     }
 }
