@@ -303,9 +303,9 @@ void PClient::handleTableInit(const QJsonObject &msg)
 
 void PClient::handleTableSeat(const QJsonObject &msg)
 {
-    QJsonArray girlIds = msg["Gids"].toArray();
+    QJsonArray girlKeys = msg["GirlKeys"].toArray();
     int tempDealer = msg["TempDealer"].toInt();
-    emit tableSeatRecved(girlIds.toVariantList(), tempDealer);
+    emit tableSeatRecved(girlKeys.toVariantList(), tempDealer);
 }
 
 void PClient::handleTableEvent(const QJsonObject &msg)

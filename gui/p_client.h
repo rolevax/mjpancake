@@ -65,7 +65,7 @@ signals:
     void authFailIn(const QString &reason);
     void tableInitRecved(const QVariantMap &matchResult,
                          const QVariantList &choices, const QVariantList &foodCosts);
-    void tableSeatRecved(const QVariantList &girlIds, int tempDealer);
+    void tableSeatRecved(const QVariantList &girlKeys, int tempDealer);
     void tableEndRecved(bool abortive, const QVariantList &foodChanges);
     void replayListIn(const QVariantList &replayIds);
     void replayIn(int replayId, const QString &replayJson);

@@ -23,7 +23,7 @@ Room {
             model: [
                 { text: "麻将部备品", load: "Tools" },
                 { text: "设置", load: "Settings" },
-                { text: "联机(不稳)", load: "Client" }
+                { text: "联机", load: "Client" }
             ]
 
             delegate: Buxxon {
