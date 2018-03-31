@@ -6,6 +6,7 @@ Item {
     id: frame
 
     signal actionTriggered(string actStr, int actArg, string actTile)
+    signal barkEntered
 
     property bool animEnabled: true
     property string tileSet: "std"
@@ -465,6 +466,8 @@ Item {
     }
 
     function _enterBark(actStr, clickedTileStr) {
+        frame.barkEntered();
+
         frame.deactivate();
         _actBark = actStr;
         var banOne1 = "";

@@ -395,6 +395,15 @@ Item {
                 table.green.visible = !table.green.visible;
             table.action(actStr, actArg, actTile);
         }
+
+        onBarkEntered: {
+            if (table.hasTimeout) {
+                timeBar.cancel();
+                timeBar.hiddenDuration = 5000;
+                timeBar.shownDuration = 5000;
+                timeBar.timeDown();
+            }
+        }
     }
 
     TimeBar {
@@ -475,7 +484,7 @@ Item {
         if (table.hasTimeout) {
             if (action.PASS) {
                 timeBar.hiddenDuration = 0;
-                timeBar.shownDuration = 3000;
+                timeBar.shownDuration = 2000;
             } else {
                 timeBar.hiddenDuration = 5000;
                 timeBar.shownDuration = 5000;
