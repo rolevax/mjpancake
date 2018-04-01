@@ -53,7 +53,7 @@ Item {
         horizontalAlignment: pointText.horizontalAlignment
         verticalAlignment: pointText.verticalAlignment
         color: pointText.color
-        text: (myPoint - point > 0 ? "+" : "") + (myPoint - point)
+        text: (point - myPoint > 0 ? "+" : "") + (point - myPoint)
     }
 
     Item {
