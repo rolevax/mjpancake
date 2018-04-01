@@ -1,9 +1,11 @@
 #include "p_image_provider.h"
 #include "p_global.h"
+#include "p_editor.h"
 
 #include <QtGlobal>
 #include <QDateTime>
-#include <iostream> // debug
+
+
 
 PImageProvider::PImageProvider()
     : QQuickImageProvider(QQuickImageProvider::Image)
@@ -23,8 +25,18 @@ QImage PImageProvider::requestImage(const QString &id, QSize *size,
         if (image.isNull())
             image = QImage(":/pic/default_bg.png");
     } else if (id.startsWith("photo/")) {
+        // id format photo/{girl-id}/{girl-path}
+        // e.g. photo/710111/
+        // e.g. photo/1/my_custom_char
         QStringList parts = id.split('/');
-        image = QImage(PGlobal::photoPath() + "/" + parts[1]);
+        QString girlId = parts[1];
+        QString girlPath = parts[2];
+
+        if (girlId == "1") // Lua custom
+            image = PEditor::instance().getPhoto(girlPath);
+        else // official built-in
+            image = QImage(PGlobal::photoPath() + "/" + girlId);
+
         if (image.isNull()) { // fallback to placeholder photo
             int r = 16 + qrand() % 127;
             int g = 16 + qrand() % 127;

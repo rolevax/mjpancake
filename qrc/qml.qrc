@@ -9,6 +9,7 @@
         <file>qml/widget/Texd.qml</file>
         <file>qml/widget/TexdInput.qml</file>
         <file>qml/widget/AnimadionBuffer.qml</file>
+        <file>qml/widget/ImageBicker.qml</file>
         <file>qml/area/AreaLogin.qml</file>
         <file>qml/area/AreaGirlSelector.qml</file>
         <file>qml/area/RuleConfig.qml</file>

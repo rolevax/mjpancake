@@ -224,6 +224,7 @@ Room {
             visible: !girlKey.path || girlKey.path === inputPath.text
             enabled: _pathOk()
             onClicked: {
+                // FUCK photo
                 PEditor.save(inputPath.text, inputName.text, codeEdit.text);
                 room.closed();
             }
@@ -235,6 +236,7 @@ Room {
             width: photo.width
             enabled: _pathOk()
             onClicked: {
+                // FUCK photo
                 PEditor.save(inputPath.text, inputName.text, codeEdit.text);
                 PEditor.remove(girlKey.path);
                 room.closed();
@@ -247,6 +249,7 @@ Room {
             width: photo.width
             enabled: _pathOk()
             onClicked: {
+                // FUCK photo
                 PEditor.save(inputPath.text, inputName.text, codeEdit.text);
                 room.closed();
             }

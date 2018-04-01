@@ -26,10 +26,13 @@ void ImagePickReceiver::handleActivityResult(int requestCode, int resultCode,
 
         switch (requestCode) {
         case REQ_BACKGROUND:
-            mPImageSettings.setBackground(imagePath.toString());
+            PGlobal::instance().setBackground(imagePath.toString());
             break;
         case REQ_GIRL_PHOTO:
-            mPImageSettings.setPhoto(mGirlId, imagePath.toString());
+            PGlobal::instance().setPhoto(mGirlId, imagePath.toString());
+            break;
+        case REQ_GET_IMAGE_PATH:
+            mPImageSettings.receiveImagePath(imagePath.toString());
             break;
         default:
             break;
@@ -53,15 +56,15 @@ PImageSettings::PImageSettings(QObject *parent)
 {
 }
 
-void PImageSettings::setBackground(QString path)
+void PImageSettings::getImagePathByAndroidGallery()
 {
-    QString bgPath = PGlobal::configPath() + "/background";
-    if (QFile::exists(bgPath))
-        QFile::remove(bgPath);
-
-    QFile::copy(path, bgPath);
-
-    emit backgroundCopied();
+#ifdef Q_OS_ANDROID
+    QAndroidJniObject intent = QAndroidJniObject::callStaticObjectMethod(
+            "rolevax/sakilogy/ImagePickerActivity",
+            "createChoosePhotoIntent",
+            "()Landroid/content/Intent;");
+    QtAndroid::startActivity(intent, ImagePickReceiver::REQ_GET_IMAGE_PATH, &mImagePickReceiver);
+#endif
 }
 
 void PImageSettings::setBackgroundByAndroidGallery()
@@ -73,17 +76,6 @@ void PImageSettings::setBackgroundByAndroidGallery()
             "()Landroid/content/Intent;");
     QtAndroid::startActivity(intent, ImagePickReceiver::REQ_BACKGROUND, &mImagePickReceiver);
 #endif
-}
-
-void PImageSettings::setPhoto(QString girlId, QString path)
-{
-    QString photoPath(PGlobal::photoPath() + "/" + girlId);
-    if (QFile::exists(photoPath))
-        QFile::remove(photoPath);
-
-    QFile::copy(path, photoPath);
-
-    emit photoCopied();
 }
 
 void PImageSettings::setPhotoByAndroidGallery(QString girlId)
@@ -98,4 +90,9 @@ void PImageSettings::setPhotoByAndroidGallery(QString girlId)
 #else
     (void) girlId;
 #endif
+}
+
+void PImageSettings::receiveImagePath(QString path)
+{
+    emit imagePathReceived(path);
 }

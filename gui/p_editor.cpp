@@ -3,6 +3,7 @@
 
 #include <QDir>
 #include <QJsonDocument>
+#include <QBuffer>
 
 
 
@@ -113,20 +114,7 @@ QStringList PEditor::ls()
 
 QString PEditor::getName(QString path)
 {
-    QString res("");
-
-    QFile jsonFile(PGlobal::editPath(path + ".girl.json"));
-    if (jsonFile.exists()) {
-        jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);
-        QString val = jsonFile.readAll();
-        jsonFile.close();
-        QJsonDocument d = QJsonDocument::fromJson(val.toUtf8());
-        QJsonObject obj = d.object();
-        res = obj["name"].toString();
-        // TODO cache file conotent with a LRU container
-    }
-
-    return res;
+    return getGirlJson(path)["name"].toString();
 }
 
 QString PEditor::getLuaCode(QString path)
@@ -144,7 +132,13 @@ QString PEditor::getLuaCode(QString path)
     return res;
 }
 
-void PEditor::save(QString path, QString name, QString luaCode)
+QImage PEditor::getPhoto(QString path)
+{
+    QString base64 = getGirlJson(path)["photoBase64"].toString();
+    return QImage::fromData(QByteArray::fromBase64(base64.toLatin1()), "PNG");
+}
+
+void PEditor::save(QString path, QString name, QString luaCode, QString photoFile)
 {
     if (path.isEmpty())
         return;
@@ -153,8 +147,19 @@ void PEditor::save(QString path, QString name, QString luaCode)
     QFile luaFile(PGlobal::editPath(path + ".girl.lua"));
 
     QJsonObject obj;
+
     obj["name"] = name;
-    obj["photoBase64"] = ""; // FUCK
+
+    QImage image(photoFile);
+    if (!image.isNull()) {
+        QByteArray byteArray;
+        QBuffer buffer(&byteArray);
+        image.save(&buffer, "PNG");
+        obj["photoBase64"] = QString::fromLatin1(byteArray.toBase64().data());
+    } else {
+        obj["photoBase64"] = "";
+    }
+
     jsonFile.open(QIODevice::WriteOnly | QIODevice::Text);
     jsonFile.write(QJsonDocument(obj).toJson());
 
@@ -166,6 +171,24 @@ void PEditor::remove(QString path)
 {
     QFile::remove(PGlobal::editPath(path + ".girl.json"));
     QFile::remove(PGlobal::editPath(path + ".girl.lua"));
+}
+
+QJsonObject PEditor::getGirlJson(QString path)
+{
+    // TODO cache file conotent with a LRU container
+
+    QJsonObject res;
+
+    QFile jsonFile(PGlobal::editPath(path + ".girl.json"));
+    if (jsonFile.exists()) {
+        jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);
+        QString val = jsonFile.readAll();
+        jsonFile.close();
+        QJsonDocument d = QJsonDocument::fromJson(val.toUtf8());
+        res = d.object();
+    }
+
+    return res;
 }
 
 QObject *pEditorSingletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine)

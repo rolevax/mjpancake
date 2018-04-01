@@ -8,7 +8,7 @@ Room {
     Flow {
         anchors.centerIn: parent
         spacing: global.size.space
-        width: 4 * normal.width + 2 * global.size.space
+        width: 4 * normal.width + 3 * global.size.space
 
         Buxxon {
             width: 2 * normal.width

@@ -14,6 +14,10 @@
 #include <QDebug>
 #include <iostream>
 
+
+
+PGlobal *PGlobal::sInstance = nullptr;
+
 PGlobal::PGlobal(QObject *parent) : QObject(parent)
 {
     QFile file(configPath() + "/settings.json");
@@ -27,11 +31,35 @@ PGlobal::PGlobal(QObject *parent) : QObject(parent)
     }
 
     regulateRoot();
+
+    sInstance = this;
 }
 
 PGlobal::~PGlobal()
 {
     save();
+}
+
+void PGlobal::setBackground(QString path)
+{
+    QString bgPath = PGlobal::configPath() + "/background";
+    if (QFile::exists(bgPath))
+        QFile::remove(bgPath);
+
+    QFile::copy(path, bgPath);
+
+    emit backgroundCopied();
+}
+
+void PGlobal::setPhoto(QString girlId, QString path)
+{
+    QString photoPath(PGlobal::photoPath() + "/" + girlId);
+    if (QFile::exists(photoPath))
+        QFile::remove(photoPath);
+
+    QFile::copy(path, photoPath);
+
+    emit photoCopied();
 }
 
 void PGlobal::save()
@@ -60,6 +88,11 @@ void PGlobal::systemNotify()
         "popNotification",
         "()V");
 #endif
+}
+
+PGlobal &PGlobal::instance()
+{
+    return *sInstance;
 }
 
 bool PGlobal::official()

@@ -27,9 +27,13 @@ public:
     Q_PROPERTY(bool mute READ mute WRITE setMute NOTIFY muteChanged)
     Q_PROPERTY(QVariantMap hints READ hints WRITE setHints NOTIFY hintsChanged)
 
+    Q_INVOKABLE void setBackground(QString path);
+    Q_INVOKABLE void setPhoto(QString girlId, QString path);
     Q_INVOKABLE void save();
     Q_INVOKABLE static void forceImmersive();
     Q_INVOKABLE static void systemNotify();
+
+    static PGlobal &instance();
 
     static bool official();
     static QString version();
@@ -63,6 +67,8 @@ signals:
     void savedPasswordChanged();
     void muteChanged();
     void hintsChanged();
+    void backgroundCopied();
+    void photoCopied();
 
 public slots:
 
@@ -70,6 +76,7 @@ private:
     void regulateRoot();
 
 private:
+    static PGlobal *sInstance;
     QJsonObject mRoot;
 };
 

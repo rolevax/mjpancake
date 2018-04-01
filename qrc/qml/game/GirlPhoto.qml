@@ -18,7 +18,7 @@ Item {
     visible: girlKey && girlKey.id !== -1
 
     Image {
-        source: girlKey ? ("image://impro/photo/" + girlKey.id) : ""
+        source: girlKey ? ("image://impro/photo/" + girlKey.id + "/" + girlKey.path) : ""
         anchors.fill: parent
         cache: frame.cache
     }
