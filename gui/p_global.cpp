@@ -46,7 +46,7 @@ void PGlobal::setBackground(QUrl url)
     if (QFile::exists(bgPath))
         QFile::remove(bgPath);
 
-    QFile::copy(url.path(), bgPath);
+    QFile::copy(url.toLocalFile(), bgPath);
 
     emit backgroundCopied();
 }
@@ -57,7 +57,7 @@ void PGlobal::setPhoto(QString girlId, QUrl url)
     if (QFile::exists(photoPath))
         QFile::remove(photoPath);
 
-    QFile::copy(url.path(), photoPath);
+    QFile::copy(url.toLocalFile(), photoPath);
 
     emit photoCopied();
 }

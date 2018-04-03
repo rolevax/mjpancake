@@ -150,7 +150,7 @@ void PEditor::save(QString path, QString name, QString luaCode, QUrl photoUrl)
 
     obj["name"] = name;
 
-    QImage image(photoUrl.path());
+    QImage image(photoUrl.toLocalFile());
     if (!image.isNull()) {
         QByteArray byteArray;
         QBuffer buffer(&byteArray);
