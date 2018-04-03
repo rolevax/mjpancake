@@ -7,6 +7,8 @@ import "../widget"
 Item {
     id: frame
 
+    property alias source: image.source
+
     property var girlKey: {
         "id": -1,
         "path": "",
@@ -18,6 +20,7 @@ Item {
     visible: girlKey && girlKey.id !== -1
 
     Image {
+        id: image
         source: girlKey ? ("image://impro/photo/" + girlKey.id + "/" + girlKey.path) : ""
         anchors.fill: parent
         cache: frame.cache

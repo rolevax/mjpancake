@@ -27,8 +27,8 @@ public:
     Q_PROPERTY(bool mute READ mute WRITE setMute NOTIFY muteChanged)
     Q_PROPERTY(QVariantMap hints READ hints WRITE setHints NOTIFY hintsChanged)
 
-    Q_INVOKABLE void setBackground(QString path);
-    Q_INVOKABLE void setPhoto(QString girlId, QString path);
+    Q_INVOKABLE void setBackground(QUrl url);
+    Q_INVOKABLE void setPhoto(QString girlId, QUrl url);
     Q_INVOKABLE void save();
     Q_INVOKABLE static void forceImmersive();
     Q_INVOKABLE static void systemNotify();

@@ -65,6 +65,7 @@ Room {
         width: 0.6 * height
         height: 0.6 * listBackground.height
         girlKey: { "id": (_currIndex >= 0 ? 1 : -1), "path": entryList.model[_currIndex] }
+        cache: false
     }
 
     Column {

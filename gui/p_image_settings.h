@@ -11,8 +11,6 @@ class PImageSettings;
 class ImagePickReceiver : public QAndroidActivityResultReceiver
 {
 public:
-    static const int REQ_BACKGROUND = 101;
-    static const int REQ_GIRL_PHOTO = 102;
     static const int REQ_GET_IMAGE_PATH = 103;
 
     ImagePickReceiver(PImageSettings &pSettings) : mPImageSettings(pSettings) {}
@@ -35,10 +33,6 @@ public:
     explicit PImageSettings(QObject *parent = 0);
 
     Q_INVOKABLE void getImagePathByAndroidGallery();
-
-    Q_INVOKABLE void setBackgroundByAndroidGallery();
-
-    Q_INVOKABLE void setPhotoByAndroidGallery(QString girlId);
 
     void receiveImagePath(QString path);
 

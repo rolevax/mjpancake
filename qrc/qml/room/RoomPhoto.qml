@@ -61,7 +61,7 @@ Room {
         id: imagePicker
 
         onImageAccepted: {
-            PGlobal.setPhoto(girlMenu.currGirlId, path);
+            PGlobal.setPhoto(girlMenu.currGirlId, fileUrl);
         }
     }
 }

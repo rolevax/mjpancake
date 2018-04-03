@@ -208,8 +208,16 @@ Room {
         anchors.right: parent.right
         anchors.rightMargin: 0.1 * parent.width
         width: 0.6 * height
-        height: 0.6 * listBackground.height
+        height: (mouseArea.containsPress ? 0.95 : 1) * 0.6 * listBackground.height
         girlKey: room.girlKey
+
+        MouseArea {
+            id: mouseArea
+            anchors.fill: parent
+            onClicked: {
+                imagePicker.open();
+            }
+        }
     }
 
     Column {
@@ -224,8 +232,7 @@ Room {
             visible: !girlKey.path || girlKey.path === inputPath.text
             enabled: _pathOk()
             onClicked: {
-                // FUCK photo
-                PEditor.save(inputPath.text, inputName.text, codeEdit.text);
+                _save();
                 room.closed();
             }
         }
@@ -236,8 +243,7 @@ Room {
             width: photo.width
             enabled: _pathOk()
             onClicked: {
-                // FUCK photo
-                PEditor.save(inputPath.text, inputName.text, codeEdit.text);
+                _save();
                 PEditor.remove(girlKey.path);
                 room.closed();
             }
@@ -249,8 +255,7 @@ Room {
             width: photo.width
             enabled: _pathOk()
             onClicked: {
-                // FUCK photo
-                PEditor.save(inputPath.text, inputName.text, codeEdit.text);
+                _save();
                 room.closed();
             }
         }
@@ -264,11 +269,23 @@ Room {
         }
     }
 
+    ImageBicker {
+        id: imagePicker
+
+        onImageAccepted: {
+            photo.source = fileUrl;
+        }
+    }
+
     Component.onCompleted: {
         PEditor.setLuaHighlighter(codeEdit.textDocument)
     }
 
     function _pathOk() {
         return /^[a-zA-Z0-9_]+$/.test(inputPath.text);
+    }
+
+    function _save() {
+        PEditor.save(inputPath.text, inputName.text, codeEdit.text, photo.source);
     }
 }

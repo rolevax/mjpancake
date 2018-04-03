@@ -58,7 +58,7 @@ public:
     Q_INVOKABLE QString getName(QString path);
     Q_INVOKABLE QString getLuaCode(QString path);
     Q_INVOKABLE QImage getPhoto(QString path);
-    Q_INVOKABLE void save(QString path, QString name, QString luaCode, QString photoFile);
+    Q_INVOKABLE void save(QString path, QString name, QString luaCode, QUrl photoFile);
     Q_INVOKABLE void remove(QString path);
 
 signals:

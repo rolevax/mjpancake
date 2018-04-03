@@ -40,24 +40,24 @@ PGlobal::~PGlobal()
     save();
 }
 
-void PGlobal::setBackground(QString path)
+void PGlobal::setBackground(QUrl url)
 {
     QString bgPath = PGlobal::configPath() + "/background";
     if (QFile::exists(bgPath))
         QFile::remove(bgPath);
 
-    QFile::copy(path, bgPath);
+    QFile::copy(url.path(), bgPath);
 
     emit backgroundCopied();
 }
 
-void PGlobal::setPhoto(QString girlId, QString path)
+void PGlobal::setPhoto(QString girlId, QUrl url)
 {
     QString photoPath(PGlobal::photoPath() + "/" + girlId);
     if (QFile::exists(photoPath))
         QFile::remove(photoPath);
 
-    QFile::copy(path, photoPath);
+    QFile::copy(url.path(), photoPath);
 
     emit photoCopied();
 }

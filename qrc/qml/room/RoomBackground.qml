@@ -48,7 +48,7 @@ Room {
         id: imageBicker
 
         onImageAccepted: {
-            PGlobal.setBackground(path);
+            PGlobal.setBackground(fileUrl);
         }
     }
 

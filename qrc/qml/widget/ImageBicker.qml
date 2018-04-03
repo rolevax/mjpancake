@@ -3,7 +3,7 @@ import QtQuick.Dialogs 1.2
 import rolevax.sakilogy 1.0
 
 Item {
-    signal imageAccepted(string path)
+    signal imageAccepted(string path, url fileUrl)
 
     PImageSettings {
         id: pImageSettings
@@ -23,7 +23,7 @@ Item {
             // in Windoge's case, slice one more character
             // to get rid of the initial '/' and make it "C:/..."
             var filename = fileUrl.toString().slice(global.windows ? 8 : 7);
-            imageAccepted(filename)
+            imageAccepted(filename, fileUrl);
         }
     }
 

@@ -138,7 +138,7 @@ QImage PEditor::getPhoto(QString path)
     return QImage::fromData(QByteArray::fromBase64(base64.toLatin1()), "PNG");
 }
 
-void PEditor::save(QString path, QString name, QString luaCode, QString photoFile)
+void PEditor::save(QString path, QString name, QString luaCode, QUrl photoUrl)
 {
     if (path.isEmpty())
         return;
@@ -150,7 +150,7 @@ void PEditor::save(QString path, QString name, QString luaCode, QString photoFil
 
     obj["name"] = name;
 
-    QImage image(photoFile);
+    QImage image(photoUrl.path());
     if (!image.isNull()) {
         QByteArray byteArray;
         QBuffer buffer(&byteArray);
