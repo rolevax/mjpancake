@@ -38,6 +38,7 @@ Room {
                 hintText: "文件名"
                 text: girlKey.path ? girlKey.path : ""
                 textLength: 8
+                KeyNavigation.tab: inputName
             }
 
             TexdInput {
@@ -45,6 +46,8 @@ Room {
                 hintText: "人物名"
                 text: girlKey.path ? PEditor.getName(girlKey.path) : ""
                 textLength: 8
+                KeyNavigation.tab: codeEdit
+                KeyNavigation.backtab: inputPath
             }
         }
 
@@ -86,7 +89,6 @@ Room {
                 id: codeEdit
                 width: flick.width
                 height: flick.height
-                focus: true
                 selectByMouse: true
                 wrapMode: TextEdit.Wrap
                 onCursorRectangleChanged: flick.ensureVisible(cursorRectangle)
