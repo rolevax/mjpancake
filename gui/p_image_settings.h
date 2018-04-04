@@ -2,6 +2,9 @@
 #define P_IMAGE_SETTINGS_H
 
 #include <QObject>
+#include <QUrl>
+
+
 
 #ifdef Q_OS_ANDROID
 #include <QAndroidActivityResultReceiver>
@@ -25,6 +28,8 @@ private:
 
 #endif
 
+
+
 class PImageSettings : public QObject
 {
     Q_OBJECT
@@ -37,7 +42,7 @@ public:
     void receiveImagePath(QString path);
 
 signals:
-    void imagePathReceived(QString path);
+    void imageUrlReceived(QUrl fileUrl);
 
 public slots:
 

@@ -3,13 +3,13 @@ import QtQuick.Dialogs 1.2
 import rolevax.sakilogy 1.0
 
 Item {
-    signal imageAccepted(string path, url fileUrl)
+    signal imageAccepted(url fileUrl)
 
     PImageSettings {
         id: pImageSettings
 
-        onImagePathReceived: {
-            imageAccepted(path);
+        onImageUrlReceived: {
+            imageAccepted(fileUrl);
         }
     }
 
@@ -19,17 +19,13 @@ Item {
         folder: shortcuts.pictures
         nameFilters: [ "图片文件 (*.jpg *.jpeg *.png *.gif *.bmp)" ]
         onAccepted: {
-            // slice() to get rid of "file://" prefix
-            // in Windoge's case, slice one more character
-            // to get rid of the initial '/' and make it "C:/..."
-            var filename = fileUrl.toString().slice(global.windows ? 8 : 7);
-            imageAccepted(filename, fileUrl);
+            imageAccepted(fileUrl);
         }
     }
 
     function open() {
         if (global.mobile)
-            pImageSettings.getImagePathByAndroidGallery()();
+            pImageSettings.getImagePathByAndroidGallery();
         else
             fileDialog.open();
     }

@@ -7,12 +7,12 @@ Room {
     readonly property var _contributors: [
         "汐羽", "xmt", "如画江山",
         "Once", "TerryHu", "ethan",
-        "皋月", "karkimira", "喵打",
-        "TSD", "sakisan", "瑞原 はやり",
-        "Mikyu", "银", "Paper",
-        "chaseyun", "宅炮", "tianmidai123",
-        "迹落无言", "花鹿水", "苟利国家生死以",
-        "大七星石户之霞", "Lhtie", "中东自爆英灵",
+        "Lhtie", "皋月", "karkimira",
+        "喵打", "TSD", "sakisan",
+        "瑞原 はやり", "Mikyu", "银",
+        "Paper", "chaseyun", "宅炮",
+        "tianmidai123", "迹落无言", "花鹿水",
+        "苟利国家生死以", "大七星石户之霞", "中东自爆英灵",
         "白夜旬", "Yoarkisess", "九月",
         "临海小红帽"
     ]

@@ -63,5 +63,5 @@ void PImageSettings::getImagePathByAndroidGallery()
 
 void PImageSettings::receiveImagePath(QString path)
 {
-    emit imagePathReceived(path);
+    emit imageUrlReceived(QUrl::fromLocalFile(path));
 }
