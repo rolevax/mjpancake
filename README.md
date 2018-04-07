@@ -6,7 +6,7 @@
 Pancake Mahjong is an inofficial Saki mahjong simulator
 with high-quality occult implementation.
 
-Visit [https://mjpancake.github.io] for more information.
+Visit https://mjpancake.github.io for more information.
 
 ## Build
 
@@ -18,18 +18,10 @@ to obtain a probably better performance.
 The target platform can be Linux, Windows, macOS, Android, or iOS. 
 
 To obtain an executable client,
-build it either by the Qt Creator (easier) or from the command line:
-
-```
-git clone --recursive https://github.com/rolevax/mjpancake.git
-mkdir build && cd build
-qmake -config release ../mjpancake
-make (or nmake, or mingw32-make according to your platform)
-```
+open `mjpancake.pro` with Qt Creator and just build it.
 
 ## License
 
 - The Pancake Mahjong client is released under the LGPLv3 license
 - The Libsaki library is released under the MIT license
-
 

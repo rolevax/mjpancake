@@ -20,7 +20,7 @@ Room {
         anchors.bottomMargin: 0.1 * parent.height
         anchors.leftMargin: 0.1 * parent.width
         anchors.rightMargin: global.size.gap
-        color: global.color.back
+        color: "#BB000000"
     }
 
     Item {
