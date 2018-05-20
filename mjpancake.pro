@@ -1,14 +1,5 @@
 TEMPLATE = app
 
-format.target = formatted
-linux: format.commands = (cd $$PWD; ./bin/format.linux.sh)
-win32: format.commands = (cd $$PWD && .\bin\format.win.bat)
-mac: format.commands = (cd $$PWD; ./bin/format.mac.sh)
-format.depends =
-
-QMAKE_EXTRA_TARGETS += format
-PRE_TARGETDEPS = formatted
-
 QT += qml quick widgets network multimedia
 
 android: QT += androidextras
