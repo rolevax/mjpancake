@@ -26,7 +26,7 @@ void PParse::parse(const QStringList &tiles)
     auto parseds = closed.parse4(barkCt);
     QStringList res;
 
-    for (Parsed &p : parseds) {
+    for (const Parsed4 &p : parseds) {
         std::ostringstream oss;
         oss << p;
         res.append(QString::fromStdString(oss.str()));
