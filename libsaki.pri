@@ -17,7 +17,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 # Input
 HEADERS += libsaki/3rd/json.hpp \
-           libsaki/3rd/kaguya.hpp \
+           libsaki/3rd/sol.hpp \
            libsaki/ai/ai.h \
            libsaki/ai/ai_achiga_kuro.h \
            libsaki/ai/ai_eisui_hatsumi.h \
@@ -31,6 +31,7 @@ HEADERS += libsaki/3rd/json.hpp \
            libsaki/ai/ai_usuzan_sawaya.h \
            libsaki/app/gen.h \
            libsaki/app/girl_x.h \
+           libsaki/app/lua_var_scope.h \
            libsaki/app/replay.h \
            libsaki/app/table_msg.h \
            libsaki/app/table_server.h \
