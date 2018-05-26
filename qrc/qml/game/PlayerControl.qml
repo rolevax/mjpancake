@@ -395,15 +395,13 @@ Item {
         outAnim.start();
     }
 
+    // get neighbor tile of same suit
     function _t34Plus(tileStr, off) {
-        var arr = [
-            "1m", "2m", "3m", "4m", "5m", "6m", "7m", "8m", "9m",
-            "1p", "2p", "3p", "4p", "5p", "6p", "7p", "8p", "9p",
-            "1s", "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s"
-        ];
-        var ts = tileStr[0] === "0" ? ("5" + tileStr[1]) : tileStr;
-        var id34 = arr.indexOf(ts);
-        return arr[id34 + off];
+        var val = +tileStr[0];
+        if (val === 0)
+            val = 5;
+        val += off;
+        return (1 <= val && val <= 9) ? val + tileStr[1] : "";
     }
 
     function _offIndexInHand34(tileStr, off) {
