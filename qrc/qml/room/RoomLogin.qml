@@ -68,6 +68,10 @@ Room {
         enabled: names.visible
         onClicked: {
             names.visible = false;
+
+            // hide online features, directly start offline mode
+            PClient.logout();
+            global.pushScene("room/RoomMainMenu");
         }
     }
 
