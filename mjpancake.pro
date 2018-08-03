@@ -6,7 +6,10 @@ android: QT += androidextras
 
 CONFIG += c++1z
 CONFIG(release, debug|release): DEFINES += NDEBUG
-exists($$PWD/.official): DEFINES += PANCAKE_OFFICIAL
+
+# Please make the look-and-feel significantly different from
+# the official version if you are releasing a MOD
+#DEFINES += PANCAKE_OFFICIAL
 
 HEADERS += \
     gui/p_client.h \
