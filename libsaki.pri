@@ -31,6 +31,7 @@ HEADERS += libsaki/3rd/json.hpp \
            libsaki/ai/ai_usuzan_sawaya.h \
            libsaki/app/gen.h \
            libsaki/app/girl_x.h \
+           libsaki/app/lua_class.h \
            libsaki/app/lua_var_scope.h \
            libsaki/app/replay.h \
            libsaki/app/table_msg.h \
@@ -140,6 +141,7 @@ SOURCES += libsaki/ai/ai.cpp \
            libsaki/ai/ai_usuzan_sawaya.cpp \
            libsaki/app/gen.cpp \
            libsaki/app/girl_x.cpp \
+           libsaki/app/lua_class.cpp \
            libsaki/app/replay.cpp \
            libsaki/app/table_msg.cpp \
            libsaki/app/table_server.cpp \
