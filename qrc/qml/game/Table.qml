@@ -52,7 +52,7 @@ Item {
             }
 
             switch (type) {
-            case "first-dealer-choosen":
+            case "first-dealer-chosen":
                 cb = function() {
                     mount.dealer = args.dealer;
                     middle.setDealer(args.dealer)
