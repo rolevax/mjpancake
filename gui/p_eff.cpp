@@ -58,7 +58,7 @@ QVariantList PEff::nanikiru(const saki::Hand &hand, const saki::Mount &mount)
     QVariantList list;
     for (size_t i = 0; i < choices.size(); i++) {
         QVariantMap map;
-        map["out"] = choices[i].str();
+        map["out"] = choices[i].str34();
         std::stringstream ss;
         ss << waits[i];
         map["waits"] = ss.str().c_str();
