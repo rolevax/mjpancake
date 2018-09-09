@@ -121,15 +121,20 @@ QString PEditor::getLuaCode(QString path)
 {
     QString res("");
 
-    QFile jsonFile(PGlobal::editPath(path + ".girl.lua"));
-    if (jsonFile.exists()) {
-        jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);
-        QString val = jsonFile.readAll();
+    QFile file(PGlobal::editPath(path + ".girl.lua"));
+    if (file.exists()) {
+        file.open(QIODevice::ReadOnly | QIODevice::Text);
+        QString val = file.readAll();
         res = val;
         // TODO cache file conotent with a LRU container
     }
 
     return res;
+}
+
+QUrl PEditor::getLuaCodeUrl(QString path)
+{
+    return QUrl::fromLocalFile(PGlobal::editPath(path + ".girl.lua"));
 }
 
 QImage PEditor::getPhoto(QString path)
@@ -138,16 +143,14 @@ QImage PEditor::getPhoto(QString path)
     return QImage::fromData(QByteArray::fromBase64(base64.toLatin1()), "PNG");
 }
 
-void PEditor::save(QString path, QString name, QString luaCode, QUrl photoUrl)
+void PEditor::saveJson(QString path, QString name, QUrl photoUrl)
 {
     if (path.isEmpty())
         return;
 
     QFile jsonFile(PGlobal::editPath(path + ".girl.json"));
-    QFile luaFile(PGlobal::editPath(path + ".girl.lua"));
 
     QJsonObject obj;
-
     obj["name"] = name;
 
     QImage image(photoUrl.toLocalFile());
@@ -162,7 +165,14 @@ void PEditor::save(QString path, QString name, QString luaCode, QUrl photoUrl)
 
     jsonFile.open(QIODevice::WriteOnly | QIODevice::Text);
     jsonFile.write(QJsonDocument(obj).toJson());
+}
 
+void PEditor::saveLuaCode(QString path, QString luaCode)
+{
+    if (path.isEmpty())
+        return;
+
+    QFile luaFile(PGlobal::editPath(path + ".girl.lua"));
     luaFile.open(QIODevice::WriteOnly | QIODevice::Text);
     luaFile.write(luaCode.toUtf8());
 }

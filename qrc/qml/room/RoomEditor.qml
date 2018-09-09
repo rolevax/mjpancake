@@ -7,6 +7,7 @@ Room {
     id: room
 
     property var girlKey: { "id": 1, "path": "" }
+    property bool _usingExternalEditor: false
 
     showReturnButton: false
 
@@ -67,6 +68,7 @@ Room {
 
         Flickable {
             id: flick
+            visible: !_usingExternalEditor
             anchors.fill: codeBackground
             anchors.margins: global.size.space
             contentWidth: codeEdit.paintedWidth
@@ -202,6 +204,24 @@ Room {
                 }
             }
         }
+
+        Texd {
+            text: "请使用外部工具编辑代码"
+            visible: _usingExternalEditor
+            anchors.centerIn: parent
+        }
+
+        Buzzon {
+            text: "用外部工具打开"
+            width: photo.width
+            anchors.right: flick.right
+            anchors.bottom: flick.bottom
+            onClicked: {
+                _usingExternalEditor = true;
+                Qt.openUrlExternally(PEditor.getLuaCodeUrl(inputPath.text));
+            }
+        }
+
     }
 
     GirlPhoto {
@@ -288,6 +308,8 @@ Room {
     }
 
     function _save() {
-        PEditor.save(inputPath.text, inputName.text, codeEdit.text, photo.source);
+        PEditor.saveJson(inputPath.text, inputName.text, photo.source);
+        if (!_usingExternalEditor)
+            PEditor.saveLuaCode(inputPath.text, codeEdit.text);
     }
 }
