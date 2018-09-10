@@ -107,7 +107,7 @@ bool PGlobal::official()
 QString PGlobal::version()
 {
 #ifdef PANCAKE_OFFICIAL
-    return QString("0.9.5");
+    return QString("0.9.6");
 #else
     return QString("custom-fork");
 #endif
