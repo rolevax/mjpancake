@@ -213,12 +213,13 @@ Room {
 
         Buzzon {
             text: "用外部工具打开"
+            enabled: _pathOk()
             width: photo.width
             anchors.right: flick.right
             anchors.bottom: flick.bottom
             onClicked: {
                 _usingExternalEditor = true;
-                Qt.openUrlExternally(PEditor.getLuaCodeUrl(inputPath.text));
+                PEditor.editLuaExternally(inputPath.text);
             }
         }
 

@@ -4,6 +4,7 @@
 #include <QDir>
 #include <QJsonDocument>
 #include <QBuffer>
+#include <QDesktopServices>
 
 
 
@@ -132,11 +133,6 @@ QString PEditor::getLuaCode(QString path)
     return res;
 }
 
-QUrl PEditor::getLuaCodeUrl(QString path)
-{
-    return QUrl::fromLocalFile(PGlobal::editPath(path + ".girl.lua"));
-}
-
 QImage PEditor::getPhoto(QString path)
 {
     QString base64 = getGirlJson(path)["photoBase64"].toString();
@@ -181,6 +177,13 @@ void PEditor::remove(QString path)
 {
     QFile::remove(PGlobal::editPath(path + ".girl.json"));
     QFile::remove(PGlobal::editPath(path + ".girl.lua"));
+}
+
+void PEditor::editLuaExternally(QString path)
+{
+    QString filename(PGlobal::editPath(path + ".girl.lua"));
+    QFile(filename).open(QIODevice::ReadWrite); // create if tan90
+    QDesktopServices::openUrl(QUrl::fromLocalFile(filename));
 }
 
 QJsonObject PEditor::getGirlJson(QString path)

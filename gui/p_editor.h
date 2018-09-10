@@ -57,11 +57,11 @@ public:
     Q_INVOKABLE QStringList ls();
     Q_INVOKABLE QString getName(QString path);
     Q_INVOKABLE QString getLuaCode(QString path);
-    Q_INVOKABLE QUrl getLuaCodeUrl(QString path);
     Q_INVOKABLE QImage getPhoto(QString path);
     Q_INVOKABLE void saveJson(QString path, QString name, QUrl photoUrl);
     Q_INVOKABLE void saveLuaCode(QString path, QString luaCode);
     Q_INVOKABLE void remove(QString path);
+    Q_INVOKABLE void editLuaExternally(QString path);
 
 signals:
 
