@@ -213,6 +213,7 @@ Room {
 
         Buzzon {
             text: "用外部工具打开"
+            visible: !global.mobile
             enabled: _pathOk()
             width: photo.width
             anchors.right: flick.right
