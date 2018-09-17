@@ -17,7 +17,7 @@ Rectangle {
         anchors.centerIn: parent
         width: parent.width
         wrapMode: TextEdit.WrapAnywhere
-        horizontalAlignment: Text.AlignHCenter
+        horizontalAlignment: /\[string /.test(text) ? Text.AlignLeft : Text.AlignHCenter
         focus: true
         text: ""
         color: "white"
