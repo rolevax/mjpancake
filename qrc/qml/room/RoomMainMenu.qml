@@ -11,7 +11,7 @@ Room {
         width: 4 * normal.width + 3 * global.size.space
 
         Buxxon {
-            width: 2 * normal.width
+            width: 2 * normal.width + global.size.space
             textLength: 7
             text: "单人模式"
             onClicked: {
@@ -23,7 +23,9 @@ Room {
             model: [
                 { text: "麻将部备品", load: "Tools" },
                 { text: "设置", load: "Settings" },
-                { text: "联机", load: "Client" }
+                { text: "联机", load: "Client" },
+                { text: "人物编辑", load: "EditList" },
+                { text: "人物下载", load: "CharDown" }
             ]
 
             delegate: Buxxon {
@@ -33,15 +35,6 @@ Room {
                 onClicked: {
                     global.pushScene("room/Room" + modelData.load);
                 }
-            }
-        }
-
-        Buxxon {
-            width: 2 * normal.width
-            textLength: 7
-            text: "人物编辑"
-            onClicked: {
-                global.pushScene("room/RoomEditList");
             }
         }
 

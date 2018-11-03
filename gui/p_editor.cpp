@@ -3,8 +3,11 @@
 
 #include <QDir>
 #include <QJsonDocument>
+#include <QJsonArray>
 #include <QBuffer>
 #include <QDesktopServices>
+#include <QNetworkReply>
+#include <QDebug> // FUCK
 
 
 
@@ -87,6 +90,7 @@ PEditor::PEditor(QObject *parent)
     : QObject(parent)
 {
     sInstance = this;
+    connect(&mNet, &QNetworkAccessManager::finished, this, &PEditor::onNetReply);
 }
 
 PEditor &PEditor::instance()
@@ -110,6 +114,20 @@ QStringList PEditor::ls()
     for (QString &str : list)
         str.chop(10);
 
+    return list;
+}
+
+void PEditor::fetchSignedRepos()
+{
+    QNetworkRequest request;
+    request.setUrl(QUrl("https://api.github.com/repos/rolevax/libsaki/issues/51/comments"));
+    request.setHeader(QNetworkRequest::UserAgentHeader, "rolevax");
+    mNet.get(request);
+}
+
+QVariantList PEditor::listCachedGirls()
+{
+    QVariantList list;
     return list;
 }
 
@@ -186,6 +204,17 @@ void PEditor::editLuaExternally(QString path)
     QDesktopServices::openUrl(QUrl::fromLocalFile(filename));
 }
 
+void PEditor::onNetReply(QNetworkReply *reply)
+{
+    if (reply == nullptr || reply->error()) {
+        qDebug() << reply->errorString();
+        return;
+    }
+
+    QString jsonStr = reply->readAll();
+    handleRepliedRepoList(jsonStr);
+}
+
 QJsonObject PEditor::getGirlJson(QString path)
 {
     // TODO cache file conotent with a LRU container
@@ -202,6 +231,22 @@ QJsonObject PEditor::getGirlJson(QString path)
     }
 
     return res;
+}
+
+void PEditor::handleRepliedRepoList(const QString &reply)
+{
+    QJsonDocument replyDoc = QJsonDocument::fromJson(reply.toUtf8());
+    QVariantList issues = replyDoc.array().toVariantList();
+
+    QVariantList repos;
+    for (QVariant issueVar : issues) {
+        QVariantMap issue = issueVar.toMap();
+        QString bodyStr = issue["body"].toString();
+        QJsonObject bodyObj = QJsonDocument::fromJson(bodyStr.toUtf8()).object();
+        repos << bodyObj.toVariantMap();
+    }
+
+    emit signedReposReplied(repos);
 }
 
 QObject *pEditorSingletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine)

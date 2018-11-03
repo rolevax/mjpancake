@@ -9,6 +9,7 @@
 #include <QTextCharFormat>
 #include <QRegularExpression>
 #include <QQuickTextDocument>
+#include <QNetworkAccessManager>
 
 
 
@@ -55,6 +56,8 @@ public:
 
     Q_INVOKABLE void setLuaHighlighter(QQuickTextDocument *qtd);
     Q_INVOKABLE QStringList ls();
+    Q_INVOKABLE void fetchSignedRepos();
+    Q_INVOKABLE QVariantList listCachedGirls();
     Q_INVOKABLE QString getName(QString path);
     Q_INVOKABLE QString getLuaCode(QString path);
     Q_INVOKABLE QImage getPhoto(QString path);
@@ -64,15 +67,19 @@ public:
     Q_INVOKABLE void editLuaExternally(QString path);
 
 signals:
+    void signedReposReplied(const QVariantList &repos);
 
 private slots:
+    void onNetReply(QNetworkReply *reply);
 
 private:
     QJsonObject getGirlJson(QString path);
+    void handleRepliedRepoList(const QString &reply);
 
 private:
     static PEditor *sInstance;
     PLuaHighlighter mLuaHighlighter;
+    QNetworkAccessManager mNet;
 };
 
 

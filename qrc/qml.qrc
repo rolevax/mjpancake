@@ -75,5 +75,6 @@
         <file>qml/area/AreaTableEnd.qml</file>
         <file>qml/room/RoomEditList.qml</file>
         <file>qml/room/RoomEditor.qml</file>
+        <file>qml/room/RoomCharDown.qml</file>
     </qresource>
 </RCC>
