@@ -137,10 +137,14 @@ QString PGlobal::replayPath(QString filename)
     return path;
 }
 
-QString PGlobal::editPath(QString filename)
+QString PGlobal::editPath(QString filename, QString dirSuffix)
 {
     QString path = configPath() + "/edit";
+    if (!dirSuffix.isEmpty())
+        path += "/" + dirSuffix;
+
     QDir().mkpath(path);
+
     if (!filename.isEmpty())
         path += "/" + filename;
 

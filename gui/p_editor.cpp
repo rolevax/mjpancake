@@ -7,7 +7,7 @@
 #include <QBuffer>
 #include <QDesktopServices>
 #include <QNetworkReply>
-#include <QDebug> // FUCK
+#include <QDebug>
 
 
 
@@ -117,14 +117,6 @@ QStringList PEditor::ls()
     return list;
 }
 
-void PEditor::fetchSignedRepos()
-{
-    QNetworkRequest request;
-    request.setUrl(QUrl("https://api.github.com/repos/rolevax/libsaki/issues/51/comments"));
-    request.setHeader(QNetworkRequest::UserAgentHeader, "rolevax");
-    mReplies.insert(mNet.get(request), &PEditor::recvRepoList);
-}
-
 QVariantList PEditor::listCachedGirls()
 {
     QVariantList list;
@@ -204,17 +196,33 @@ void PEditor::editLuaExternally(QString path)
     QDesktopServices::openUrl(QUrl::fromLocalFile(filename));
 }
 
+void PEditor::fetchSignedRepos()
+{
+    const QUrl url("https://api.github.com/repos/rolevax/libsaki/issues/51/comments");
+    httpGet(url, &PEditor::recvRepoList);
+}
+
+///
+/// \brief Starat to download a girl repo, discard all current downloads
+/// \param shortAddr GitHub repo address in form "username/repo-name"
+///
+void PEditor::downloadRepo(QString shortAddr)
+{
+    const QString repoFmt("https://api.github.com/repos/%1/contents/");
+    QString repoAddr = repoFmt.arg(shortAddr);
+    httpGet(repoAddr, &PEditor::recvRepoDir);
+    emit repoDownloadProgressed(0);
+}
+
+void PEditor::cancelDownload()
+{
+    httpAbortAll();
+}
+
 void PEditor::onNetReply(QNetworkReply *reply)
 {
     ReplyEraseGuard guard(*this, reply);
-
-    if (reply->error()) {
-        qDebug() << reply->errorString();
-        return;
-    }
-
-    QString jsonStr = reply->readAll();
-    (this->*mReplies[reply])(jsonStr);
+    (this->*mReplies[reply])(reply);
 }
 
 QJsonObject PEditor::getGirlJson(QString path)
@@ -235,9 +243,36 @@ QJsonObject PEditor::getGirlJson(QString path)
     return res;
 }
 
-void PEditor::recvRepoList(const QString &reply)
+void PEditor::httpGet(QUrl url, void (PEditor::*recv)(QNetworkReply *))
 {
-    QJsonDocument replyDoc = QJsonDocument::fromJson(reply.toUtf8());
+    QNetworkRequest request;
+    request.setUrl(url);
+    request.setHeader(QNetworkRequest::UserAgentHeader, "rolevax");
+    mReplies.insert(mNet.get(request), recv);
+}
+
+void PEditor::httpAbortAll()
+{
+    for (QNetworkReply *reply : mReplies.keys())
+        reply->abort();
+
+    mReplies.clear();
+}
+
+QJsonDocument PEditor::replyToJson(QNetworkReply *reply)
+{
+    QString str = reply->readAll();
+    return QJsonDocument::fromJson(str.toUtf8());
+}
+
+void PEditor::recvRepoList(QNetworkReply *reply)
+{
+    if (reply->error()) {
+        qDebug() << reply->errorString();
+        return;
+    }
+
+    QJsonDocument replyDoc = replyToJson(reply);
     QVariantList issues = replyDoc.array().toVariantList();
 
     QVariantList repos;
@@ -249,6 +284,67 @@ void PEditor::recvRepoList(const QString &reply)
     }
 
     emit signedReposReplied(repos);
+}
+
+void PEditor::recvRepoDir(QNetworkReply *reply)
+{
+    if (reply->error()) {
+        qDebug() << reply->errorString();
+        emit repoDownloadProgressed(-1);
+        return;
+    }
+
+    emit repoDownloadProgressed(1);
+    QJsonDocument replyDoc = replyToJson(reply);
+    if (!replyDoc.isArray()) {
+        emit repoDownloadProgressed(-1);
+        return;
+    }
+
+    QJsonArray files = replyDoc.array();
+    QStringList targets;
+    for (auto value : files) {
+        QJsonObject file = value.toObject();
+        if (file["type"].toString() != "file")
+            continue;
+
+        QString name = file["name"].toString();
+        if (name.endsWith(".girl.json") || name.endsWith(".girl.lua")) {
+            QString addr = file["download_url"].toString();
+            targets << addr;
+        }
+    }
+
+    mTotalFilesToDownload = targets.size();
+    for (const auto &addr : targets)
+        httpGet(addr, &PEditor::recvFile);
+}
+
+void PEditor::recvFile(QNetworkReply *reply)
+{
+    if (reply->error()) {
+        qDebug() << reply->errorString();
+        httpAbortAll();
+        emit repoDownloadProgressed(-1);
+        return;
+    }
+
+    // assume uri in format ".../user/repo/branch/filename"
+    QStringList split = reply->request().url().toString().split("/");
+    QString filename = split.at(split.size() - 1);
+    QString repo = split.at(split.size() - 3);
+    QString user = split.at(split.size() - 4);
+    QString dirSuffix = "github.com/" + user + "/" + repo;
+    qDebug() << "download file to:" << dirSuffix << ' ' << filename;
+
+    QString content = reply->readAll();
+    QFile file(PGlobal::editPath(filename, dirSuffix));
+    file.open(QIODevice::WriteOnly | QIODevice::Text);
+    file.write(content.toUtf8());
+
+    double sizePerFile = 100.0 / mTotalFilesToDownload;
+    int percent = 100 - static_cast<int>((mReplies.size() - 1) * sizePerFile);
+    emit repoDownloadProgressed(percent);
 }
 
 QObject *pEditorSingletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine)

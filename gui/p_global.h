@@ -40,7 +40,7 @@ public:
     static QString configPath();
     static QString photoPath();
     static QString replayPath(QString filename = "");
-    static QString editPath(QString filename = "");
+    static QString editPath(QString filename = "", QString dirSuffix = "");
 
     QVariant backColors() const;
     void setBackColors(const QVariant &v);
