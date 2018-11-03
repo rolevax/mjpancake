@@ -122,7 +122,7 @@ void PEditor::fetchSignedRepos()
     QNetworkRequest request;
     request.setUrl(QUrl("https://api.github.com/repos/rolevax/libsaki/issues/51/comments"));
     request.setHeader(QNetworkRequest::UserAgentHeader, "rolevax");
-    mNet.get(request);
+    mReplies.insert(mNet.get(request), &PEditor::recvRepoList);
 }
 
 QVariantList PEditor::listCachedGirls()
@@ -206,18 +206,20 @@ void PEditor::editLuaExternally(QString path)
 
 void PEditor::onNetReply(QNetworkReply *reply)
 {
-    if (reply == nullptr || reply->error()) {
+    ReplyEraseGuard guard(*this, reply);
+
+    if (reply->error()) {
         qDebug() << reply->errorString();
         return;
     }
 
     QString jsonStr = reply->readAll();
-    handleRepliedRepoList(jsonStr);
+    (this->*mReplies[reply])(jsonStr);
 }
 
 QJsonObject PEditor::getGirlJson(QString path)
 {
-    // TODO cache file conotent with a LRU container
+    // TODO cache file conotent with an LRU container
 
     QJsonObject res;
 
@@ -233,7 +235,7 @@ QJsonObject PEditor::getGirlJson(QString path)
     return res;
 }
 
-void PEditor::handleRepliedRepoList(const QString &reply)
+void PEditor::recvRepoList(const QString &reply)
 {
     QJsonDocument replyDoc = QJsonDocument::fromJson(reply.toUtf8());
     QVariantList issues = replyDoc.array().toVariantList();
@@ -255,4 +257,16 @@ QObject *pEditorSingletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine)
     Q_UNUSED(scriptEngine)
 
     return new PEditor();
+}
+
+PEditor::ReplyEraseGuard::ReplyEraseGuard(PEditor &editor, QNetworkReply *reply)
+    : mEditor(editor)
+    , mReply(reply)
+{
+}
+
+PEditor::ReplyEraseGuard::~ReplyEraseGuard()
+{
+    mEditor.mReplies.remove(mReply);
+    mReply->deleteLater();
 }

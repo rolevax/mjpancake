@@ -73,13 +73,25 @@ private slots:
     void onNetReply(QNetworkReply *reply);
 
 private:
+    class ReplyEraseGuard
+    {
+    public:
+        explicit ReplyEraseGuard(PEditor &editor, QNetworkReply *reply);
+        ~ReplyEraseGuard();
+
+    private:
+        PEditor &mEditor;
+        QNetworkReply *mReply;
+    };
+
     QJsonObject getGirlJson(QString path);
-    void handleRepliedRepoList(const QString &reply);
+    void recvRepoList(const QString &reply);
 
 private:
     static PEditor *sInstance;
     PLuaHighlighter mLuaHighlighter;
     QNetworkAccessManager mNet;
+    QHash<QNetworkReply *, void (PEditor::*)(const QString &)> mReplies;
 };
 
 
