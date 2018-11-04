@@ -57,7 +57,7 @@ Rectangle {
         anchors.top: selectMenu.top
         anchors.right: selectMenu.left
         anchors.rightMargin: global.size.gap
-        model: [ "天麻", "原创" ]
+        model: [ "天麻", "原创", "下载" ]
     }
 
     Item {
@@ -116,8 +116,39 @@ Rectangle {
                 }
             }
         }
-    }
 
+        LisdView {
+            id: downloadMenu
+            visible: checkList.currIndex === 2
+            anchors.fill: parent
+            spacing: 2 * global.size.space
+            model: PEditor.listCachedGirls()
+            delegate: Column {
+                width: parent.width
+                spacing: global.size.space
+
+                property var repoInfo: modelData
+
+                Texd {
+                    text: repoInfo.repo
+                }
+
+                Repeater {
+                    model: repoInfo.girls
+                    delegate: Buzzon {
+                        width: parent.width
+                        text: modelData
+                        onClicked: {
+                            frame.girlKey = {
+                                "id": 1,
+                                "path": repoInfo.girlPathPrefix + "/" + modelData
+                            };
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     Grid {
         id: sample

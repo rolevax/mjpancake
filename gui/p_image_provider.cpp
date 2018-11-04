@@ -31,6 +31,8 @@ QImage PImageProvider::requestImage(const QString &id, QSize *size,
         QStringList parts = id.split('/');
         QString girlId = parts[1];
         QString girlPath = parts[2];
+        for (int i = 3; i < parts.size(); i++)
+            girlPath += "/" + parts[i];
 
         if (girlId == "1") // Lua custom
             image = PEditor::instance().getPhoto(girlPath);

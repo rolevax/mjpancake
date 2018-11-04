@@ -120,6 +120,34 @@ QStringList PEditor::ls()
 QVariantList PEditor::listCachedGirls()
 {
     QVariantList list;
+
+    QDir dir(PGlobal::editPath("", "github.com"));
+    dir.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
+    dir.setSorting(QDir::Name);
+    for (QString userDir : dir.entryList()) {
+        QDir dir(PGlobal::editPath("", "github.com/" + userDir));
+        dir.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
+        dir.setSorting(QDir::Name);
+
+        for (QString repoDir : dir.entryList()) {
+            QString shortAddr = userDir + "/" + repoDir;
+            QString girlPathPrefix = "github.com/" + shortAddr;
+            QVariantMap map;
+            map["repo"] = shortAddr;
+            map["girlPathPrefix"] = girlPathPrefix;
+
+            QDir dir(PGlobal::editPath("", girlPathPrefix));
+            dir.setNameFilters(QStringList { QString("*.girl.json") });
+            dir.setSorting(QDir::Name);
+            QStringList girls = dir.entryList();
+            for (QString &str : girls)
+                str.chop(10);
+
+            map["girls"] = girls;
+            list << map;
+        }
+    }
+
     return list;
 }
 
@@ -138,6 +166,8 @@ QString PEditor::getLuaCode(QString path)
         QString val = file.readAll();
         res = val;
         // TODO cache file conotent with a LRU container
+    } else {
+        qDebug() << "file tan90: " << file.fileName();
     }
 
     return res;
@@ -238,6 +268,8 @@ QJsonObject PEditor::getGirlJson(QString path)
         jsonFile.close();
         QJsonDocument d = QJsonDocument::fromJson(val.toUtf8());
         res = d.object();
+    } else {
+        qDebug() << "file tan90: " << jsonFile.fileName();
     }
 
     return res;
@@ -279,8 +311,11 @@ void PEditor::recvRepoList(QNetworkReply *reply)
     for (QVariant issueVar : issues) {
         QVariantMap issue = issueVar.toMap();
         QString bodyStr = issue["body"].toString();
-        QJsonObject bodyObj = QJsonDocument::fromJson(bodyStr.toUtf8()).object();
-        repos << bodyObj.toVariantMap();
+        QJsonDocument bodyDoc = QJsonDocument::fromJson(bodyStr.toUtf8());
+        if (bodyDoc.isObject()) {
+            QJsonObject bodyObj = bodyDoc.object();
+            repos << bodyObj.toVariantMap();
+        }
     }
 
     emit signedReposReplied(repos);
