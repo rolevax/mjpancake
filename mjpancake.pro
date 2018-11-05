@@ -17,6 +17,7 @@ HEADERS += \
     gui/p_eff.h \
     gui/p_eff_gb.h \
     gui/p_gen.h \
+    gui/p_girl_down.h \
     gui/p_global.h \
     gui/p_image_provider.h \
     gui/p_image_settings.h \
@@ -34,6 +35,7 @@ SOURCES += main.cpp \
     gui/p_eff.cpp \
     gui/p_eff_gb.cpp \
     gui/p_gen.cpp \
+    gui/p_girl_down.cpp \
     gui/p_global.cpp \
     gui/p_image_provider.cpp \
     gui/p_parse.cpp \

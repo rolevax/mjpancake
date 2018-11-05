@@ -65,43 +65,12 @@ public:
     Q_INVOKABLE void remove(QString path);
     Q_INVOKABLE void editLuaExternally(QString path);
 
-    Q_INVOKABLE void fetchSignedRepos();
-    Q_INVOKABLE void downloadRepo(QString shortAddr);
-    Q_INVOKABLE void cancelDownload();
-
-signals:
-    void signedReposReplied(const QVariantList &repos);
-    void repoDownloadProgressed(int percent);
-
-private slots:
-    void onNetReply(QNetworkReply *reply);
-
 private:
-    class ReplyEraseGuard
-    {
-    public:
-        explicit ReplyEraseGuard(PEditor &editor, QNetworkReply *reply);
-        ~ReplyEraseGuard();
-
-    private:
-        PEditor &mEditor;
-        QNetworkReply *mReply;
-    };
-
     QJsonObject getGirlJson(QString path);
-    void httpGet(QUrl url, void (PEditor::*recv)(QNetworkReply *));
-    void httpAbortAll();
-    QJsonDocument replyToJson(QNetworkReply *reply);
-    void recvRepoList(QNetworkReply *reply);
-    void recvRepoDir(QNetworkReply *reply);
-    void recvFile(QNetworkReply *reply);
 
 private:
     static PEditor *sInstance;
     PLuaHighlighter mLuaHighlighter;
-    QNetworkAccessManager mNet;
-    QHash<QNetworkReply *, void (PEditor::*)(QNetworkReply *)> mReplies;
-    int mTotalFilesToDownload;
 };
 
 

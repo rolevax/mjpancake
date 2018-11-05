@@ -8,6 +8,29 @@ Room {
 
     property int _currIndex: -1
 
+    PGirlDown {
+        id: pGirlDown
+
+        onSignedReposReplied: {
+            fetchingRepoList.visible = false;
+            entryList.model = repos;
+        }
+
+        onRepoDownloadProgressed: {
+            if (percent < 0) {
+                downloadingText.text = "下载失败";
+                downloadingButton.text = "返回";
+            } else if (percent >= 100) {
+                downloadingText.text = "人物包同步成功\n" +
+                        "新人物已添加到单人模式选人列表";
+                downloadingButton.text = "完成";
+            } else {
+                downloadingText.text = "正在下载 " + percent + "%";
+                downloadingButton.text = "取消";
+            }
+        }
+    }
+
     Rectangle {
         id: listBackground
         anchors.top: parent.top
@@ -96,7 +119,7 @@ Room {
             enabled: _currIndex >= 0
             onClicked: {
                 downloading.visible = true;
-                PEditor.downloadRepo(entryList.model[_currIndex].repo);
+                pGirlDown.downloadRepo(entryList.model[_currIndex].repo);
             }
         }
 
@@ -135,36 +158,13 @@ Room {
             anchors.margins: global.size.space
             textLength: 8
             onClicked: {
-                PEditor.cancelDownload();
+                pGirlDown.cancelDownload();
                 downloading.visible = false;
             }
         }
     }
 
-    Connections {
-        target: PEditor
-
-        onSignedReposReplied: {
-            fetchingRepoList.visible = false;
-            entryList.model = repos;
-        }
-
-        onRepoDownloadProgressed: {
-            if (percent < 0) {
-                downloadingText.text = "下载失败";
-                downloadingButton.text = "返回";
-            } else if (percent >= 100) {
-                downloadingText.text = "人物包同步成功\n" +
-                        "新人物已添加到单人模式选人列表";
-                downloadingButton.text = "完成";
-            } else {
-                downloadingText.text = "正在下载 " + percent + "%";
-                downloadingButton.text = "取消";
-            }
-        }
-    }
-
     Component.onCompleted: {
-        PEditor.fetchSignedRepos();
+        pGirlDown.fetchSignedRepos();
     }
 }
