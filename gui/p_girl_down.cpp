@@ -9,22 +9,34 @@
 
 
 
+using StrConst = const char * const;
+static StrConst URL_ISSUE_51 = "https://api.github.com/repos/rolevax/libsaki/issues/51/comments";
+static StrConst URL_REPO_DIR_FMT = "https://api.github.com/repos/%1/contents/";
+
+QJsonDocument replyToJson(QNetworkReply *reply)
+{
+    QString str = reply->readAll();
+    return QJsonDocument::fromJson(str.toUtf8());
+}
+
+
+
 PGirlDown::PGirlDown(QObject *parent)
     : QObject(parent)
 {
-    connect(&mNet, &QNetworkAccessManager::finished, this, &PGirlDown::onNetReply);
+    connect(&mNet, &QNetworkAccessManager::finished,
+            this, &PGirlDown::onNetReply,
+            Qt::QueuedConnection);
 }
 
 PGirlDown::~PGirlDown()
 {
-    cancelDownload();
-    // FUCK delete repliers?
+    httpAbortAll();
 }
 
 void PGirlDown::fetchSignedRepos()
 {
-    const QUrl url("https://api.github.com/repos/rolevax/libsaki/issues/51/comments");
-    httpGet(url, &PGirlDown::recvRepoList);
+    mTask = std::make_unique<TaskFetchRepoList>(*this);
 }
 
 ///
@@ -33,52 +45,72 @@ void PGirlDown::fetchSignedRepos()
 ///
 void PGirlDown::downloadRepo(QString shortAddr)
 {
-    const QString repoFmt("https://api.github.com/repos/%1/contents/");
-    QString repoAddr = repoFmt.arg(shortAddr);
-    httpGet(repoAddr, &PGirlDown::recvRepoDir);
-    emit repoDownloadProgressed(0);
+    mTask = std::make_unique<TaskDownloadGirls>(*this, shortAddr);
 }
 
 void PGirlDown::cancelDownload()
 {
+    mTask = nullptr;
     httpAbortAll();
 }
 
 void PGirlDown::onNetReply(QNetworkReply *reply)
 {
-    ReplyEraseGuard guard(*this, reply);
-    (this->*mReplies[reply])(reply);
+    mReplies.remove(reply);
+    reply->deleteLater();
+
+    if (mTask != nullptr) {
+        bool working = mTask->recv(reply);
+        if (!working) {
+            mTask = nullptr;
+            httpAbortAll();
+        }
+    }
 }
 
-void PGirlDown::httpGet(QUrl url, void (PGirlDown::*recv)(QNetworkReply *))
+void PGirlDown::httpGet(QUrl url)
 {
     QNetworkRequest request;
     request.setUrl(url);
     request.setHeader(QNetworkRequest::UserAgentHeader, "rolevax");
-    mReplies.insert(mNet.get(request), recv);
+    mReplies.insert(mNet.get(request));
 }
 
 void PGirlDown::httpAbortAll()
 {
-    for (QNetworkReply *reply : mReplies.keys())
+    for (QNetworkReply *reply : mReplies)
         reply->abort();
 
     mReplies.clear();
 }
 
-QJsonDocument PGirlDown::replyToJson(QNetworkReply *reply)
+PGirlDown::Task::Task(PGirlDown &girlDown)
+    : mGirlDown(girlDown)
 {
-    QString str = reply->readAll();
-    return QJsonDocument::fromJson(str.toUtf8());
 }
 
-void PGirlDown::recvRepoList(QNetworkReply *reply)
+PGirlDown::TaskFetchRepoList::TaskFetchRepoList(PGirlDown &girlDown)
+    : Task(girlDown)
+{
+    mGirlDown.httpGet(QUrl(URL_ISSUE_51));
+}
+
+bool PGirlDown::TaskFetchRepoList::recv(QNetworkReply *reply)
 {
     if (reply->error()) {
         qDebug() << reply->errorString();
-        return;
+        return false;
     }
 
+    QString reqUrl = reply->request().url().toString();
+    if (reqUrl == URL_ISSUE_51)
+        return recvRepoList(reply);
+
+    return false;
+}
+
+bool PGirlDown::TaskFetchRepoList::recvRepoList(QNetworkReply *reply)
+{
     QJsonDocument replyDoc = replyToJson(reply);
     QVariantList issues = replyDoc.array().toVariantList();
 
@@ -93,22 +125,42 @@ void PGirlDown::recvRepoList(QNetworkReply *reply)
         }
     }
 
-    emit signedReposReplied(repos);
+    emit mGirlDown.signedReposReplied(repos);
+    return false; // FUCK, calc update status
 }
 
-void PGirlDown::recvRepoDir(QNetworkReply *reply)
+PGirlDown::TaskDownloadGirls::TaskDownloadGirls(PGirlDown &girlDown, const QString &shortAddr)
+    : Task(girlDown)
+    , mShortAddr(shortAddr)
+{
+    QString repoAddr = QString(URL_REPO_DIR_FMT).arg(shortAddr);
+    mGirlDown.httpGet(repoAddr);
+    emit mGirlDown.repoDownloadProgressed(0);
+}
+
+bool PGirlDown::TaskDownloadGirls::recv(QNetworkReply *reply)
 {
     if (reply->error()) {
         qDebug() << reply->errorString();
-        emit repoDownloadProgressed(-1);
-        return;
+        emit mGirlDown.repoDownloadProgressed(-1);
+        return false;
     }
 
-    emit repoDownloadProgressed(1);
+    if (!mGotDir) {
+        mGotDir = true;
+        return recvRepoDir(reply);
+    }
+
+    return recvFile(reply);
+}
+
+bool PGirlDown::TaskDownloadGirls::recvRepoDir(QNetworkReply *reply)
+{
+    emit mGirlDown.repoDownloadProgressed(1);
     QJsonDocument replyDoc = replyToJson(reply);
     if (!replyDoc.isArray()) {
-        emit repoDownloadProgressed(-1);
-        return;
+        emit mGirlDown.repoDownloadProgressed(-1);
+        return false;
     }
 
     QJsonArray files = replyDoc.array();
@@ -125,61 +177,56 @@ void PGirlDown::recvRepoDir(QNetworkReply *reply)
         }
     }
 
-    mTotalFilesToDownload = targets.size();
+    mTotalFiles = targets.size();
     for (const auto &addr : targets)
-        httpGet(addr, &PGirlDown::recvFile);
+        mGirlDown.httpGet(addr);
+
+    return true;
 }
 
-void PGirlDown::recvFile(QNetworkReply *reply)
+bool PGirlDown::TaskDownloadGirls::recvFile(QNetworkReply *reply)
 {
-    if (reply->error()) {
-        qDebug() << reply->errorString();
-        httpAbortAll();
-        emit repoDownloadProgressed(-1);
-        return;
-    }
-
-    // assume uri in format ".../user/repo/branch/filename"
+    // uri should be in format ".../user/repo/branch/filename"
     QStringList split = reply->request().url().toString().split("/");
     QString filename = split.at(split.size() - 1);
     QString repo = split.at(split.size() - 3);
     QString user = split.at(split.size() - 4);
-    QString dirSuffix = "github.com/" + user + "/" + repo;
-    qDebug() << "download file to:" << dirSuffix << ' ' << filename;
+    if (mShortAddr != user + "/" + repo) {
+        emit mGirlDown.repoDownloadProgressed(-1);
+        return false;
+    }
+
+    QString dirSuffix = "github.com/" + mShortAddr;
+    qDebug() << "got: " << (dirSuffix + '/' + filename);
 
     QString content = reply->readAll();
     QFile file(PGlobal::editPath(filename, dirSuffix));
     file.open(QIODevice::WriteOnly | QIODevice::Text);
     file.write(content.toUtf8());
+    mCompletedFiles++;
 
-    double sizePerFile = 100.0 / mTotalFilesToDownload;
-    int percent = 100 - static_cast<int>((mReplies.size() - 1) * sizePerFile);
-
-    if (mReplies.size() == 1) { // finished the last file
-        QFile jsonFile(PGlobal::editPath("meta.json", dirSuffix));
-        jsonFile.open(QIODevice::ReadWrite | QIODevice::Text);
-
-        auto doc = QJsonDocument::fromJson(jsonFile.readAll());
+    if (mCompletedFiles == mTotalFiles) {
         QJsonObject meta;
-        if (doc.isObject())
-            meta = doc.object();
+
+        QFile jsonFile(PGlobal::editPath("meta.json", dirSuffix));
+        bool ok = jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);
+        if (ok) {
+            auto doc = QJsonDocument::fromJson(jsonFile.readAll());
+            jsonFile.close();
+            if (doc.isObject())
+                meta = doc.object();
+        }
 
         meta["updated_at"] = QDateTime::currentDateTimeUtc().toString(Qt::ISODate);
 
+        jsonFile.open(QIODevice::WriteOnly | QIODevice::Text);
         jsonFile.write(QJsonDocument(meta).toJson());
+        emit mGirlDown.repoDownloadProgressed(100);
+        return false;
     }
 
-    emit repoDownloadProgressed(percent);
-}
-
-PGirlDown::ReplyEraseGuard::ReplyEraseGuard(PGirlDown &editor, QNetworkReply *reply)
-    : mGirlDown(editor)
-    , mReply(reply)
-{
-}
-
-PGirlDown::ReplyEraseGuard::~ReplyEraseGuard()
-{
-    mGirlDown.mReplies.remove(mReply);
-    mReply->deleteLater();
+    double rate = static_cast<double>(mCompletedFiles) / mTotalFiles;
+    int percent = std::min(static_cast<int>(rate * 100), 99);
+    emit mGirlDown.repoDownloadProgressed(percent);
+    return true;
 }

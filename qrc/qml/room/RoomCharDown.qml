@@ -18,7 +18,7 @@ Room {
 
         onRepoDownloadProgressed: {
             if (percent < 0) {
-                downloadingText.text = "下载失败";
+                downloadingText.text = "下载失败: " + percent;
                 downloadingButton.text = "返回";
             } else if (percent >= 100) {
                 downloadingText.text = "人物包同步成功\n" +

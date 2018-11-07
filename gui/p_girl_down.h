@@ -5,6 +5,9 @@
 #include <QVariantList>
 #include <QVariantMap>
 #include <QNetworkAccessManager>
+#include <QSet>
+
+#include <memory>
 
 
 
@@ -28,28 +31,51 @@ private slots:
     void onNetReply(QNetworkReply *reply);
 
 private:
-    class ReplyEraseGuard
+    class Task
     {
     public:
-        explicit ReplyEraseGuard(PGirlDown &editor, QNetworkReply *reply);
-        ~ReplyEraseGuard();
+        explicit Task(PGirlDown &girlDown);
+        virtual ~Task() = default;
+        virtual bool recv(QNetworkReply *reply) = 0;
 
-    private:
+    protected:
         PGirlDown &mGirlDown;
-        QNetworkReply *mReply;
     };
 
-    void httpGet(QUrl url, void (PGirlDown::*recv)(QNetworkReply *));
+    class TaskFetchRepoList : public Task
+    {
+    public:
+        explicit TaskFetchRepoList(PGirlDown &girlDown);
+        bool recv(QNetworkReply *reply) override;
+
+    private:
+        bool recvRepoList(QNetworkReply *reply);
+    };
+
+    class TaskDownloadGirls : public Task
+    {
+    public:
+        explicit TaskDownloadGirls(PGirlDown &girlDown, const QString &shortAddr);
+        bool recv(QNetworkReply *reply) override;
+
+    private:
+        bool recvRepoDir(QNetworkReply *reply);
+        bool recvFile(QNetworkReply *reply);
+
+    private:
+        QString mShortAddr;
+        bool mGotDir = false;
+        int mTotalFiles;
+        int mCompletedFiles = 0;
+    };
+
+    void httpGet(QUrl url);
     void httpAbortAll();
-    QJsonDocument replyToJson(QNetworkReply *reply);
-    void recvRepoList(QNetworkReply *reply);
-    void recvRepoDir(QNetworkReply *reply);
-    void recvFile(QNetworkReply *reply);
 
 private:
     QNetworkAccessManager mNet;
-    QHash<QNetworkReply *, void (PGirlDown::*)(QNetworkReply *)> mReplies;
-    int mTotalFilesToDownload;
+    std::unique_ptr<Task> mTask;
+    QSet<QNetworkReply *> mReplies;
 };
 
 
