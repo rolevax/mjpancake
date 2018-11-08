@@ -50,6 +50,13 @@ private:
 
     private:
         bool recvRepoList(QNetworkReply *reply);
+        bool recvRepoMetaInfo(QNetworkReply *reply);
+        void notifyGui();
+        void initRepo(QJsonObject &repo);
+
+    private:
+        QList<QVariantMap> mRepos;
+        QMap<QString, int> mRepoIndices;
     };
 
     class TaskDownloadGirls : public Task
@@ -61,6 +68,7 @@ private:
     private:
         bool recvRepoDir(QNetworkReply *reply);
         bool recvFile(QNetworkReply *reply);
+        void stampUpdateTime();
 
     private:
         QString mShortAddr;

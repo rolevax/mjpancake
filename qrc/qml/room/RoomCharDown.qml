@@ -69,22 +69,15 @@ Room {
                 Texd {
                     anchors.left: parent.left
                     anchors.leftMargin: global.size.space
-                    text: modelData.name
+                    text: "[" + _textOfStatus(modelData.status) + "] " + modelData.name
                 }
+
                 Texd {
                     anchors.left: parent.left
                     anchors.leftMargin: global.size.space
-                    text: "- UP主：" + modelData.uploader
-                }
-                Texd {
-                    anchors.left: parent.left
-                    anchors.leftMargin: global.size.space
-                    text: "- GitHub地址：" + modelData.repo
-                }
-                Texd {
-                    anchors.left: parent.left
-                    anchors.leftMargin: global.size.space
-                    text: "- 简介：" + modelData.desc
+                    text: "- UP主：" + modelData.uploader + "\n" +
+                          "- GitHub地址：" + modelData.repo + "\n" +
+                          "- 简介：" + modelData.desc
                 }
             }
 
@@ -114,9 +107,11 @@ Room {
         spacing: global.size.space
 
         Buzzon {
-            text: "同步人物包"
+            text: "更新人物包"
             width: parent.width
-            enabled: _currIndex >= 0
+            enabled: _currIndex >= 0 &&
+                     !!entryList.model[_currIndex] &&
+                     entryList.model[_currIndex].updatable
             onClicked: {
                 downloading.visible = true;
                 pGirlDown.downloadRepo(entryList.model[_currIndex].repo);
@@ -124,10 +119,21 @@ Room {
         }
 
         Buzzon {
-            text: "删除人物包"
+            text: "长按删除"
             width: parent.width
-            enabled: _currIndex >= 0
+            enabled: _currIndex >= 0 &&
+                     !!entryList.model[_currIndex] &&
+                     entryList.model[_currIndex].deletable
             onLongClicked: {
+                // FUCK add feature
+            }
+        }
+
+        Buzzon {
+            text: "投稿"
+            width: parent.width
+            onClicked: {
+                Qt.openUrlExternally("https://mjpancake.github.io/upload-girl");
             }
         }
     }
@@ -160,11 +166,33 @@ Room {
             onClicked: {
                 pGirlDown.cancelDownload();
                 downloading.visible = false;
+                _fetchRepoList()
             }
         }
     }
 
     Component.onCompleted: {
+        _fetchRepoList();
+    }
+
+    function _textOfStatus(status) {
+        var dict = {
+            CALCULATING: "计算中",
+            LATEST: "已最新",
+            CAN_INIT: "可下载",
+            CAN_UPDATE: "可更新",
+            INVALID_NAME: "仓库名非法",
+            REMOTE_TAN90: "仓库不存在",
+            REMOTE_DATE_ERROR: "仓库异常"
+        };
+
+        var str = dict[status];
+        return !!str ? str : status;
+    }
+
+    function _fetchRepoList() {
+        entryList.model = [];
+        fetchingRepoList.visible = true;
         pGirlDown.fetchSignedRepos();
     }
 }
