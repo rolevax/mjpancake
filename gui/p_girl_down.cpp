@@ -5,7 +5,6 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QNetworkReply>
-#include <QDebug>
 #include <QRegularExpression>
 
 
@@ -41,6 +40,11 @@ void writeCachedMeta(const QJsonObject &meta, const QString &dirSuffix)
     QFile jsonFile(PGlobal::editPath("meta.json", dirSuffix));
     jsonFile.open(QIODevice::WriteOnly | QIODevice::Text);
     jsonFile.write(QJsonDocument(meta).toJson());
+}
+
+int makeNeg(int n)
+{
+    return n > 0 ? -n : (n == 0 ? -1 : n);
 }
 
 
@@ -92,7 +96,7 @@ void PGirlDown::onNetReply(QNetworkReply *reply)
     }
 }
 
-void PGirlDown::httpGet(QUrl url)
+void PGirlDown::httpGet(const QUrl &url)
 {
     QNetworkRequest request;
     request.setUrl(url);
@@ -122,23 +126,21 @@ PGirlDown::TaskFetchRepoList::TaskFetchRepoList(PGirlDown &girlDown)
 bool PGirlDown::TaskFetchRepoList::recv(QNetworkReply *reply)
 {
     QString reqUrl = reply->request().url().toString();
-    if (reqUrl == URL_ISSUE_51)
-        return recvRepoList(reply);
-    else
-        return recvRepoMetaInfo(reply);
+    return reqUrl == URL_ISSUE_51 ? recvRepoList(reply)
+                                  : recvRepoMetaInfo(reply);
 }
 
 bool PGirlDown::TaskFetchRepoList::recvRepoList(QNetworkReply *reply)
 {
-    if (reply->error()) {
-        qDebug() << reply->errorString();
+    if (reply->error() != QNetworkReply::NoError) {
+        notifyGui();
         return false;
     }
 
     QJsonDocument replyDoc = replyToJson(reply);
     QVariantList issues = replyDoc.array().toVariantList();
 
-    for (QVariant issueVar : issues) {
+    for (const QVariant &issueVar : issues) {
         QVariantMap issue = issueVar.toMap();
         QString bodyStr = issue["body"].toString();
         QJsonDocument bodyDoc = QJsonDocument::fromJson(bodyStr.toUtf8());
@@ -160,8 +162,7 @@ bool PGirlDown::TaskFetchRepoList::recvRepoMetaInfo(QNetworkReply *reply)
     QVariantMap &repo = mRepos[mRepoIndices[shortAddr]];
     mRepoIndices.remove(shortAddr);
 
-    if (reply->error()) {
-        qDebug() << reply->errorString();
+    if (reply->error() != QNetworkReply::NoError) {
         repo["status"] = "REMOTE_TAN90";
     } else {
         QJsonDocument replyDoc = replyToJson(reply);
@@ -204,7 +205,6 @@ void PGirlDown::TaskFetchRepoList::initRepo(QJsonObject &repo)
         return;
     }
 
-    // FUCK check shortAddr must contain one '/'
     QJsonObject meta = openCachedMeta("github.com/" + shortAddr);
     QString dateStr = meta["updated_at"].toString();
     QDateTime date = QDateTime::fromString(dateStr, Qt::ISODate);
@@ -226,6 +226,7 @@ void PGirlDown::TaskFetchRepoList::initRepo(QJsonObject &repo)
 PGirlDown::TaskDownloadGirls::TaskDownloadGirls(PGirlDown &girlDown, const QString &shortAddr)
     : Task(girlDown)
     , mShortAddr(shortAddr)
+    , mTotalFiles(0)
 {
     QString repoAddr = QString(URL_REPO_DIR_FMT).arg(shortAddr);
     mGirlDown.httpGet(repoAddr);
@@ -234,9 +235,8 @@ PGirlDown::TaskDownloadGirls::TaskDownloadGirls(PGirlDown &girlDown, const QStri
 
 bool PGirlDown::TaskDownloadGirls::recv(QNetworkReply *reply)
 {
-    if (reply->error()) {
-        qDebug() << reply->errorString();
-        emit mGirlDown.repoDownloadProgressed(-1);
+    if (int error = reply->error(); error != QNetworkReply::NoError) {
+        emit mGirlDown.repoDownloadProgressed(makeNeg(error));
         return false;
     }
 
@@ -253,7 +253,7 @@ bool PGirlDown::TaskDownloadGirls::recvRepoDir(QNetworkReply *reply)
     emit mGirlDown.repoDownloadProgressed(1);
     QJsonDocument replyDoc = replyToJson(reply);
     if (!replyDoc.isArray()) {
-        emit mGirlDown.repoDownloadProgressed(-1);
+        emit mGirlDown.repoDownloadProgressed(-20001);
         return false;
     }
 
@@ -288,11 +288,11 @@ bool PGirlDown::TaskDownloadGirls::recvFile(QNetworkReply *reply)
 {
     // uri should be in format ".../user/repo/branch/filename"
     QStringList split = reply->request().url().toString().split("/");
-    QString filename = split.at(split.size() - 1);
-    QString repo = split.at(split.size() - 3);
-    QString user = split.at(split.size() - 4);
+    const QString &filename = split.at(split.size() - 1);
+    const QString &repo = split.at(split.size() - 3);
+    const QString &user = split.at(split.size() - 4);
     if (mShortAddr != user + "/" + repo) {
-        emit mGirlDown.repoDownloadProgressed(-1);
+        emit mGirlDown.repoDownloadProgressed(-20002);
         return false;
     }
 

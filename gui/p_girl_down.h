@@ -17,6 +17,10 @@ class PGirlDown : public QObject
 
 public:
     explicit PGirlDown(QObject *parent = nullptr);
+    PGirlDown(const PGirlDown &copy) = delete;
+    PGirlDown(PGirlDown &&move) = delete;
+    PGirlDown &operator=(const PGirlDown &copy) = delete;
+    PGirlDown &operator=(PGirlDown &&move) = delete;
     ~PGirlDown() override;
 
     Q_INVOKABLE void fetchSignedRepos();
@@ -35,7 +39,12 @@ private:
     {
     public:
         explicit Task(PGirlDown &girlDown);
+        Task(const Task &copy) = delete;
+        Task(Task &&move) = delete;
+        Task &operator=(const Task &copy) = delete;
+        Task &operator=(Task &&move) = delete;
         virtual ~Task() = default;
+
         virtual bool recv(QNetworkReply *reply) = 0;
 
     protected:
@@ -72,12 +81,12 @@ private:
 
     private:
         QString mShortAddr;
-        bool mGotDir = false;
         int mTotalFiles;
         int mCompletedFiles = 0;
+        bool mGotDir = false;
     };
 
-    void httpGet(QUrl url);
+    void httpGet(const QUrl &url);
     void httpAbortAll();
 
 private:
