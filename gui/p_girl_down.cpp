@@ -181,6 +181,8 @@ bool PGirlDown::TaskFetchRepoList::recvRepoMetaInfo(QNetworkReply *reply)
         } else {
             repo["status"] = "LATEST";
         }
+
+        repo["stars"] = repoInfo["stargazers_count"].toInt();
     }
 
     notifyGui();
@@ -199,6 +201,7 @@ void PGirlDown::TaskFetchRepoList::notifyGui()
 void PGirlDown::TaskFetchRepoList::initRepo(QJsonObject &repo)
 {
     QString shortAddr = repo["repo"].toString();
+    repo["stars"] = -1;
     QRegularExpression regex("^[A-Za-z0-9_\\-]+/[A-Za-z0-9_\\-]+$");
     if (!regex.match(shortAddr).hasMatch()) {
         repo["status"] = "INVALID_NAME";

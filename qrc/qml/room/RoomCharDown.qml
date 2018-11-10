@@ -76,6 +76,7 @@ Room {
                     anchors.left: parent.left
                     anchors.leftMargin: global.size.space
                     text: "- UP主：" + modelData.uploader + "\n" +
+                          "- 时髦值：" + (modelData.stars < 0 ? "计算中" : modelData.stars) + "\n" +
                           "- GitHub地址：" + modelData.repo + "\n" +
                           "- 简介：" + modelData.desc
                 }
@@ -120,6 +121,18 @@ Room {
         }
 
         Buzzon {
+            text: "查看详情"
+            width: parent.width
+            enabled: _currIndex >= 0 &&
+                     !!entryList.model[_currIndex]
+            onClicked: {
+                let repo = entryList.model[_currIndex].repo;
+                let url = "https://github.com/" + repo;
+                Qt.openUrlExternally(url);
+            }
+        }
+
+        Buzzon {
             text: "长按删除"
             width: parent.width
             enabled: _currIndex >= 0 &&
@@ -131,11 +144,24 @@ Room {
             }
         }
 
+        Item {
+            width: 1
+            height: global.size.gap
+        }
+
+        Buzzon {
+            text: "常见问题"
+            width: parent.width
+            onClicked: {
+                Qt.openUrlExternally("https://mjpancake.github.io/docs/download-girl");
+            }
+        }
+
         Buzzon {
             text: "投稿"
             width: parent.width
             onClicked: {
-                Qt.openUrlExternally("https://mjpancake.github.io/upload-girl");
+                Qt.openUrlExternally("https://mjpancake.github.io/docs/upload-girl");
             }
         }
     }
