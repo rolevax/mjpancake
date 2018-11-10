@@ -132,6 +132,16 @@ QVariantList PEditor::listCachedGirls()
             QString shortAddr = userDir + "/" + repoDir;
             QString girlPathPrefix = "github.com/" + shortAddr;
             QVariantMap map;
+
+            QFile meta(PGlobal::editPath("meta.json", girlPathPrefix));
+            if (meta.open(QIODevice::ReadOnly | QIODevice::Text)) {
+                QString text = meta.readAll();
+                QJsonObject obj = QJsonDocument::fromJson(text.toUtf8()).object();
+                map["name"] = obj["name"].toString();
+            } else {
+                continue; // no meta you show a J8
+            }
+
             map["repo"] = shortAddr;
             map["girlPathPrefix"] = girlPathPrefix;
 
@@ -143,13 +153,6 @@ QVariantList PEditor::listCachedGirls()
                 str.chop(10);
 
             map["girls"] = girls;
-
-            QFile meta(PGlobal::editPath("meta.json", girlPathPrefix));
-            if (meta.open(QIODevice::ReadOnly | QIODevice::Text)) {
-                QString text = meta.readAll();
-                QJsonObject obj = QJsonDocument::fromJson(text.toUtf8()).object();
-                map["name"] = obj["name"].toString();
-            }
 
             list << map;
         }
@@ -224,6 +227,12 @@ void PEditor::remove(const QString &path)
 {
     QFile::remove(PGlobal::editPath(path + ".girl.json"));
     QFile::remove(PGlobal::editPath(path + ".girl.lua"));
+}
+
+void PEditor::removeRepo(const QString &shortAddr)
+{
+    QDir dir(PGlobal::editPath("", "github.com/" + shortAddr));
+    dir.removeRecursively();
 }
 
 void PEditor::editLuaExternally(const QString &path)

@@ -63,6 +63,7 @@ public:
     Q_INVOKABLE void saveJson(const QString &path, const QString &name, const QUrl &photoUrl);
     Q_INVOKABLE void saveLuaCode(const QString &path, const QString &luaCode);
     Q_INVOKABLE void remove(const QString &path);
+    Q_INVOKABLE void removeRepo(const QString &shortAddr);
     Q_INVOKABLE void editLuaExternally(const QString &path);
 
 private:

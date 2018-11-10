@@ -126,7 +126,8 @@ Room {
                      !!entryList.model[_currIndex] &&
                      entryList.model[_currIndex].deletable
             onLongClicked: {
-                // FUCK add feature
+                PEditor.removeRepo(entryList.model[_currIndex].repo);
+                _fetchRepoList();
             }
         }
 

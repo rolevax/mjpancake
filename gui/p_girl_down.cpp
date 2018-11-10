@@ -64,6 +64,7 @@ PGirlDown::~PGirlDown()
 
 void PGirlDown::fetchSignedRepos()
 {
+    mTask = nullptr;
     mTask = std::make_unique<TaskFetchRepoList>(*this);
 }
 
@@ -73,6 +74,7 @@ void PGirlDown::fetchSignedRepos()
 ///
 void PGirlDown::downloadRepo(QString shortAddr, QString name)
 {
+    mTask = nullptr;
     mTask = std::make_unique<TaskDownloadGirls>(*this, shortAddr, name);
 }
 
