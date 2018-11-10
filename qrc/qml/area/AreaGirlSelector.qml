@@ -130,7 +130,7 @@ Rectangle {
                 property var repoInfo: modelData
 
                 Texd {
-                    text: repoInfo.repo
+                    text: !!repoInfo.name ? repoInfo.name : repoInfo.repo
                 }
 
                 Repeater {

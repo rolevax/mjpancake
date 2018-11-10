@@ -123,12 +123,12 @@ QVariantList PEditor::listCachedGirls()
     QDir dir(PGlobal::editPath("", "github.com"));
     dir.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
     dir.setSorting(QDir::Name);
-    for (QString userDir : dir.entryList()) {
+    for (const QString &userDir : dir.entryList()) {
         QDir dir(PGlobal::editPath("", "github.com/" + userDir));
         dir.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
         dir.setSorting(QDir::Name);
 
-        for (QString repoDir : dir.entryList()) {
+        for (const QString &repoDir : dir.entryList()) {
             QString shortAddr = userDir + "/" + repoDir;
             QString girlPathPrefix = "github.com/" + shortAddr;
             QVariantMap map;
@@ -143,6 +143,14 @@ QVariantList PEditor::listCachedGirls()
                 str.chop(10);
 
             map["girls"] = girls;
+
+            QFile meta(PGlobal::editPath("meta.json", girlPathPrefix));
+            if (meta.open(QIODevice::ReadOnly | QIODevice::Text)) {
+                QString text = meta.readAll();
+                QJsonObject obj = QJsonDocument::fromJson(text.toUtf8()).object();
+                map["name"] = obj["name"].toString();
+            }
+
             list << map;
         }
     }
@@ -150,12 +158,12 @@ QVariantList PEditor::listCachedGirls()
     return list;
 }
 
-QString PEditor::getName(QString path)
+QString PEditor::getName(const QString &path)
 {
     return getGirlJson(path)["name"].toString();
 }
 
-QString PEditor::getLuaCode(QString path)
+QString PEditor::getLuaCode(const QString &path)
 {
     QString res("");
 
@@ -172,13 +180,13 @@ QString PEditor::getLuaCode(QString path)
     return res;
 }
 
-QImage PEditor::getPhoto(QString path)
+QImage PEditor::getPhoto(const QString &path)
 {
     QString base64 = getGirlJson(path)["photoBase64"].toString();
     return QImage::fromData(QByteArray::fromBase64(base64.toLatin1()), "PNG");
 }
 
-void PEditor::saveJson(QString path, QString name, QUrl photoUrl)
+void PEditor::saveJson(const QString &path, const QString &name, const QUrl &photoUrl)
 {
     if (path.isEmpty())
         return;
@@ -202,7 +210,7 @@ void PEditor::saveJson(QString path, QString name, QUrl photoUrl)
     jsonFile.write(QJsonDocument(obj).toJson());
 }
 
-void PEditor::saveLuaCode(QString path, QString luaCode)
+void PEditor::saveLuaCode(const QString &path, const QString &luaCode)
 {
     if (path.isEmpty())
         return;
@@ -212,20 +220,20 @@ void PEditor::saveLuaCode(QString path, QString luaCode)
     luaFile.write(luaCode.toUtf8());
 }
 
-void PEditor::remove(QString path)
+void PEditor::remove(const QString &path)
 {
     QFile::remove(PGlobal::editPath(path + ".girl.json"));
     QFile::remove(PGlobal::editPath(path + ".girl.lua"));
 }
 
-void PEditor::editLuaExternally(QString path)
+void PEditor::editLuaExternally(const QString &path)
 {
     QString filename(PGlobal::editPath(path + ".girl.lua"));
     QFile(filename).open(QIODevice::ReadWrite); // create if tan90
     QDesktopServices::openUrl(QUrl::fromLocalFile(filename));
 }
 
-QJsonObject PEditor::getGirlJson(QString path)
+QJsonObject PEditor::getGirlJson(const QString &path)
 {
     // TODO cache file conotent with an LRU container
 

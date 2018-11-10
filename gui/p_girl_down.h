@@ -24,7 +24,7 @@ public:
     ~PGirlDown() override;
 
     Q_INVOKABLE void fetchSignedRepos();
-    Q_INVOKABLE void downloadRepo(QString shortAddr);
+    Q_INVOKABLE void downloadRepo(QString shortAddr, QString name);
     Q_INVOKABLE void cancelDownload();
 
 signals:
@@ -71,16 +71,17 @@ private:
     class TaskDownloadGirls : public Task
     {
     public:
-        explicit TaskDownloadGirls(PGirlDown &girlDown, const QString &shortAddr);
+        explicit TaskDownloadGirls(PGirlDown &girlDown, QString shortAddr, QString name);
         bool recv(QNetworkReply *reply) override;
 
     private:
         bool recvRepoDir(QNetworkReply *reply);
         bool recvFile(QNetworkReply *reply);
-        void stampUpdateTime();
+        void lastStamp();
 
     private:
         QString mShortAddr;
+        QString mPackageName;
         int mTotalFiles;
         int mCompletedFiles = 0;
         bool mGotDir = false;

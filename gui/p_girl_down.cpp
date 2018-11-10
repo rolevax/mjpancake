@@ -71,9 +71,9 @@ void PGirlDown::fetchSignedRepos()
 /// \brief Starat to download a girl repo, discard all current downloads
 /// \param shortAddr GitHub repo address in form "username/repo-name"
 ///
-void PGirlDown::downloadRepo(QString shortAddr)
+void PGirlDown::downloadRepo(QString shortAddr, QString name)
 {
-    mTask = std::make_unique<TaskDownloadGirls>(*this, shortAddr);
+    mTask = std::make_unique<TaskDownloadGirls>(*this, shortAddr, name);
 }
 
 void PGirlDown::cancelDownload()
@@ -223,12 +223,13 @@ void PGirlDown::TaskFetchRepoList::initRepo(QJsonObject &repo)
     }
 }
 
-PGirlDown::TaskDownloadGirls::TaskDownloadGirls(PGirlDown &girlDown, const QString &shortAddr)
+PGirlDown::TaskDownloadGirls::TaskDownloadGirls(PGirlDown &girlDown, QString shortAddr, QString name)
     : Task(girlDown)
-    , mShortAddr(shortAddr)
+    , mShortAddr(std::move(shortAddr))
+    , mPackageName(std::move(name))
     , mTotalFiles(0)
 {
-    QString repoAddr = QString(URL_REPO_DIR_FMT).arg(shortAddr);
+    QString repoAddr = QString(URL_REPO_DIR_FMT).arg(mShortAddr);
     mGirlDown.httpGet(repoAddr);
     emit mGirlDown.repoDownloadProgressed(0);
 }
@@ -273,7 +274,7 @@ bool PGirlDown::TaskDownloadGirls::recvRepoDir(QNetworkReply *reply)
 
     mTotalFiles = targets.size();
     if (mTotalFiles == 0) {
-        stampUpdateTime();
+        lastStamp();
         emit mGirlDown.repoDownloadProgressed(100);
         return false;
     }
@@ -304,7 +305,7 @@ bool PGirlDown::TaskDownloadGirls::recvFile(QNetworkReply *reply)
     mCompletedFiles++;
 
     if (mCompletedFiles == mTotalFiles) {
-        stampUpdateTime();
+        lastStamp();
         emit mGirlDown.repoDownloadProgressed(100);
         return false;
     }
@@ -315,10 +316,11 @@ bool PGirlDown::TaskDownloadGirls::recvFile(QNetworkReply *reply)
     return true;
 }
 
-void PGirlDown::TaskDownloadGirls::stampUpdateTime()
+void PGirlDown::TaskDownloadGirls::lastStamp()
 {
     QString dirSuffix = "github.com/" + mShortAddr;
     QJsonObject meta = openCachedMeta(dirSuffix);
     meta["updated_at"] = QDateTime::currentDateTimeUtc().toString(Qt::ISODate);
+    meta["name"] = mPackageName;
     writeCachedMeta(meta, dirSuffix);
 }

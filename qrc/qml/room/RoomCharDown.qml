@@ -114,7 +114,8 @@ Room {
                      entryList.model[_currIndex].updatable
             onClicked: {
                 downloading.visible = true;
-                pGirlDown.downloadRepo(entryList.model[_currIndex].repo);
+                let entry = entryList.model[_currIndex];
+                pGirlDown.downloadRepo(entry.repo, entry.name);
             }
         }
 

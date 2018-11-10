@@ -57,16 +57,16 @@ public:
     Q_INVOKABLE void setLuaHighlighter(QQuickTextDocument *qtd);
     Q_INVOKABLE QStringList ls();
     Q_INVOKABLE QVariantList listCachedGirls();
-    Q_INVOKABLE QString getName(QString path);
-    Q_INVOKABLE QString getLuaCode(QString path);
-    Q_INVOKABLE QImage getPhoto(QString path);
-    Q_INVOKABLE void saveJson(QString path, QString name, QUrl photoUrl);
-    Q_INVOKABLE void saveLuaCode(QString path, QString luaCode);
-    Q_INVOKABLE void remove(QString path);
-    Q_INVOKABLE void editLuaExternally(QString path);
+    Q_INVOKABLE QString getName(const QString &path);
+    Q_INVOKABLE QString getLuaCode(const QString &path);
+    Q_INVOKABLE QImage getPhoto(const QString &path);
+    Q_INVOKABLE void saveJson(const QString &path, const QString &name, const QUrl &photoUrl);
+    Q_INVOKABLE void saveLuaCode(const QString &path, const QString &luaCode);
+    Q_INVOKABLE void remove(const QString &path);
+    Q_INVOKABLE void editLuaExternally(const QString &path);
 
 private:
-    QJsonObject getGirlJson(QString path);
+    QJsonObject getGirlJson(const QString &path);
 
 private:
     static PEditor *sInstance;
