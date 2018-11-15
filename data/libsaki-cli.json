@@ -1,0 +1,21 @@
+{
+	"girls": [
+		{ "id": 0, "path": "" },
+		{ "id": 0, "path": "" },
+		{ "id": 0, "path": "" },
+		{ "id": 0, "path": "" }
+	], 
+	"rule": {
+        "roundLimit": 8,
+        "fly": true,
+		"returnLevel": 30000,
+		"hill": 20000,
+        "headJump": true,
+		"daiminkanPao": true,
+        "nagashimangan": true,
+		"ippatsu": true,
+        "uradora": true,
+		"kandora": true,
+        "akadora": 2
+	}
+}
