@@ -52,6 +52,11 @@ void PCli::command(const QString &line)
     if (split.empty())
         return;
 
+    auto simpleCmd = [this](const QString &cmd) {
+        Action action = readAction(cmd, 0, "");
+        handleTableMsgs(mServer->action(action));
+    };
+
     QString cmd = split.front();
     split.pop_front();
     if (cmd == "start") {
@@ -60,14 +65,14 @@ void PCli::command(const QString &line)
         Action action = readAction("SWAP_OUT", 0, split[0]);
         handleTableMsgs(mServer->action(action));
     } else if (cmd == "spin") {
-        Action action = readAction("SPIN_OUT", 0, "");
-        handleTableMsgs(mServer->action(action));
-    } else if (cmd == "pass") {
-        Action action = readAction("PASS", 0, "");
-        handleTableMsgs(mServer->action(action));
-    } else if (cmd == "dice") {
-        Action action = readAction("DICE", 0, "");
-        handleTableMsgs(mServer->action(action));
+        simpleCmd("SPIN_OUT");
+    } else if (cmd == "next") {
+        simpleCmd("NEXT_ROUND");
+    } else if (cmd == "pass"
+            || cmd == "spin"
+            || cmd == "dice"
+            || cmd == "next_round") {
+        simpleCmd(cmd.toUpper());
     } else if (cmd == "hand") {
         printHand();
     } else {
@@ -114,7 +119,8 @@ void PCli::handleTableMsg(const TableMsgContent &msg)
         qDebug().noquote() << str;
         qDebug() << "================";
     } else {
-        qDebug() << event << args;
+        QString json = QJsonDocument(args).toJson();
+        qDebug().noquote() << event << json;
     }
 }
 
