@@ -66,11 +66,17 @@ void PCli::command(const QString &line)
         handleTableMsgs(mServer->action(action));
     } else if (cmd == "spin") {
         simpleCmd("SPIN_OUT");
+    } else if (cmd == "irs_check") {
+        Action action = readAction("IRS_CHECK", split[0].toInt(nullptr, 2), "");
+        handleTableMsgs(mServer->action(action));
     } else if (cmd == "next") {
         simpleCmd("NEXT_ROUND");
     } else if (cmd == "pass"
             || cmd == "spin"
             || cmd == "dice"
+            || cmd == "tsumo"
+            || cmd == "ron"
+            || cmd == "irs_click"
             || cmd == "next_round") {
         simpleCmd(cmd.toUpper());
     } else if (cmd == "hand") {
@@ -113,6 +119,9 @@ void PCli::handleTableMsg(const TableMsgContent &msg)
         qDebug() << "Action choices:";
         for (const auto &act : action.keys())
             qDebug() << "    " << act << action[act];
+
+        if (!action["SPIN_OUT"].isNull())
+            printHand();
     } else if (event == "popped-up") {
         QString str = args["str"].toString();
         qDebug() << "==== pop up ====";
@@ -127,7 +136,20 @@ void PCli::handleTableMsg(const TableMsgContent &msg)
 void PCli::printHand()
 {
     const Hand &hand = mServer->table().getHand(Who(0));
-    std::cout << hand.closed().t37s13(true);
+    auto closed = hand.closed().t37s13(true);
+    for (auto it = closed.begin(); it != closed.end(); ++it) {
+        const T37 &curr = *it;
+        if (it != closed.begin()) {
+            const T37 &prev = *(it - 1);
+            if (curr.suit() != prev.suit())
+                std::cout << T34::charOf(prev.suit()) << ' ';
+        }
+
+        std::cout << (curr.isAka5() ? 0 : curr.val());
+    }
+
+    std::cout << T34::charOf(closed.back().suit());
+
     if (hand.hasDrawn())
         std::cout << ' ' << hand.drawn();
 
