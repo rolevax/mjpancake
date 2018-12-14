@@ -101,7 +101,22 @@ void PCli::handleTableMsg(const TableMsgContent &msg)
     if (event == "just-pause")
         return;
 
-    if (event == "dealt") {
+    if (event == "round-started"
+            || event == "first-dealer-chosen") {
+        // nop
+    } else if (event == "flipped") {
+        qDebug() << "new dora indic:" << args["newIndic"].toString();
+    } else if (event == "diced") {
+        qDebug() << "dice:" << args["die1"].toInt() << args["die2"].toInt();
+    } else if (event == "points-changed") {
+        QJsonArray array = args["points"].toArray();
+        std::array<int, 4> points;
+        std::transform(array.begin(), array.end(), points.begin(),
+                       [](const QJsonValue &v) { return v.toInt(); });
+        qDebug().nospace() << "       " << points[2] << '\n'
+                           << points[3] << "         " << points[1] << '\n'
+                           << "       " << points[0];
+    } else if (event == "dealt") {
         mHand.clear();
         QJsonArray init = args["init"].toArray();
         for (QJsonValue value : init)
