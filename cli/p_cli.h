@@ -19,7 +19,7 @@ private:
     void handleTableMsgs(const saki::TableServerAi3::Msgs &msgs);
     void handleTableMsg(const saki::TableMsgContent &msg);
 
-    void printHand();
+    void printHand(int who);
 
 private:
     std::unique_ptr<saki::TableServerAi3> mServer;

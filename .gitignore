@@ -1,6 +1,7 @@
 *.log
 *.aux
 *.user
+*.user.4.8-pre1
 *.properties~
 .official
 

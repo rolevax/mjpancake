@@ -43,6 +43,7 @@ HEADERS += libsaki/3rd/json.hpp \
            libsaki/form/form_gb.h \
            libsaki/form/hand.h \
            libsaki/form/parsed.h \
+           libsaki/form/parsed_view.h \
            libsaki/form/rule.h \
            libsaki/form/tile_count.h \
            libsaki/form/tile_count_list.h \
@@ -151,6 +152,7 @@ SOURCES += libsaki/ai/ai.cpp \
            libsaki/form/form_gb.cpp \
            libsaki/form/hand.cpp \
            libsaki/form/parsed.cpp \
+           libsaki/form/parsed_view.cpp \
            libsaki/form/tile_count.cpp \
            libsaki/form/tile_count_list.cpp \
            libsaki/girl/achiga_ako.cpp \

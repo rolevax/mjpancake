@@ -24,14 +24,14 @@ PCli::PCli(const QJsonObject &config)
         qDebug() << "create girl:" << static_cast<int>(id) << path;
         if (id == Girl::Id::CUSTOM) {
             QString luaCode = PEditor::instance().getLuaCode(path);
-            girls[w] = std::make_unique<GirlX>(Who(w), luaCode.toStdString());
+            girls[decltype(girls)::size_type(w)] = std::make_unique<GirlX>(Who(w), luaCode.toStdString());
         } else {
-            girls[w] = Girl::create(Who(w), id);
+            girls[decltype(girls)::size_type(w)] = Girl::create(Who(w), id);
         }
     }
 
     TableServerAi3::Ai3 ai3;
-    for (int w = 0; w < 3; w++)
+    for (decltype(ai3)::size_type w = 0; w < 3; w++)
         ai3[w] = Ai::create(girls[w + 1]->getId());
 
     Rule rule = readRuleJson(config["rule"].toObject());
@@ -67,6 +67,11 @@ void PCli::command(const QString &line)
     } else if (cmd == "spin") {
         simpleCmd("SPIN_OUT");
     } else if (cmd == "irs_check") {
+        if (split.size() != 1) {
+            qDebug() << "need one argument: irs_check binary mask";
+            return;
+        }
+
         Action action = readAction("IRS_CHECK", split[0].toInt(nullptr, 2), "");
         handleTableMsgs(mServer->action(action));
     } else if (cmd == "next") {
@@ -80,7 +85,11 @@ void PCli::command(const QString &line)
             || cmd == "next_round") {
         simpleCmd(cmd.toUpper());
     } else if (cmd == "hand") {
-        printHand();
+        int who = 0;
+        if (!split.empty())
+            who = split[0].toInt();
+
+        printHand(who);
     } else {
         qDebug() << "unkown command:" << cmd;
     }
@@ -136,7 +145,7 @@ void PCli::handleTableMsg(const TableMsgContent &msg)
             qDebug() << "    " << act << action[act];
 
         if (!action["SPIN_OUT"].isNull())
-            printHand();
+            printHand(0);
     } else if (event == "popped-up") {
         QString str = args["str"].toString();
         qDebug() << "==== pop up ====";
@@ -148,9 +157,9 @@ void PCli::handleTableMsg(const TableMsgContent &msg)
     }
 }
 
-void PCli::printHand()
+void PCli::printHand(int who)
 {
-    const Hand &hand = mServer->table().getHand(Who(0));
+    const Hand &hand = mServer->table().getHand(Who(who));
     auto closed = hand.closed().t37s13(true);
     for (auto it = closed.begin(); it != closed.end(); ++it) {
         const T37 &curr = *it;
