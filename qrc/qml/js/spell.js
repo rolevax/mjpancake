@@ -63,6 +63,7 @@ function logtr(str) {
     str = str.replace(/1J/g, "下家");
     str = str.replace(/2J/g, "対面");
     str = str.replace(/3J/g, "上家");
+    str = str.replace(/AIM_FAILURE/g, "目标不在射程内");
 
     str = str.replace(/PON/g, "碰");
     str = str.replace(/CHII/g, "吃");
@@ -139,7 +140,7 @@ function logtr(str) {
 
 function irsCheckTr(name, index) {
     var dict = {
-        SUMIRE: ["射贯", "下家", "对面", "上家" ],
+        SUMIRE: ["射贯", "下家", "对面", "上家", "接受数牌19", "接受字牌" ],
         AWAI: [ "☆☆☆☆☆☆" ],
         KASUMI: [ "降神" ],
         SAWAYA_CLOUD: [ "青云", "黄云", "赤云", "自", "他", "白云", "黑云" ],
