@@ -176,11 +176,13 @@ bool PGirlDown::TaskFetchRepoList::recvRepoMetaInfo(QNetworkReply *reply)
             repo["status"] = "REMOTE_DATE_ERROR";
 
         QDateTime localDate = QDateTime::fromString(repo["updated_at"].toString(), Qt::ISODate);
-        if (localDate.isNull() || remoteDate > localDate) {
-            repo["status"] = "CAN_UPDATE";
-            repo["updatable"] = true;
-        } else {
-            repo["status"] = "LATEST";
+        if (!localDate.isNull()) { // not first time download
+            if (remoteDate > localDate) {
+                repo["status"] = "CAN_UPDATE";
+                repo["updatable"] = true;
+            } else {
+                repo["status"] = "LATEST";
+            }
         }
 
         repo["stars"] = repoInfo["stargazers_count"].toInt();
@@ -223,10 +225,11 @@ void PGirlDown::TaskFetchRepoList::initRepo(QJsonObject &repo)
         repo["updatable"] = false;
         repo["deletable"] = true;
         repo["updated_at"] = dateStr;
-        mRepoIndices.insert(shortAddr, mRepos.size());
-        QString url = QString(URL_REPO_FMT).arg(shortAddr);
-        mGirlDown.httpGet(url);
     }
+
+    mRepoIndices.insert(shortAddr, mRepos.size());
+    QString url = QString(URL_REPO_FMT).arg(shortAddr);
+    mGirlDown.httpGet(url);
 }
 
 PGirlDown::TaskDownloadGirls::TaskDownloadGirls(PGirlDown &girlDown, QString shortAddr, QString name)
