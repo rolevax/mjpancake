@@ -54,7 +54,7 @@ function charge(str) {
 
 function logtr(str) {
     if (str.startsWith("Lua")) {
-        return str.substr(3);
+        return luaLogTr(str)
     }
 
     str = str.replace(/DRAW/g, "取:");
@@ -136,6 +136,20 @@ function logtr(str) {
     str = str.substring(1); // remove temp terminater
 
     return str;
+}
+
+function luaLogTr(str) {
+    str = str.substr(3);
+    str = str.replace(/EInvT34Id/g, "你的ID-34超出范围");
+    str = str.replace(/EInvT34Str/g, "你的T34字符串非法");
+    str = str.replace(/EInvT37Str/g, "你的T37字符串非法");
+    str = str.replace(/EInvM37Idx/g, "你的M37下标超出范围");
+    str = str.replace(/EInvMntExt/g, "你的Mount出口非法");
+    str = str.replace(/EInvSuit/g, "你的花色非法");
+    str = str.replace(/EFrmNoAgr/g, "没和你Form个鸡8");
+    str = str.replace(/EDrmCntDrw/g, "你的梦中手牌并非可摸牌状态");
+    str = str.replace(/EDrmCntSwp/g, "你的梦中手牌不能这么切牌");
+    return str
 }
 
 function irsCheckTr(name, index) {
