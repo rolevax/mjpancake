@@ -40,6 +40,7 @@ HEADERS += libsaki/3rd/json.hpp \
            libsaki/app/table_server_ai3.h \
            libsaki/form/explain.h \
            libsaki/form/form.h \
+           libsaki/form/form_common.h \
            libsaki/form/form_ctx.h \
            libsaki/form/form_gb.h \
            libsaki/form/hand.h \
@@ -98,6 +99,7 @@ HEADERS += libsaki/3rd/json.hpp \
            libsaki/unit/who.h \
            libsaki/util/assume.h \
            libsaki/util/debug_cheat.h \
+           libsaki/util/dismember.h \
            libsaki/util/int_iter.h \
            libsaki/util/misc.h \
            libsaki/util/rand.h \

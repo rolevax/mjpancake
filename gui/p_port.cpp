@@ -96,14 +96,14 @@ QVariantMap createTableSnapMap(const TableSnap &snap)
     map.insert("urids", createTilesVar(snap.urids.range()));
 
     QVariantList players;
-    for (int w = 0; w < 4; w++) {
+    for (size_t w = 0; w < 4; w++) {
         const PlayerSnap &player = snap[w];
         QVariantMap playerMap;
         playerMap.insert("hand", createTilesVar(player.hand.range()));
         playerMap.insert("barks", createBarksVar(player.barks));
         QVariantList river;
-        for (int i = 0; i < int(player.river.size()); i++)
-            river << createTileVar(player.river[i], i == player.riichiPos);
+        for (size_t i = 0; i < player.river.size(); i++)
+            river << createTileVar(player.river[i], int(i) == player.riichiPos);
 
         playerMap.insert("river", river);
         playerMap.insert("riichiBar", player.riichiBar);
@@ -162,9 +162,9 @@ Replay readReplayJson(const QJsonObject &obj)
     Replay replay;
 
     assert(obj["version"].toInt() == 3);
-    for (int i = 0; i < 4; i++) {
-        replay.girls[i] = Girl::Id(obj["girls"].toArray().at(i).toInt());
-        replay.initPoints[i] = obj["initPoints"].toArray().at(i).toInt();
+    for (size_t i = 0; i < 4; i++) {
+        replay.girls[i] = Girl::Id(obj["girls"].toArray().at(int(i)).toInt());
+        replay.initPoints[i] = obj["initPoints"].toArray().at(int(i)).toInt();
     }
 
     replay.rule = readRuleJson(obj["rule"].toObject());
@@ -218,8 +218,8 @@ Replay::Round readRoundJson(const QJsonObject &obj)
 
     round.result = util::roundResultOf(obj["result"].toString().toLatin1().data());
 
-    for (int i = 0; i < 4; i++)
-        round.resultPoints[i] = obj["resultPoints"].toArray().at(i).toInt();
+    for (size_t i = 0; i < 4; i++)
+        round.resultPoints[i] = obj["resultPoints"].toArray().at(int(i)).toInt();
 
     QJsonArray drids = obj["drids"].toArray();
     for (auto it = drids.begin(); it != drids.end(); ++it)
@@ -230,8 +230,8 @@ Replay::Round readRoundJson(const QJsonObject &obj)
         round.urids.emplace_back(it->toString().toLatin1().data());
 
     QJsonArray tracks = obj["tracks"].toArray();
-    for (int i = 0; i < 4; i++)
-        round.tracks[i] = readTrackJson(tracks.at(i).toObject());
+    for (size_t i = 0; i < 4; i++)
+        round.tracks[i] = readTrackJson(tracks.at(int(i)).toObject());
 
     QJsonArray spells = obj["spells"].toArray();
     for (auto it = spells.begin(); it != spells.end(); ++it)
@@ -274,7 +274,7 @@ Replay::Track readTrackJson(const QJsonObject &obj)
             assert(str[1] == '-');
             return InAct(In::SKIP_IN);
         } else {
-            unreached("corrupted replay json (in)");
+            unreached();
         }
     };
 
@@ -310,7 +310,7 @@ Replay::Track readTrackJson(const QJsonObject &obj)
         } else if (str[0] == 't') {
             return OutAct(Out::TSUMO);
         } else {
-            unreached("corrupted replay json (out)");
+            unreached();
         }
     };
     // *INDENT-ON*
@@ -319,7 +319,7 @@ Replay::Track readTrackJson(const QJsonObject &obj)
 
     QJsonArray init = obj["init"].toArray();
     for (int i = 0; i < init.size(); i++)
-        track.init[i] = T37(init[i].toString().toLatin1().data());
+        track.init[size_t(i)] = T37(init[i].toString().toLatin1().data());
 
     QJsonArray in = obj["in"].toArray();
     for (auto it = in.begin(); it != in.end(); ++it)
