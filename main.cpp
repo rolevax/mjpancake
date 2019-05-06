@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
                                       pGlobalSingletonProvider);
     qmlRegisterSingletonType<PClient>("rolevax.sakilogy", 1, 0, "PClient",
                                       pClientSingletonProvider);
-    qmlRegisterSingletonType<PClient>("rolevax.sakilogy", 1, 0, "PEditor",
+    qmlRegisterSingletonType<PEditor>("rolevax.sakilogy", 1, 0, "PEditor",
                                       pEditorSingletonProvider);
 
     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));

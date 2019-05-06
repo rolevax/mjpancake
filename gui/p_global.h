@@ -13,7 +13,7 @@ class PGlobal : public QObject
     Q_OBJECT
 
 public:
-    explicit PGlobal(QObject *parent = 0);
+    explicit PGlobal(QObject *parent = nullptr);
     ~PGlobal();
 
     Q_PROPERTY(QString version READ version NOTIFY nothingChanged)
