@@ -64,7 +64,7 @@ Window {
     Loader {
         id: loader
         anchors.fill: parent
-        source: "room/RoomLogin.qml"
+        source: _getFirstRoom()
         onLoaded: {
             PGlobal.forceImmersive();
             loader.focus = true;
@@ -134,6 +134,13 @@ Window {
         }
     }
 
+    Component.onCompleted: {
+        let openFile = Qt.application.arguments[1];
+        if (openFile) {
+            _openFile(openFile);
+        }
+    }
+
     function pushScene(name, onPushed) {
         _roomStack.push(loader.source);
         if (!!onPushed) {
@@ -165,5 +172,26 @@ Window {
         var date = new Date(null);
         date.setSeconds(elapse);
         return date.toISOString().substr(14, 5);
+    }
+
+    function _getFirstRoom() {
+        let openFile = Qt.application.arguments[1];
+        return openFile ? "room/RoomMainMenu.qml" : "room/RoomLogin.qml";
+    }
+
+    function _openFile(filename) {
+        if (filename.endsWith(".girl.json"))
+            filename = filename.slice(0, -10);
+
+        let absPath = PGlobal.resolvedPath(filename);
+
+        pushScene("room/RoomGameFree", (item) => {
+            item.girlKeys = [
+                { id: 1, path: absPath },
+                { id: 0, path: "" },
+                { id: 0, path: "" },
+                { id: 0, path: "" }
+            ];
+        });
     }
 }

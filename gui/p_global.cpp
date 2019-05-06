@@ -90,6 +90,11 @@ void PGlobal::systemNotify()
 #endif
 }
 
+QString PGlobal::resolvedPath(const QString &path)
+{
+    return QDir(path).absolutePath();
+}
+
 PGlobal &PGlobal::instance()
 {
     return *sInstance;
@@ -139,6 +144,9 @@ QString PGlobal::replayPath(QString filename)
 
 QString PGlobal::editPath(QString filename, QString dirSuffix)
 {
+    if (QDir::isAbsolutePath(filename))
+        return filename;
+
     QString path = configPath() + "/edit";
     if (!dirSuffix.isEmpty())
         path += "/" + dirSuffix;

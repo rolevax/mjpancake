@@ -32,6 +32,7 @@ public:
     Q_INVOKABLE void save();
     Q_INVOKABLE static void forceImmersive();
     Q_INVOKABLE static void systemNotify();
+    Q_INVOKABLE static QString resolvedPath(const QString &path);
 
     static PGlobal &instance();
 
