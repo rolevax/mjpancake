@@ -14,6 +14,7 @@ Room {
                 { text: "牌效练习", room: "Eff" },
                 { text: "手役生成器", room: "Gen" },
                 { text: "牌形分解器", room: "Parse" },
+                { text: "人物编辑", room: "EditList" },
             ]
 
             delegate: Buzzon {

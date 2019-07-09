@@ -24,8 +24,6 @@ Room {
                 { text: "麻将部备品", load: "Tools" },
                 { text: "设置", load: "Settings" },
                 { text: "联机", load: "Client" },
-                { text: "人物编辑", load: "EditList" },
-                { text: "人物下载", load: "CharDown" }
             ]
 
             delegate: Buxxon {
@@ -39,9 +37,18 @@ Room {
         }
 
         Buxxon {
+            width: 2 * normal.width + global.size.space
+            textLength: 7
+            text: "人物下载"
+            onClicked: {
+                global.pushScene("room/RoomCharDown");
+            }
+        }
+
+        Buxxon {
             id: normal
             textLength: 7
-            text: "社区主站"
+            text: "主站"
             onClicked: {
                 Qt.openUrlExternally("https://mjpancake.github.io/");
             }
