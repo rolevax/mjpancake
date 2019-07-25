@@ -11,9 +11,10 @@
 
 
 using StrConst = const char * const;
-static StrConst URL_ISSUE_51 = "https://api.github.com/repos/rolevax/libsaki/issues/51/comments";
 static StrConst URL_REPO_DIR_FMT = "https://api.github.com/repos/%1/contents/";
-static StrConst URL_REPO_FMT = "https://api.github.com/repos/%1";
+static StrConst QUERY_ISSUE = "query{repository(owner:rolevax,name:libsaki){issue(number: 51){author{login} comments(first:100){edges{node{bodyText reactions(first:100,content:ROCKET){edges{node{user{login}}}}}}}}}}";
+static StrConst QUERY_REPO_FMT = "query{repository(owner:\"%1\",name:\"%2\"){updatedAt stargazers{totalCount}}}";
+static StrConst AUTHORIZATION = "bearer 4b55657f9087494b42e04749b1cf9a18c9d4c432"; // from an empty account
 
 QJsonDocument replyToJson(QNetworkReply *reply)
 {
@@ -107,6 +108,20 @@ void PGirlDown::httpGet(const QUrl &url)
     mReplies.insert(mNet.get(request));
 }
 
+void PGirlDown::graphQlQuery(const QString &query, const QString &comment)
+{
+    QNetworkRequest request;
+    request.setUrl(QUrl("https://api.github.com/graphql"));
+    request.setHeader(QNetworkRequest::UserAgentHeader, "rolevax");
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    request.setRawHeader("Authorization", AUTHORIZATION);
+    request.setRawHeader("X-Pancake-Comment", comment.toUtf8());
+
+    QJsonObject queryJson;
+    queryJson["query"] = query;
+    mReplies.insert(mNet.post(request, QJsonDocument(queryJson).toJson(QJsonDocument::Compact)));
+}
+
 void PGirlDown::httpAbortAll()
 {
     for (QNetworkReply *reply : mReplies)
@@ -123,30 +138,50 @@ PGirlDown::Task::Task(PGirlDown &girlDown)
 PGirlDown::TaskFetchRepoList::TaskFetchRepoList(PGirlDown &girlDown)
     : Task(girlDown)
 {
-    mGirlDown.httpGet(QUrl(URL_ISSUE_51));
+    mGirlDown.graphQlQuery(QUERY_ISSUE, "issue");
 }
 
 bool PGirlDown::TaskFetchRepoList::recv(QNetworkReply *reply)
 {
-    QString reqUrl = reply->request().url().toString();
-    return reqUrl == URL_ISSUE_51 ? recvRepoList(reply)
-                                  : recvRepoMetaInfo(reply);
-}
-
-bool PGirlDown::TaskFetchRepoList::recvRepoList(QNetworkReply *reply)
-{
     if (reply->error() != QNetworkReply::NoError) {
+        qDebug() << reply->error();
         notifyGui();
         return false;
     }
 
     QJsonDocument replyDoc = replyToJson(reply);
-    QVariantList issues = replyDoc.array().toVariantList();
+    QVariantMap replyRoot = replyDoc.object().toVariantMap();
 
-    for (const QVariant &issueVar : issues) {
-        QVariantMap issue = issueVar.toMap();
-        QString bodyStr = issue["body"].toString();
+    QString comment = reply->request().rawHeader("X-Pancake-Comment");
+    if (comment == "issue")
+        return recvRepoList(replyRoot);
+
+    return recvRepoMetaInfo(comment, replyRoot);
+}
+
+bool PGirlDown::TaskFetchRepoList::recvRepoList(QVariantMap replyRoot)
+{
+    QVariantMap issue = replyRoot["data"].toMap()["repository"].toMap()["issue"].toMap();
+    QString author = issue["author"].toMap()["login"].toString();
+
+    QVariantList comments = issue["comments"].toMap()["edges"].toList();
+
+    for (const QVariant &commentVar : comments) {
+        QVariantMap comment = commentVar.toMap()["node"].toMap();
+
+        QString bodyStr = comment["bodyText"].toString();
         QJsonDocument bodyDoc = QJsonDocument::fromJson(bodyStr.toUtf8());
+
+        QVariantList reactions = comment["reactions"].toMap()["edges"].toList();
+        auto it = std::find_if(reactions.begin(), reactions.end(), [&author](const QVariant &v) {
+            QVariantMap reaction = v.toMap()["node"].toMap();
+            QString actor = reaction["user"].toMap()["login"].toString();
+            return actor == author;
+        });
+
+        bool authorReact = it != reactions.end();
+        qDebug() << "author react " << authorReact; // TODO FUCK use this
+
         if (bodyDoc.isObject()) {
             QJsonObject bodyObj = bodyDoc.object();
             initRepo(bodyObj);
@@ -158,34 +193,30 @@ bool PGirlDown::TaskFetchRepoList::recvRepoList(QNetworkReply *reply)
     return true;
 }
 
-bool PGirlDown::TaskFetchRepoList::recvRepoMetaInfo(QNetworkReply *reply)
+bool PGirlDown::TaskFetchRepoList::recvRepoMetaInfo(const QString &shortAddr, QVariantMap replyRoot)
 {
-    QStringList split = reply->request().url().toString().split("/");
-    QString shortAddr = split[split.size() - 2] + "/" + split.back();
-    QVariantMap &repo = mRepos[mRepoIndices[shortAddr]];
+    QVariantMap &localRepo = mRepos[mRepoIndices[shortAddr]];
     mRepoIndices.remove(shortAddr);
 
-    if (reply->error() != QNetworkReply::NoError) {
-        repo["status"] = "REMOTE_TAN90";
+    if (replyRoot.contains("errors")) {
+        localRepo["status"] = "REMOTE_TAN90";
     } else {
-        QJsonDocument replyDoc = replyToJson(reply);
-        QJsonObject repoInfo = replyDoc.object();
-
-        QDateTime remoteDate = QDateTime::fromString(repoInfo["updated_at"].toString(), Qt::ISODate);
+        QVariantMap remoteRepo = replyRoot["data"].toMap()["repository"].toMap();
+        QDateTime remoteDate = QDateTime::fromString(remoteRepo["updatedAt"].toString(), Qt::ISODate);
         if (remoteDate.isNull())
-            repo["status"] = "REMOTE_DATE_ERROR";
+            localRepo["status"] = "REMOTE_DATE_ERROR";
 
-        QDateTime localDate = QDateTime::fromString(repo["updated_at"].toString(), Qt::ISODate);
+        QDateTime localDate = QDateTime::fromString(localRepo["updated_at"].toString(), Qt::ISODate);
         if (!localDate.isNull()) { // not first time download
             if (remoteDate > localDate) {
-                repo["status"] = "CAN_UPDATE";
-                repo["updatable"] = true;
+                localRepo["status"] = "CAN_UPDATE";
+                localRepo["updatable"] = true;
             } else {
-                repo["status"] = "LATEST";
+                localRepo["status"] = "LATEST";
             }
         }
 
-        repo["stars"] = repoInfo["stargazers_count"].toInt();
+        localRepo["stars"] = remoteRepo["stargazers"].toMap()["totalCount"].toInt();
     }
 
     notifyGui();
@@ -228,8 +259,9 @@ void PGirlDown::TaskFetchRepoList::initRepo(QJsonObject &repo)
     }
 
     mRepoIndices.insert(shortAddr, mRepos.size());
-    QString url = QString(URL_REPO_FMT).arg(shortAddr);
-    mGirlDown.httpGet(url);
+    QStringList split = shortAddr.split("/");
+    QString query = QString(QUERY_REPO_FMT).arg(split[0], split[1]);
+    mGirlDown.graphQlQuery(query, shortAddr);
 }
 
 PGirlDown::TaskDownloadGirls::TaskDownloadGirls(PGirlDown &girlDown, QString shortAddr, QString name)

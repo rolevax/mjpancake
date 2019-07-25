@@ -58,8 +58,8 @@ private:
         bool recv(QNetworkReply *reply) override;
 
     private:
-        bool recvRepoList(QNetworkReply *reply);
-        bool recvRepoMetaInfo(QNetworkReply *reply);
+        bool recvRepoList(QVariantMap replyRoot);
+        bool recvRepoMetaInfo(const QString &shortAddr, QVariantMap replyRoot);
         void notifyGui();
         void initRepo(QJsonObject &repo);
 
@@ -88,6 +88,7 @@ private:
     };
 
     void httpGet(const QUrl &url);
+    void graphQlQuery(const QString &query, const QString &comment);
     void httpAbortAll();
 
 private:
