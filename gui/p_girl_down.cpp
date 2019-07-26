@@ -172,19 +172,10 @@ bool PGirlDown::TaskFetchRepoList::recvRepoList(QVariantMap replyRoot)
         QString bodyStr = comment["bodyText"].toString();
         QJsonDocument bodyDoc = QJsonDocument::fromJson(bodyStr.toUtf8());
 
-        QVariantList reactions = comment["reactions"].toMap()["edges"].toList();
-        auto it = std::find_if(reactions.begin(), reactions.end(), [&author](const QVariant &v) {
-            QVariantMap reaction = v.toMap()["node"].toMap();
-            QString actor = reaction["user"].toMap()["login"].toString();
-            return actor == author;
-        });
-
-        bool authorReact = it != reactions.end();
-        qDebug() << "author react " << authorReact; // TODO FUCK use this
-
         if (bodyDoc.isObject()) {
             QJsonObject bodyObj = bodyDoc.object();
             initRepo(bodyObj);
+            bodyObj["authorReact"] = checkAuthorReact(author, comment);
             mRepos << bodyObj.toVariantMap();
         }
     }
@@ -262,6 +253,18 @@ void PGirlDown::TaskFetchRepoList::initRepo(QJsonObject &repo)
     QStringList split = shortAddr.split("/");
     QString query = QString(QUERY_REPO_FMT).arg(split[0], split[1]);
     mGirlDown.graphQlQuery(query, shortAddr);
+}
+
+bool PGirlDown::TaskFetchRepoList::checkAuthorReact(const QString &author, const QVariantMap &comment)
+{
+    QVariantList reactions = comment["reactions"].toMap()["edges"].toList();
+    auto it = std::find_if(reactions.begin(), reactions.end(), [&author](const QVariant &v) {
+        QVariantMap reaction = v.toMap()["node"].toMap();
+        QString actor = reaction["user"].toMap()["login"].toString();
+        return actor == author;
+    });
+
+    return it != reactions.end();
 }
 
 PGirlDown::TaskDownloadGirls::TaskDownloadGirls(PGirlDown &girlDown, QString shortAddr, QString name)

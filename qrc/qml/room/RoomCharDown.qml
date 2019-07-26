@@ -66,10 +66,30 @@ Room {
 
             Column {
                 id: itemColumn
-                Texd {
+                Row {
                     anchors.left: parent.left
                     anchors.leftMargin: global.size.space
-                    text: "[" + _textOfStatus(modelData.status) + "] " + modelData.name
+                    spacing: global.size.space
+
+                    Texd {
+                        text: "[" + _textOfStatus(modelData.status) + "] " + modelData.name
+                    }
+
+                    Rectangle {
+                        visible: modelData.authorReact
+                        color: "green"
+                        width: 2 * global.size.space + safeText.width
+                        height: safeText.height
+                        anchors.verticalCenter: parent.verticalCenter
+                        radius: 2
+
+                        Texd {
+                            id: safeText
+                            font.pixelSize: 0.7 * fetchingRepoList.font.pixelSize
+                            anchors.centerIn: parent
+                            text: "节操安全"
+                        }
+                    }
                 }
 
                 Texd {

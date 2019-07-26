@@ -62,6 +62,7 @@ private:
         bool recvRepoMetaInfo(const QString &shortAddr, QVariantMap replyRoot);
         void notifyGui();
         void initRepo(QJsonObject &repo);
+        bool checkAuthorReact(const QString &author, const QVariantMap &comment);
 
     private:
         QList<QVariantMap> mRepos;
