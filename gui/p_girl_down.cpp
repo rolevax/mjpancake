@@ -12,7 +12,7 @@
 
 using StrConst = const char * const;
 static StrConst URL_REPO_DIR_FMT = "https://api.github.com/repos/%1/contents/";
-static StrConst QUERY_ISSUE = "query{repository(owner:rolevax,name:libsaki){issue(number: 51){author{login} comments(first:100){edges{node{bodyText reactions(first:100,content:ROCKET){edges{node{user{login}}}}}}}}}}";
+static StrConst QUERY_ISSUE = "query{repository(owner:\"rolevax\",name:\"libsaki\"){issue(number: 51){author{login} comments(first:100){edges{node{bodyText reactions(first:100,content:ROCKET){edges{node{user{login}}}}}}}}}}";
 static StrConst QUERY_REPO_FMT = "query{repository(owner:\"%1\",name:\"%2\"){updatedAt stargazers{totalCount}}}";
 static StrConst AUTHORIZATION = "bearer 4b55657f9087494b42e04749b1cf9a18c9d4c432"; // from an empty account
 
