@@ -28,7 +28,6 @@ HEADERS += libsaki/3rd/json.hpp \
            libsaki/app/gen.h \
            libsaki/app/girl_x.h \
            libsaki/app/lua_class.h \
-           libsaki/app/lua_dream_hand.h \
            libsaki/app/lua_managed_ref.h \
            libsaki/app/lua_user_error_handler.h \
            libsaki/app/lua_var_scope.h \
@@ -144,7 +143,6 @@ SOURCES += libsaki/ai/ai.cpp \
            libsaki/app/gen.cpp \
            libsaki/app/girl_x.cpp \
            libsaki/app/lua_class.cpp \
-           libsaki/app/lua_dream_hand.cpp \
            libsaki/app/replay.cpp \
            libsaki/app/table_msg.cpp \
            libsaki/app/table_server.cpp \
