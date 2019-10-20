@@ -149,7 +149,7 @@ function luaLogTr(str) {
     str = str.replace(/EFrmNoAgr/g, "没和你Form个鸡8");
     str = str.replace(/EDrmCntDrw/g, "你的梦中手牌并非可摸牌状态");
     str = str.replace(/EDrmCntSwp/g, "你的梦中手牌不能这么切牌");
-    str = str.replace(/ERefNil/g, "你使用了偷来的全局变量");
+    str = str.replace(/ERefNil/g, "你使用了过期的全局变量");
     str = str.replace(/ERefCon/g, "你修改了只读变量");
     return str
 }
