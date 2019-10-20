@@ -9,7 +9,7 @@ CONFIG(release, debug|release): DEFINES += NDEBUG
 
 # Please make the look-and-feel significantly different from
 # the official version if you are releasing a MOD
-#DEFINES += PANCAKE_OFFICIAL
+DEFINES += PANCAKE_OFFICIAL
 
 HEADERS += \
     gui/p_client.h \
