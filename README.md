@@ -13,9 +13,7 @@ Visit https://mjpancake.github.io for more information.
 
 The client can be built on Linux, Windows, or macOS with
 Qt (community version) installed, 
-The least required version is Qt 5.7, 
-but it is recommended to use the lastest Qt 5.14
-to obtain a probably better performance.
+The least required Qt version is 5.14. 
 The target platform can be Linux, Windows, macOS, Android, or iOS. 
 
 To obtain an executable client,
