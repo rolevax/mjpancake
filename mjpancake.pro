@@ -98,3 +98,5 @@ mac|android {
 ios {
     QMAKE_INFO_PLIST = ios/Info.plist
 }
+
+ANDROID_ABIS = armeabi-v7a
