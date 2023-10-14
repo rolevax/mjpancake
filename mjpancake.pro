@@ -6,6 +6,7 @@ android: QT += androidextras
 
 CONFIG += c++1z
 CONFIG(release, debug|release): DEFINES += NDEBUG
+DEFINES += QT_DISABLE_DEPRECATED_UP_TO=0x050F00
 
 # Please make the look-and-feel significantly different from
 # the official version if you are releasing a MOD

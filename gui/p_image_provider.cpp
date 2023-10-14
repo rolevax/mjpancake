@@ -6,11 +6,10 @@
 #include <QDateTime>
 
 
-
 PImageProvider::PImageProvider()
     : QQuickImageProvider(QQuickImageProvider::Image)
 {
-    qsrand(QDateTime::currentDateTime().toMSecsSinceEpoch());
+    mRand.seed(QDateTime::currentDateTime().toMSecsSinceEpoch());
 }
 
 QImage PImageProvider::requestImage(const QString &id, QSize *size,
@@ -40,9 +39,9 @@ QImage PImageProvider::requestImage(const QString &id, QSize *size,
             image = QImage(PGlobal::photoPath() + "/" + girlId);
 
         if (image.isNull()) { // fallback to placeholder photo
-            int r = 16 + qrand() % 127;
-            int g = 16 + qrand() % 127;
-            int b = 16 + qrand() % 127;
+            int r = 16 + mRand.generate() % 127;
+            int g = 16 + mRand.generate() % 127;
+            int b = 16 + mRand.generate() % 127;
             QColor color(r, g, b, 64);
             QPixmap pixmap(1, 1);
             pixmap.fill(color);

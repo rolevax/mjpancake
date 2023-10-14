@@ -22,9 +22,7 @@ const quint16 SRV_PORT = 6171;
 PJsonTcpSocket::PJsonTcpSocket(QObject *parent)
     : QObject(parent)
 {
-    using ErrorSignal = void (QAbstractSocket::*) (QAbstractSocket::SocketError);
-    connect(&mSocket, static_cast<ErrorSignal>(&QTcpSocket::error),
-            this, &PJsonTcpSocket::onError);
+    connect(&mSocket, &QTcpSocket::errorOccurred, this, &PJsonTcpSocket::onError);
     connect(&mSocket, &QTcpSocket::connected, this, &PJsonTcpSocket::onConnected);
     connect(&mSocket, &QTcpSocket::readyRead, this, &PJsonTcpSocket::onReadReady);
 }
