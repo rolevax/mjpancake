@@ -1,6 +1,6 @@
 import QtQuick 2.7
 import QtQuick.Window 2.2
-import QtMultimedia 5.7
+import QtMultimedia
 import rolevax.sakilogy 1.0
 import "area"
 import "widget"
@@ -122,12 +122,12 @@ Window {
     Connections {
         target: PClient
 
-        onRemoteClosed: {
+        function onRemoteClosed() {
             _roomStack = [];
             loader.source = "room/RoomLogin.qml";
         }
 
-        onTableInitRecved: {
+        function onTableInitRecved(matchResult, choices, foodCosts) {
             pushScene("room/RoomGameOnline", function(item) {
                 item.startChoose(matchResult, choices, foodCosts);
             });

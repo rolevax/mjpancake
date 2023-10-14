@@ -106,7 +106,7 @@ PinchArea {
 
     Connections {
         target: table
-        onClosed: { frame.closed(); }
+        function onClosed() { frame.closed(); }
     }
 
     onPinchStarted: {

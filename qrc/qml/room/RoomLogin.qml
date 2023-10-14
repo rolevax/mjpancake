@@ -102,7 +102,7 @@ Room {
     Connections {
         target: PClient
 
-        onUserChanged: {
+        function onUserChanged(resume) {
             // cannot directly find by 'global' after pushed scene somehow
             var globalRef = global;
 

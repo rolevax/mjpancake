@@ -1,4 +1,4 @@
-import QtQuick 2.7
+import QtQuick
 import rolevax.sakilogy 1.0
 import "../widget"
 
@@ -15,7 +15,7 @@ Column {
         hintText: "用户名"
         text: PGlobal.savedUsername
         enabled: !frozen
-        validator: RegExpValidator { regExp: /^.{1,32}$/ }
+        validator: RegularExpressionValidator { regularExpression: /^.{1,32}$/ }
         KeyNavigation.tab: pwInput
         onTextChanged: {
             loginErrorText.text = "";
@@ -31,7 +31,7 @@ Column {
         hintText: "密码"
         text: PGlobal.savedPassword
         enabled: !frozen
-        validator: RegExpValidator { regExp: /^.{8,32}$/ }
+        validator: RegularExpressionValidator { regularExpression: /^.{8,32}$/ }
         echoMode: TextInput.Password
         KeyNavigation.tab: unInput
         onTextChanged: {
@@ -74,17 +74,17 @@ Column {
     Connections {
         target: PClient
 
-        onAuthFailIn: {
+        function onAuthFailIn(reason) {
             loginErrorText.text = reason;
             frame.frozen = false;
         }
 
-        onConnError: {
+        function onConnError() {
             loginErrorText.text = "连接错误";
             frame.frozen = false;
         }
 
-        onUserChanged: {
+        function onUserChanged(resume) {
             if (!PClient.loggedIn)
                 frame.frozen = false;
         }
