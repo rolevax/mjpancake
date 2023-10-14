@@ -39,7 +39,7 @@ Item {
     PTable {
         id: pTable
 
-        onTableEvent: {
+        onTableEvent: function(type, args) {
             var cb;
             var duration = 0;
             var prelude = 0;
@@ -390,13 +390,13 @@ Item {
         z: 3
         width: (table.width + 13 * twb) / 2;
         height: table.thb
-        onActionTriggered: {
+        onActionTriggered: function(actStr, actArg, actTile) {
             if (photos[0].girlKey.id === 712611 && actStr === "IRS_CLICK")
                 table.green.visible = !table.green.visible;
             table.action(actStr, actArg, actTile);
         }
 
-        onBarkEntered: {
+        onBarkEntered: function() {
             if (table.hasTimeout) {
                 timeBar.cancel();
                 timeBar.hiddenDuration = 5000;

@@ -35,7 +35,7 @@ Item {
         anchors.right: drawn.visible ? drawn.right : hand.right
         anchors.bottomMargin: global.size.space
         anchors.rightMargin: 1
-        onActionTriggered: { frame.actionTriggered(actStr, -1, ""); }
+        onActionTriggered: function(actStr) { frame.actionTriggered(actStr, -1, ""); }
     }
 
     Tile {
@@ -319,7 +319,7 @@ Item {
             case "RON":
             case "RYUUKYOKU":
             case "IRS_CLICK":
-                actionButtons.add(actStr);
+                actionButtons.addAct(actStr);
                 break;
             default:
                 throw "PlayerControl: unhandled act: " + actStr;

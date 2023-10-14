@@ -32,7 +32,7 @@ Row {
         actionButtonBar.actionTriggered(act);
     }
 
-    function add(act) {
+    function addAct(act) {
         repeater.model = repeater.model.concat(act);
     }
 
